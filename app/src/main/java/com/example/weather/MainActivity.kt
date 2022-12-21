@@ -2,7 +2,7 @@ package com.example.weather
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.weather.ui.main.MainFragment
+import com.example.weather.presentation.main.MainFragment
 
 class MainActivity : AppCompatActivity() {
 

@@ -1,4 +1,4 @@
-package com.example.weather.ui.main
+package com.example.weather.presentation.main
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
