@@ -23,6 +23,6 @@ data class DayData(
     val weatherDescription: String = "Good",
     val windInfo: WindInfo
 )
-companion object {}
+//companion object {}
 const val METRIC_SYSTEM = 1
 const val IMPERIAL_SYSTEM = 2
