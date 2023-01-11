@@ -4,17 +4,19 @@ import android.view.LayoutInflater
 import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather.R
 import com.example.weather.domain.DayData
+import com.example.weather.domain.RecyclerViewItem
 
 
 class ForecastAdapter :
-    ListAdapter<DayData, ForecastAdapter.ForecastViewHolder>(ForecastDiffCallback()) {
-
+    ListAdapter<RecyclerViewItem, ForecastAdapter.ForecastViewHolder>(ForecastDiffCallback()) {
+    var onItemClickListener: OnItemClickListener? = null
     class ForecastViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val tvTemp = view.findViewById<TextureView>(R.id.tvTemp)
+        val tvTemp = view.findViewById<TextView>(R.id.tvTemp)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForecastViewHolder {
@@ -25,6 +27,16 @@ class ForecastAdapter :
 
     override fun onBindViewHolder(holder: ForecastViewHolder, position: Int) {
         val item = getItem(position)
+        holder.view.setOnClickListener {
+            onItemClickListener?.itemClick(item)
+        }
+        holder.tvTemp.text = item.temperature
 
+    }
+
+    interface OnItemClickListener {
+        fun itemClick(item: RecyclerViewItem) {
+
+        }
     }
 }

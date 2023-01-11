@@ -1,8 +1,11 @@
 package com.example.weather
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.pm.PackageManager
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.example.weather.presentation.main.MainFragment
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -14,5 +17,23 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.container, MainFragment.newInstance())
                 .commitNow()
         }
+    }
+
+    private fun checkPermitions(): Boolean {
+        var allPermissioGranted = false
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.INTERNET
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.INTERNET),
+                INTERNET_REQUEST_CODE)
+        }
+
+        return allPermissioGranted
+    }
+
+    companion object {
+        const val INTERNET_REQUEST_CODE = 11
     }
 }
