@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace 'com.example.weather'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.example.weather"
         minSdk 21
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -38,6 +38,7 @@ android {
 dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
+    implementation "com.squareup.okhttp3:okhttp:4.1.0"
 
     implementation 'com.squareup.picasso:picasso:2.8'
     implementation 'androidx.core:core-ktx:1.9.0'
