@@ -13,8 +13,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weather.R
 import com.example.weather.databinding.FragmentMainBinding
 import com.example.weather.domain.RecyclerViewItem
-import com.example.weather.retrofit.GisMeteoCommon
 import com.example.weather.retrofit.CurrentWeatherDto
+import com.example.weather.retrofit.OpenWeatherCommon
+import com.example.weather.retrofit.OpenWeatherDto
 import com.google.gson.JsonObject
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -24,11 +25,12 @@ import java.lang.RuntimeException
 
 
 class MainFragment : Fragment() {
+
     private var _binding: FragmentMainBinding? = null
     private val binding: FragmentMainBinding
         get() = _binding ?: throw RuntimeException("FragmentMainBinding? == null")
 
-    val myService = GisMeteoCommon.retrofitService
+    val myService = OpenWeatherCommon.retrofitService
 
     private lateinit var viewModel: MainViewModel
 
@@ -65,29 +67,22 @@ class MainFragment : Fragment() {
 //
 //    }
     fun getForecast(location: String = "Moscow", dayz: Int = 1) {
-        val jsonObject = JsonObject()
-        jsonObject.addProperty("query", "current/4368/?lang=en")
-
-        val bodyOfQuery = jsonObject.toString()
-            .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
-
         val currentQuery =
-            myService.getForecasrList(
-                token = "56b30cb255.3443075",
-                encoding = "deflate",
-                geoId = "4368",
-                lang = "ru"
-            ).enqueue(object : retrofit2.Callback<CurrentWeatherDto> {
-                override fun onFailure(call: Call<CurrentWeatherDto>, throwable: Throwable) {
+            myService.getForecast(
+                latitude = "44.34",
+                longitude = "10.99",
+                appId = OPEN_WEATHER_API_KEY
+            ).enqueue(object : retrofit2.Callback<OpenWeatherDto> {
+                override fun onFailure(call: Call<OpenWeatherDto>, throwable: Throwable) {
                     Log.d("AAAA", "ОШИБКА!!!")
 
                 }
 
                 override fun onResponse(
-                    call: Call<CurrentWeatherDto>,
-                    response: Response<CurrentWeatherDto>
+                    call: Call<OpenWeatherDto>,
+                    response: Response<OpenWeatherDto>
                 ) {
-                    val suggestions = response.body()?.description
+                    val suggestions = response.body()?.currentWeather
 //                    Log.d("AAAA", suggestions.toString())
 //                spisok = mappingToAddresList(suggestions)?.toMutableList() ?: mutableListOf()
 //                adapter.setItems(spisok)
@@ -107,5 +102,6 @@ class MainFragment : Fragment() {
 
     companion object {
         fun newInstance() = MainFragment()
+        const val OPEN_WEATHER_API_KEY = "5d1db59ebde74404687cd4a218b50859"
     }
 }

@@ -10,17 +10,16 @@ class CurrentWeatherDto(
     val description: DescriptionDto,
     @SerializedName("temmperature")
     val temperature: TemperatureDto
-    )
-
-class TemperatureDto (
-    @SerializedName("air")
-        val air: FloatValueDto,
-    @SerializedName("comfort")
-        val comfort: FloatValueDto,
-@SerializedName("water")
-        val water: FloatValueDto
 )
 
+class TemperatureDto(
+    @SerializedName("air")
+    val air: FloatValueDto,
+    @SerializedName("comfort")
+    val comfort: FloatValueDto,
+    @SerializedName("water")
+    val water: FloatValueDto
+)
 
 
 class FloatValueDto(
@@ -28,6 +27,7 @@ class FloatValueDto(
     val value: Float
 
 )
+
 class AirDto(
     @SerializedName("C")
     val valueC: Float
@@ -35,7 +35,7 @@ class AirDto(
 )
 
 class DescriptionDto(
-    @SerializedName ("description")
+    @SerializedName("description")
     val full: String
 )
 
