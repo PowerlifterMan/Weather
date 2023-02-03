@@ -14,14 +14,13 @@ import com.example.weather.R
 import com.example.weather.databinding.FragmentMainBinding
 import com.example.weather.domain.RecyclerViewItem
 import com.example.weather.retrofit.GisMeteoCommon
-import com.example.weather.retrofit.Suggestions
+import com.example.weather.retrofit.CurrentWeatherDto
 import com.google.gson.JsonObject
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Response
 import java.lang.RuntimeException
-import javax.security.auth.callback.Callback
 
 
 class MainFragment : Fragment() {
@@ -76,19 +75,20 @@ class MainFragment : Fragment() {
             myService.getForecasrList(
                 token = "56b30cb255.3443075",
                 encoding = "deflate",
-                query = bodyOfQuery
-            ).enqueue(object : retrofit2.Callback<Suggestions> {
-                override fun onFailure(call: Call<Suggestions>, throwable: Throwable) {
+                geoId = "4368",
+                lang = "ru"
+            ).enqueue(object : retrofit2.Callback<CurrentWeatherDto> {
+                override fun onFailure(call: Call<CurrentWeatherDto>, throwable: Throwable) {
                     Log.d("AAAA", "ОШИБКА!!!")
 
                 }
 
                 override fun onResponse(
-                    call: Call<Suggestions>,
-                    response: Response<Suggestions>
+                    call: Call<CurrentWeatherDto>,
+                    response: Response<CurrentWeatherDto>
                 ) {
-                    val suggestions = response.body()?.suggestions
-                    Log.d("AAAA", suggestions.toString())
+                    val suggestions = response.body()?.description
+//                    Log.d("AAAA", suggestions.toString())
 //                spisok = mappingToAddresList(suggestions)?.toMutableList() ?: mutableListOf()
 //                adapter.setItems(spisok)
 //                //               adapter.notifyDataSetChanged()
