@@ -67,10 +67,30 @@ class MainFragment : Fragment() {
 //
 //    }
     fun getForecast(location: String = "Moscow", dayz: Int = 1) {
-        val currentQuery =
+
             myService.getForecast(
                 latitude = "44.34",
                 longitude = "10.99",
+                appId = OPEN_WEATHER_API_KEY
+            ).enqueue(object : retrofit2.Callback<OpenWeatherDto> {
+                override fun onFailure(call: Call<OpenWeatherDto>, throwable: Throwable) {
+                    Log.d("AAAA", "ОШИБКА!!!")
+
+                }
+
+                override fun onResponse(
+                    call: Call<OpenWeatherDto>,
+                    response: Response<OpenWeatherDto>
+                ) {
+                    val suggestions = response.body()?.currentWeather
+//                    Log.d("AAAA", suggestions.toString())
+//                spisok = mappingToAddresList(suggestions)?.toMutableList() ?: mutableListOf()
+//                adapter.setItems(spisok)
+//                //               adapter.notifyDataSetChanged()
+                }
+            })
+            myService.getForecastByCityName(
+                cityName = "Moscow",
                 appId = OPEN_WEATHER_API_KEY
             ).enqueue(object : retrofit2.Callback<OpenWeatherDto> {
                 override fun onFailure(call: Call<OpenWeatherDto>, throwable: Throwable) {

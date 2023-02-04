@@ -1,5 +1,6 @@
-package com.example.weather.retrofit
+package com.example.weather.retrofit.gisMeteo
 
+import com.example.weather.retrofit.CurrentWeatherDto
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path

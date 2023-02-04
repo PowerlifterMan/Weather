@@ -1,5 +1,6 @@
-package com.example.weather.retrofit
+package com.example.weather.retrofit.openWeather
 
+import com.example.weather.retrofit.OpenWeatherDto
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -10,4 +11,11 @@ interface OpenWeatherApi {
         @Query("lon") longitude: String?,
         @Query("appid") appId: String?,
     ): retrofit2.Call<OpenWeatherDto>
+
+    @GET("data/2.5/weather")
+    fun getForecastByCityName(
+        @Query("q") cityName: String?,
+        @Query("appid") appId: String?,
+    ): retrofit2.Call<OpenWeatherDto>
+
 }
