@@ -1,5 +1,6 @@
 package com.example.weather.retrofit
 
+import com.example.weather.domain.CurrentCity
 import com.google.gson.annotations.SerializedName
 
 class OpenWeatherDto (
@@ -9,11 +10,10 @@ class OpenWeatherDto (
     val currentWeather: List<WeatherDto>,
     @SerializedName("main")
     val mainWeather: mainWeatherData,
-
     @SerializedName("visibility")
     val visibility: Int,
-
         )
+
 class LocationDto(
     @SerializedName("lon")
     val longitudeDto: Float,
@@ -41,3 +41,5 @@ class mainWeatherData (
     @SerializedName("pressure")
     val  currentPressure: Int
 )
+///******************************************
+

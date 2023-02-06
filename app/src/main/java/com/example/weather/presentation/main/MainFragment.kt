@@ -82,11 +82,12 @@ class MainFragment : Fragment() {
 //    }
     fun getForecast(location: String = "Moscow", dayz: Int = 1) {
         myService.getForecast(
-            latitude = "44.34",
-            longitude = "10.99",
+            latitude = "44.04",
+            longitude = "42.86",
             appId = OPEN_WEATHER_API_KEY,
             units = "metric",
-            lang = "ru"
+            lang = "ru",
+            nDays = 2
         ).enqueue(object : retrofit2.Callback<OpenWeatherDto> {
 
             override fun onFailure(call: Call<OpenWeatherDto>, throwable: Throwable) {
@@ -101,6 +102,7 @@ class MainFragment : Fragment() {
                 //val data = response.body().mainWeather
                 currentWeather = response.body()
                 binding.tvCurrentTemp.text = currentWeather?.mainWeather?.currentTemp.toString()
+                binding.tvCurrentLocation.text = "Essentuki"
 
 //                    Log.d("AAAA", suggestions.toString())
 //                spisok = mappingToAddresList(suggestions)?.toMutableList() ?: mutableListOf()
@@ -112,7 +114,8 @@ class MainFragment : Fragment() {
             cityName = "Moscow",
             appId = OPEN_WEATHER_API_KEY,
             units = "metric",
-            lang = "ru"
+            lang = "ru",
+            nDays = 3
 
         ).enqueue(object : retrofit2.Callback<OpenWeatherDto> {
             override fun onFailure(call: Call<OpenWeatherDto>, throwable: Throwable) {
@@ -124,9 +127,11 @@ class MainFragment : Fragment() {
                 call: Call<OpenWeatherDto>,
                 response: Response<OpenWeatherDto>
             ) {
-                currentWeather = response.body()
-                binding.tvCurrentTemp.text = currentWeather?.mainWeather?.currentTemp.toString()
-                binding.tvCurrentLocation.text = "Moscow"
+//                currentWeather = response.body()
+//                binding.tvCurrentTemp.text = currentWeather?.mainWeather?.currentTemp.toString()
+//                binding.tvCurrentLocation.text = "Moscow"
+
+
 //                    Log.d("AAAA", suggestions.toString())
 //                spisok = mappingToAddresList(suggestions)?.toMutableList() ?: mutableListOf()
 //                adapter.setItems(spisok)

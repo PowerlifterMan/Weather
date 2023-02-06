@@ -11,6 +11,7 @@ interface OpenWeatherApi {
         @Query("lon") longitude: String?,
         @Query("units") units: String?,
         @Query("lang") lang: String?,
+        @Query("cnt") nDays: Int?,
         @Query("appid") appId: String?,
     ): retrofit2.Call<OpenWeatherDto>
 
@@ -19,6 +20,7 @@ interface OpenWeatherApi {
         @Query("q") cityName: String?,
         @Query("units") units: String?,
         @Query("lang") lang: String?,
+        @Query("cnt") nDays: Int?,
         @Query("appid") appId: String?,
     ): retrofit2.Call<OpenWeatherDto>
 
