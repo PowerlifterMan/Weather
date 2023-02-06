@@ -9,12 +9,16 @@ interface OpenWeatherApi {
     fun getForecast(
         @Query("lat") latitude: String?,
         @Query("lon") longitude: String?,
+        @Query("units") units: String?,
+        @Query("lang") lang: String?,
         @Query("appid") appId: String?,
     ): retrofit2.Call<OpenWeatherDto>
 
     @GET("data/2.5/weather")
     fun getForecastByCityName(
         @Query("q") cityName: String?,
+        @Query("units") units: String?,
+        @Query("lang") lang: String?,
         @Query("appid") appId: String?,
     ): retrofit2.Call<OpenWeatherDto>
 

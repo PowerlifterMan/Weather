@@ -1,6 +1,6 @@
-package com.example.weather.retrofit
+package com.example.weather.retrofit.openWeather
 
-import com.example.weather.retrofit.openWeather.OpenWeatherApi
+import com.example.weather.retrofit.RetrofitClient
 
 
 object OpenWeatherCommon {

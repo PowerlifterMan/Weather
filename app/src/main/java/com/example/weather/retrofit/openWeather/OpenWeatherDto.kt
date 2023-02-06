@@ -6,7 +6,13 @@ class OpenWeatherDto (
     @SerializedName("coord")
     val point: LocationDto,
     @SerializedName("weather")
-    val currentWeather: List<WeatherDto>
+    val currentWeather: List<WeatherDto>,
+    @SerializedName("main")
+    val mainWeather: mainWeatherData,
+
+    @SerializedName("visibility")
+    val visibility: Int,
+
         )
 class LocationDto(
     @SerializedName("lon")
@@ -23,4 +29,15 @@ class WeatherDto(
     val secondDescriptionDto: String,
     @SerializedName("icon")
     val iconDto: String
+)
+
+class mainWeatherData (
+    @SerializedName("temp")
+    val currentTemp: Float,
+
+    @SerializedName("feels_like")
+    val  currentTempFeels: Float   ,
+
+    @SerializedName("pressure")
+    val  currentPressure: Int
 )
