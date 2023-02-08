@@ -20,9 +20,12 @@ import com.example.weather.retrofit.openWeather.OpenWeatherForecastDTO
 import retrofit2.Call
 import retrofit2.Response
 import java.lang.RuntimeException
+import java.sql.Timestamp
+import java.util.*
 
 
 class MainFragment : Fragment() {
+    val myService = OpenWeatherCommon.retrofitService
 
     var currentWeather: OpenWeatherDto? = null
     var forecast: OpenWeatherDto? = null
@@ -60,7 +63,8 @@ class MainFragment : Fragment() {
                 changeCurrentDayInfo(item)
             }
         }
-//        adapter.submitList(list)
+        adapter.submitList(getForecast())
+
 //        getForecast(lat = "44.045", lon = "42.857")
     }
 
@@ -85,6 +89,38 @@ class MainFragment : Fragment() {
     ): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    fun getForecast(lat: String = "44.34", lon: String = "10.99", dayz: Int = 3):List<RecyclerViewItem> {
+        val rvList  = mutableListOf <RecyclerViewItem>()
+        myService.getForecastByCoorddinates(
+            latitude = lat,
+            longitude = lon,
+            appId = MainFragment.OPEN_WEATHER_API_KEY,
+            units = "metric",
+            lang = "ru",
+            nDays = dayz
+        ).enqueue(object : retrofit2.Callback<OpenWeatherForecastDTO> {
+            override fun onFailure(call: Call<OpenWeatherForecastDTO>, throwable: Throwable) {
+                Log.d("AAAA", "ОШИБКА!!!")
+            }
+
+            override fun onResponse(
+                call: Call<OpenWeatherForecastDTO>,
+                response: Response<OpenWeatherForecastDTO>
+            ) {
+                val myCity = response.body()?.city
+                val forecast1 = response.body()?.list
+                forecast1?.forEach {
+                    val stamp = Timestamp(it.dateOfForecast)
+                    rvList.add(RecyclerViewItem(dayNumber = Date(stamp.time).toString(),
+                        temperature = it.mainForecastData.temp.toString(),
+                        description = it.mainForecastData.tempFeels.toString()))
+                }
+                val date = response.body()?.list?.get(0)?.dateOfForecast
+            }
+        })
+        return rvList
     }
 
     companion object {

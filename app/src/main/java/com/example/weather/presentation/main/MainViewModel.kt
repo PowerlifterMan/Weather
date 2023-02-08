@@ -24,39 +24,6 @@ class MainViewModel : ViewModel() {
         return currentCity
     }
     fun provideList(){
-        weatherOnEachDay.value = getForecast()
-    }
-    fun getForecast(lat: String = "44.34", lon: String = "10.99", dayz: Int = 3):List<RecyclerViewItem> {
-        val rvList  = mutableListOf <RecyclerViewItem>()
-        myService.getForecastByCoorddinates(
-            latitude = lat,
-            longitude = lon,
-            appId = MainFragment.OPEN_WEATHER_API_KEY,
-            units = "metric",
-            lang = "ru",
-            nDays = dayz
-        ).enqueue(object : retrofit2.Callback<OpenWeatherForecastDTO> {
-            override fun onFailure(call: Call<OpenWeatherForecastDTO>, throwable: Throwable) {
-                Log.d("AAAA", "ОШИБКА!!!")
-            }
-
-            override fun onResponse(
-                call: Call<OpenWeatherForecastDTO>,
-                response: Response<OpenWeatherForecastDTO>
-            ) {
-                val myCity = response.body()?.city
-                val forecast1 = response.body()?.list
-                forecast1?.forEach {
-                        val stamp = Timestamp(it.dateOfForecast)
-                        rvList.add(RecyclerViewItem(dayNumber = Date(stamp.time).toString(),
-                        temperature = it.mainForecastData.temp.toString(),
-                        description = it.mainForecastData.tempFeels.toString()))
-                }
-                weatherOnEachDay.value = rvList
-                val date = response.body()?.list?.get(0)?.dateOfForecast
-            }
-        })
-        return rvList
     }
 
     fun getCurrentWeather(lat: String = "44.04", lon: String = "42.86", dayz: Int = 1) {
