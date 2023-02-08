@@ -16,7 +16,7 @@ import com.example.weather.domain.CurrentCity
 import com.example.weather.domain.RecyclerViewItem
 import com.example.weather.retrofit.openWeather.OpenWeatherCommon
 import com.example.weather.retrofit.OpenWeatherDto
-import com.example.weather.retrofit.WeatherDto
+import com.example.weather.retrofit.openWeather.OpenWeatherForecastDTO
 import retrofit2.Call
 import retrofit2.Response
 import java.lang.RuntimeException
@@ -25,11 +25,14 @@ import java.lang.RuntimeException
 class MainFragment : Fragment() {
 
     var currentWeather: OpenWeatherDto? = null
+    var forecast: OpenWeatherDto? = null
     private var _binding: FragmentMainBinding? = null
     private val binding: FragmentMainBinding
         get() = _binding ?: throw RuntimeException("FragmentMainBinding? == null")
 
-    val myService = OpenWeatherCommon.retrofitService
+    val adapter = ForecastAdapter()
+
+    //    val myService = OpenWeatherCommon.retrofitService
     var myCity = CurrentCity()
     private lateinit var viewModel: MainViewModel
 
@@ -42,28 +45,23 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        repeat(6) {
-//            list.add(RecyclerViewItem(dayNumber = it.toString()))
-//        }
-
         with(binding) {
+            cardView.setBackgroundResource(R.drawable.low_cloud_cover)
             btnSetCity.setOnClickListener {
                 myCity = getNewCity()
-            }
-            //tvCurrentLocation.text = viewModel.getCurrentCityName()
-        }
 
-        binding.cardView.setBackgroundResource(R.drawable.low_cloud_cover)
-//        adapter.onItemClickListener = object : ForecastAdapter.OnItemClickListener {
-//            override fun itemClick(item: RecyclerViewItem) {
-//                changeCurrentDayInfo(item)
-//            }
-//        }
+            }
+            forecastRV.layoutManager =
+                LinearLayoutManager(requireActivity(), RecyclerView.HORIZONTAL, false)
+            forecastRV.adapter = adapter
+        }
+        adapter.onItemClickListener = object : ForecastAdapter.OnItemClickListener {
+            override fun itemClick(item: RecyclerViewItem) {
+                changeCurrentDayInfo(item)
+            }
+        }
 //        adapter.submitList(list)
-        binding.forecastRV.layoutManager =
-            LinearLayoutManager(requireActivity(), RecyclerView.HORIZONTAL, false)
-//        binding.forecastRV.adapter = adapter
-        getForecast()
+//        getForecast(lat = "44.045", lon = "42.857")
     }
 
     private fun getNewCity(): CurrentCity {
@@ -80,65 +78,6 @@ class MainFragment : Fragment() {
     // fun fillList(): List<RecyclerViewItem> {
 //
 //    }
-    fun getForecast(location: String = "Moscow", dayz: Int = 1) {
-        myService.getForecast(
-            latitude = "44.04",
-            longitude = "42.86",
-            appId = OPEN_WEATHER_API_KEY,
-            units = "metric",
-            lang = "ru",
-            nDays = 2
-        ).enqueue(object : retrofit2.Callback<OpenWeatherDto> {
-
-            override fun onFailure(call: Call<OpenWeatherDto>, throwable: Throwable) {
-                Log.d("AAAA", "ОШИБКА!!!")
-
-            }
-
-            override fun onResponse(
-                call: Call<OpenWeatherDto>,
-                response: Response<OpenWeatherDto>
-            ) {
-                //val data = response.body().mainWeather
-                currentWeather = response.body()
-                binding.tvCurrentTemp.text = currentWeather?.mainWeather?.currentTemp.toString()
-                binding.tvCurrentLocation.text = "Essentuki"
-
-//                    Log.d("AAAA", suggestions.toString())
-//                spisok = mappingToAddresList(suggestions)?.toMutableList() ?: mutableListOf()
-//                adapter.setItems(spisok)
-//                //               adapter.notifyDataSetChanged()
-            }
-        })
-        myService.getForecastByCityName(
-            cityName = "Moscow",
-            appId = OPEN_WEATHER_API_KEY,
-            units = "metric",
-            lang = "ru",
-            nDays = 3
-
-        ).enqueue(object : retrofit2.Callback<OpenWeatherDto> {
-            override fun onFailure(call: Call<OpenWeatherDto>, throwable: Throwable) {
-                Log.d("AAAA", "ОШИБКА!!!")
-
-            }
-
-            override fun onResponse(
-                call: Call<OpenWeatherDto>,
-                response: Response<OpenWeatherDto>
-            ) {
-//                currentWeather = response.body()
-//                binding.tvCurrentTemp.text = currentWeather?.mainWeather?.currentTemp.toString()
-//                binding.tvCurrentLocation.text = "Moscow"
-
-
-//                    Log.d("AAAA", suggestions.toString())
-//                spisok = mappingToAddresList(suggestions)?.toMutableList() ?: mutableListOf()
-//                adapter.setItems(spisok)
-//                //               adapter.notifyDataSetChanged()
-            }
-        })
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

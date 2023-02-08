@@ -4,19 +4,38 @@ import com.example.weather.domain.CurrentCity
 import com.google.gson.annotations.SerializedName
 
 class OpenWeatherForecastDTO(
-    @SerializedName("city")
-    val city: City,
+    @SerializedName("cod")
+    val cod: String,
+    @SerializedName("message")
+    val message: Int,
     @SerializedName("cnt")
-    val numberDays: City,
+    val numberDays: Int,
     @SerializedName("list")
-    val weatherDataList: List<WeatherData>,
+    val list: List<dayForecast>,
+    @SerializedName("city")
+    val city: City
+)
 
+class dayForecast (
+    @SerializedName("dt")
+    val dateOfForecast: Long,
+    @SerializedName("main")
+    val mainForecastData: MainForecastData
+        )
+
+class MainForecastData (
+    @SerializedName("temp")
+    val temp: Float,
+    @SerializedName("feels_like")
+    val tempFeels: Float,
+    @SerializedName("humidity")
+    val humidity: Int
 )
 
 class WeatherData (
     @SerializedName("dt")
     val timeWeatherData: Long,
-    @SerializedName("dt")
+    @SerializedName("temp")
     val tempOnCurrentTime: DayTemperature
         )
 
@@ -28,6 +47,8 @@ class DayTemperature (
 )
 
 class City(
+    @SerializedName("id")
+    val id: Int,
     @SerializedName("name")
     val cityName: String,
     @SerializedName("coord")
