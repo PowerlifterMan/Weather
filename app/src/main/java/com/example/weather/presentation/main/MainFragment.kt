@@ -21,6 +21,7 @@ import retrofit2.Call
 import retrofit2.Response
 import java.lang.RuntimeException
 import java.sql.Timestamp
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -63,7 +64,8 @@ class MainFragment : Fragment() {
                 changeCurrentDayInfo(item)
             }
         }
-        adapter.submitList(getForecast())
+        val listForAdapter = getForecast()
+        adapter.submitList(listForAdapter)
 
 //        getForecast(lat = "44.045", lon = "42.857")
     }
@@ -91,7 +93,7 @@ class MainFragment : Fragment() {
         return binding.root
     }
 
-    fun getForecast(lat: String = "44.34", lon: String = "10.99", dayz: Int = 3):List<RecyclerViewItem> {
+    fun getForecast(lat: String = "44.044", lon: String = "42.86", dayz: Int = 5):List<RecyclerViewItem> {
         val rvList  = mutableListOf <RecyclerViewItem>()
         myService.getForecastByCoorddinates(
             latitude = lat,
@@ -109,11 +111,11 @@ class MainFragment : Fragment() {
                 call: Call<OpenWeatherForecastDTO>,
                 response: Response<OpenWeatherForecastDTO>
             ) {
-                val myCity = response.body()?.city
+                val myCity = response.body()?.city?.cityName
                 val forecast1 = response.body()?.list
                 forecast1?.forEach {
-                    val stamp = Timestamp(it.dateOfForecast)
-                    rvList.add(RecyclerViewItem(dayNumber = Date(stamp.time).toString(),
+                    val date = getDateTime(it.dateOfForecast)
+                    rvList.add(RecyclerViewItem(dayNumber = date.toString(),
                         temperature = it.mainForecastData.temp.toString(),
                         description = it.mainForecastData.tempFeels.toString()))
                 }
@@ -121,6 +123,15 @@ class MainFragment : Fragment() {
             }
         })
         return rvList
+    }
+    private fun getDateTime(s: Long): String? {
+        try {
+            val sdf = SimpleDateFormat("yyyy/MM/dd")
+            val netDate = Date(s * 1000)
+            return sdf.format(netDate)
+        } catch (e: Exception) {
+            return e.toString()
+        }
     }
 
     companion object {
