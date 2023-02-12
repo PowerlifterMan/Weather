@@ -11,7 +11,6 @@ interface OpenWeatherApi {
         @Query("lon") longitude: String?,
         @Query("units") units: String?,
         @Query("lang") lang: String?,
-        @Query("cnt") nDays: Int?,
         @Query("appid") appId: String?,
     ): retrofit2.Call<OpenWeatherDto>
 
@@ -33,6 +32,16 @@ interface OpenWeatherApi {
 //        @Query("appid") appId: String?,
 //    ): retrofit2.Call<OpenWeatherDto>
 //
+@GET("data/2.5/forecast")
+fun getForecastByCoorddinates(
+    @Query("lat") latitude: String?,
+    @Query("lon") longitude: String?,
+    @Query("units") units: String?,
+    @Query("lang") lang: String?,
+//    @Query("cnt") nDays: Int?,
+    @Query("appid") appId: String?,
+): retrofit2.Call<OpenWeatherForecastDTO>
+
 @GET("data/2.5/forecast")
 fun getForecastByCoorddinates(
     @Query("lat") latitude: String?,

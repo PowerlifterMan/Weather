@@ -12,6 +12,8 @@ class OpenWeatherDto (
     val mainWeather: mainWeatherData,
     @SerializedName("visibility")
     val visibility: Int,
+    @SerializedName("name")
+    val cityName: String
         )
 
 class LocationDto(

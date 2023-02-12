@@ -27,7 +27,8 @@ import java.util.*
 
 class MainFragment : Fragment() {
     val myService = OpenWeatherCommon.retrofitService
-
+    val rvList  = mutableListOf <RecyclerViewItem>()
+    private lateinit var viewModel: MainViewModel
     var currentWeather: OpenWeatherDto? = null
     var forecast: OpenWeatherDto? = null
     private var _binding: FragmentMainBinding? = null
@@ -38,7 +39,6 @@ class MainFragment : Fragment() {
 
     //    val myService = OpenWeatherCommon.retrofitService
     var myCity = CurrentCity()
-    private lateinit var viewModel: MainViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,6 +49,8 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val currentList = viewModel.weatherOnEachDay
+        val cityName = viewModel.myCityName
         with(binding) {
             cardView.setBackgroundResource(R.drawable.low_cloud_cover)
             btnSetCity.setOnClickListener {
@@ -56,7 +58,7 @@ class MainFragment : Fragment() {
 
             }
             forecastRV.layoutManager =
-                LinearLayoutManager(requireActivity(), RecyclerView.HORIZONTAL, false)
+                LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
             forecastRV.adapter = adapter
         }
         adapter.onItemClickListener = object : ForecastAdapter.OnItemClickListener {
@@ -64,8 +66,13 @@ class MainFragment : Fragment() {
                 changeCurrentDayInfo(item)
             }
         }
-        val listForAdapter = getForecast()
-        adapter.submitList(listForAdapter)
+        viewModel.getForecast()
+        cityName.observe(requireActivity()){
+            binding.tvCurrentLocation.text = it
+        }
+        currentList.observe(requireActivity()){
+            adapter.submitList(it)
+        }
 
 //        getForecast(lat = "44.045", lon = "42.857")
     }
@@ -93,15 +100,13 @@ class MainFragment : Fragment() {
         return binding.root
     }
 
-    fun getForecast(lat: String = "44.044", lon: String = "42.86", dayz: Int = 5):List<RecyclerViewItem> {
-        val rvList  = mutableListOf <RecyclerViewItem>()
+    fun getForecast(lat: String = "44.044", lon: String = "42.86") {
         myService.getForecastByCoorddinates(
             latitude = lat,
             longitude = lon,
             appId = MainFragment.OPEN_WEATHER_API_KEY,
             units = "metric",
             lang = "ru",
-            nDays = dayz
         ).enqueue(object : retrofit2.Callback<OpenWeatherForecastDTO> {
             override fun onFailure(call: Call<OpenWeatherForecastDTO>, throwable: Throwable) {
                 Log.d("AAAA", "ОШИБКА!!!")
@@ -119,10 +124,12 @@ class MainFragment : Fragment() {
                         temperature = it.mainForecastData.temp.toString(),
                         description = it.mainForecastData.tempFeels.toString()))
                 }
-                val date = response.body()?.list?.get(0)?.dateOfForecast
+                adapter.submitList(rvList)
+
+//                val date = response.body()?.list?.get(0)?.dateOfForecast
             }
         })
-        return rvList
+
     }
     private fun getDateTime(s: Long): String? {
         try {

@@ -17,6 +17,8 @@ class ForecastAdapter :
     var onItemClickListener: OnItemClickListener? = null
     class ForecastViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val tvTemp = view.findViewById<TextView>(R.id.tvTemp)
+        val tvFeels = view.findViewById<TextView>(R.id.tvDescr)
+        val tvDate =  view.findViewById<TextView>(R.id.tvDate)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForecastViewHolder {
@@ -30,7 +32,9 @@ class ForecastAdapter :
         holder.view.setOnClickListener {
             onItemClickListener?.itemClick(item)
         }
+        holder.tvDate.text = item.dayNumber
         holder.tvTemp.text = item.temperature
+        holder.tvFeels.text = "ощущается как ${item.description}"
 
     }
 
