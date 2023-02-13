@@ -11,12 +11,12 @@ class OpenWeatherForecastDTO(
     @SerializedName("cnt")
     val numberDays: Int,
     @SerializedName("list")
-    val list: List<dayForecast>,
+    val list: List<DayForecast>,
     @SerializedName("city")
     val city: City
 )
 
-class dayForecast (
+class DayForecast (
     @SerializedName("dt")
     val dateOfForecast: Long,
     @SerializedName("main")
