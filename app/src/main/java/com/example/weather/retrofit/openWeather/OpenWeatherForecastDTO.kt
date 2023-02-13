@@ -20,7 +20,9 @@ class dayForecast (
     @SerializedName("dt")
     val dateOfForecast: Long,
     @SerializedName("main")
-    val mainForecastData: MainForecastData
+    val mainForecastData: MainForecastData,
+//    @SerializedName("")
+//    val
         )
 
 class MainForecastData (

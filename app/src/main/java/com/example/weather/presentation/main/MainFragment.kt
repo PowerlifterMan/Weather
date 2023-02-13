@@ -27,7 +27,7 @@ import java.util.*
 
 class MainFragment : Fragment() {
     val myService = OpenWeatherCommon.retrofitService
-    val rvList  = mutableListOf <RecyclerViewItem>()
+    val rvList = mutableListOf<RecyclerViewItem>()
     private lateinit var viewModel: MainViewModel
     var currentWeather: OpenWeatherDto? = null
     var forecast: OpenWeatherDto? = null
@@ -66,13 +66,29 @@ class MainFragment : Fragment() {
                 changeCurrentDayInfo(item)
             }
         }
-        viewModel.getForecast()
-        cityName.observe(requireActivity()){
-            binding.tvCurrentLocation.text = it
+        viewModel.currentResponce.observe(requireActivity()) { responceBody ->
+            val list = responceBody.list
+            list.forEach {
+                val date = getDateTime(it.dateOfForecast)
+                rvList.add(
+                    RecyclerViewItem(
+                        dayNumber = date.toString(),
+                        temperature = it.mainForecastData.temp.toString(),
+                        description = it.mainForecastData.tempFeels.toString()
+                    )
+                )
+            }
+            adapter.submitList(rvList)
+            binding.tvCurrentLocation.text = responceBody.city.cityName.toString()
+//            binding.tvCurrentTemp.text = responceBody.
         }
-        currentList.observe(requireActivity()){
-            adapter.submitList(it)
-        }
+//        viewModel.getForecast()
+//        cityName.observe(requireActivity()){
+//            binding.tvCurrentLocation.text = it
+//        }
+//        currentList.observe(requireActivity()){
+//            adapter.submitList(it)
+//        }
 
 //        getForecast(lat = "44.045", lon = "42.857")
     }
@@ -120,9 +136,13 @@ class MainFragment : Fragment() {
                 val forecast1 = response.body()?.list
                 forecast1?.forEach {
                     val date = getDateTime(it.dateOfForecast)
-                    rvList.add(RecyclerViewItem(dayNumber = date.toString(),
-                        temperature = it.mainForecastData.temp.toString(),
-                        description = it.mainForecastData.tempFeels.toString()))
+                    rvList.add(
+                        RecyclerViewItem(
+                            dayNumber = date.toString(),
+                            temperature = it.mainForecastData.temp.toString(),
+                            description = it.mainForecastData.tempFeels.toString()
+                        )
+                    )
                 }
                 adapter.submitList(rvList)
 
@@ -131,6 +151,7 @@ class MainFragment : Fragment() {
         })
 
     }
+
     private fun getDateTime(s: Long): String? {
         try {
             val sdf = SimpleDateFormat("yyyy/MM/dd")
