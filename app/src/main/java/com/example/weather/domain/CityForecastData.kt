@@ -1,7 +1,7 @@
 package com.example.weather.domain
 
 class CityForecastData(
-    val city : CurrentCity,
+    var city : CurrentCity,
     val forecastList: List<TempOnTime>
 
 )

@@ -1,7 +1,6 @@
 package com.example.weather.retrofit.gisMeteo
 
 import com.example.weather.retrofit.RetrofitClient
-import com.example.weather.retrofit.openWeather.OpenWeatherApi
 
 object GismeteoCommon {
     private val BASE_URL_GISMETEO = "https://api.gismeteo.net/v2/weather/"

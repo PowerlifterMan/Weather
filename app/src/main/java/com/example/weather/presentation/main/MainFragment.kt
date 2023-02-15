@@ -49,8 +49,6 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val currentList = viewModel.weatherOnEachDay
-        val cityName = viewModel.myCityName
         with(binding) {
             cardView.setBackgroundResource(R.drawable.low_cloud_cover)
             btnSetCity.setOnClickListener {
@@ -79,18 +77,9 @@ class MainFragment : Fragment() {
                 )
             }
             adapter.submitList(rvList)
-            binding.tvCurrentLocation.text = responceBody.city.cityName.toString()
-//            binding.tvCurrentTemp.text = responceBody.
+            binding.tvCurrentLocation.text = responceBody.city.cityName
         }
-//        viewModel.getForecast()
-//        cityName.observe(requireActivity()){
-//            binding.tvCurrentLocation.text = it
-//        }
-//        currentList.observe(requireActivity()){
-//            adapter.submitList(it)
-//        }
 
-//        getForecast(lat = "44.045", lon = "42.857")
     }
 
     private fun getNewCity(): CurrentCity {
@@ -116,41 +105,6 @@ class MainFragment : Fragment() {
         return binding.root
     }
 
-    fun getForecast(lat: String = "44.044", lon: String = "42.86") {
-        myService.getForecastByCoorddinates(
-            latitude = lat,
-            longitude = lon,
-            appId = MainFragment.OPEN_WEATHER_API_KEY,
-            units = "metric",
-            lang = "ru",
-        ).enqueue(object : retrofit2.Callback<OpenWeatherForecastDTO> {
-            override fun onFailure(call: Call<OpenWeatherForecastDTO>, throwable: Throwable) {
-                Log.d("AAAA", "ОШИБКА!!!")
-            }
-
-            override fun onResponse(
-                call: Call<OpenWeatherForecastDTO>,
-                response: Response<OpenWeatherForecastDTO>
-            ) {
-                val myCity = response.body()?.city?.cityName
-                val forecast1 = response.body()?.list
-                forecast1?.forEach {
-                    val date = getDateTime(it.dateOfForecast)
-                    rvList.add(
-                        RecyclerViewItem(
-                            dayNumber = date.toString(),
-                            temperature = it.mainForecastData.temp.toString(),
-                            description = it.mainForecastData.tempFeels.toString()
-                        )
-                    )
-                }
-                adapter.submitList(rvList)
-
-//                val date = response.body()?.list?.get(0)?.dateOfForecast
-            }
-        })
-
-    }
 
     private fun getDateTime(s: Long): String? {
         try {
