@@ -4,12 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.weather.data.Mappers
 import com.example.weather.retrofit.OpenWeatherDto
+import com.example.weather.retrofit.openWeather.City
 import com.example.weather.retrofit.openWeather.OpenWeatherForecastDTO
 
 class WeatherUseCase(private val weatherRepository: OpenWeatherRepository) {
     private val mapper = Mappers()
     private val cityForecastData = MutableLiveData<CityForecastData>()
-    private val cityForecast = MutableLiveData<String>()
+    private val cityForecast = MutableLiveData<CurrentCity>()
     private val rowForecast = MutableLiveData<List<RecyclerViewItem>>()
 
     fun getForecastOpenWeather(
@@ -20,13 +21,14 @@ class WeatherUseCase(private val weatherRepository: OpenWeatherRepository) {
         return weatherRepository.getForecastOpenWeather(lat = lat, lon = lon)
     }
 
-    fun getOpenWeatherData(
+    fun getOpenWeatherFOrecastData(
         lat: String = DEFAULT_LATITUDE,
         lon: String = DEFAULT_LONGITUDE
-
-    ):LiveData<CityForecastData>{
+    ): LiveData<CityForecastData> {
         val data = weatherRepository.getForecastOpenWeather(lat = lat, lon = lon)
-        cityForecastData.value = mapper.mapOpenForecastToCityForecast(data.value)
+        data.value?.let {
+            cityForecastData.value = mapper.mapOpenForecastToCityForecast(it)
+        }
         return cityForecastData
     }
 

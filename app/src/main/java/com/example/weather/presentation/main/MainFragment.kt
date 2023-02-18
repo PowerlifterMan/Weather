@@ -26,18 +26,12 @@ import java.util.*
 
 
 class MainFragment : Fragment() {
-    val myService = OpenWeatherCommon.retrofitService
     val rvList = mutableListOf<RecyclerViewItem>()
     private lateinit var viewModel: MainViewModel
-    var currentWeather: OpenWeatherDto? = null
-    var forecast: OpenWeatherDto? = null
     private var _binding: FragmentMainBinding? = null
     private val binding: FragmentMainBinding
         get() = _binding ?: throw RuntimeException("FragmentMainBinding? == null")
-
     val adapter = ForecastAdapter()
-
-    //    val myService = OpenWeatherCommon.retrofitService
     var myCity = CurrentCity()
 
 
@@ -49,6 +43,9 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val list = viewModel.getList()
+        val city = viewModel.getCity()
+
         with(binding) {
             cardView.setBackgroundResource(R.drawable.low_cloud_cover)
             btnSetCity.setOnClickListener {
@@ -64,21 +61,30 @@ class MainFragment : Fragment() {
                 changeCurrentDayInfo(item)
             }
         }
-        viewModel.currentResponce.observe(requireActivity()) { responceBody ->
-            val list = responceBody.list
-            list.forEach {
-                val date = getDateTime(it.dateOfForecast)
-                rvList.add(
-                    RecyclerViewItem(
-                        dayNumber = date.toString(),
-                        temperature = it.mainForecastData.temp.toString(),
-                        description = it.mainForecastData.tempFeels.toString()
-                    )
-                )
-            }
-            adapter.submitList(rvList)
-            binding.tvCurrentLocation.text = responceBody.city.cityName
+        list.observe(viewLifecycleOwner){
+            adapter.submitList(it)
         }
+        city.observe(viewLifecycleOwner){
+            binding.tvCurrentLocation.text = it
+
+        }
+
+
+//        viewModel.currentResponce.observe(requireActivity()) { responceBody ->
+//            val list = responceBody.list
+//            list.forEach {
+//                val date = getDateTime(it.dateOfForecast)
+//                rvList.add(
+//                    RecyclerViewItem(
+//                        dayNumber = date.toString(),
+//                        temperature = it.mainForecastData.temp.toString(),
+//                        description = it.mainForecastData.tempFeels.toString()
+//                    )
+//                )
+//            }
+//            adapter.submitList(rvList)
+//            binding.tvCurrentLocation.text = responceBody.city.cityName
+//        }
 
     }
 
