@@ -9,6 +9,8 @@ import com.example.weather.presentation.main.MainFragment
 import com.example.weather.retrofit.OpenWeatherDto
 import com.example.weather.retrofit.openWeather.OpenWeatherCommon
 import com.example.weather.retrofit.openWeather.OpenWeatherForecastDTO
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
 import retrofit2.Call
 import retrofit2.Response
 import java.text.SimpleDateFormat
@@ -23,49 +25,27 @@ object OpenWeatheRepositoryImpl : OpenWeatherRepository {
     override fun getForecastOpenWeather(
         lat: String,
         lon: String
-    ): LiveData<OpenWeatherForecastDTO> {
-        myService.getForecastByCoorddinates(
+    ):  Single<OpenWeatherForecastDTO> {
+        val data = myService.getForecastByCoorddinates(
             latitude = lat,
             longitude = lon,
             appId = MainFragment.OPEN_WEATHER_API_KEY,
             units = "metric",
             lang = "ru",
             nDays = 8
-        ).enqueue(object : retrofit2.Callback<OpenWeatherForecastDTO> {
-            override fun onFailure(call: Call<OpenWeatherForecastDTO>, throwable: Throwable) {
-                Log.d("AAAA", "ОШИБКА!!!")
-            }
+        ).subscribeOn(Schedulers.io())
 
-            override fun onResponse(
-                call: Call<OpenWeatherForecastDTO>,
-                response: Response<OpenWeatherForecastDTO>
-            ) {
-                weatherOnEachDay.value = response.body()
-            }
-        })
-        return weatherOnEachDay
+        return  data
     }
 
-    override fun getWeatherOpenWeather(lat: String, lon: String): LiveData<OpenWeatherDto> {
-        myService.getWeatherByCoorddinates(
+    override fun getWeatherOpenWeather(lat: String, lon: String): Single<OpenWeatherDto> {
+       return myService.getWeatherByCoorddinates(
             latitude = lat,
             longitude = lon,
             appId = MainFragment.OPEN_WEATHER_API_KEY,
             units = "metric",
             lang = "ru",
-        ).enqueue(object : retrofit2.Callback<OpenWeatherDto> {
-            override fun onFailure(call: Call<OpenWeatherDto>, throwable: Throwable) {
-                Log.d("AAAA", "ОШИБКА!!!")
-            }
-
-            override fun onResponse(
-                call: Call<OpenWeatherDto>,
-                response: Response<OpenWeatherDto>
-            ) {
-                currentWeather.value = response.body()
-            }
-        })
-        return currentWeather
+        )
     }
 
     private fun getDateTime(s: Long): String? {

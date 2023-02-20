@@ -6,6 +6,8 @@ import com.example.weather.data.Mappers
 import com.example.weather.retrofit.OpenWeatherDto
 import com.example.weather.retrofit.openWeather.City
 import com.example.weather.retrofit.openWeather.OpenWeatherForecastDTO
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
 
 class WeatherUseCase(private val weatherRepository: OpenWeatherRepository) {
     private val mapper = Mappers()
@@ -16,20 +18,16 @@ class WeatherUseCase(private val weatherRepository: OpenWeatherRepository) {
     fun getForecastOpenWeather(
         lat: String = DEFAULT_LATITUDE,
         lon: String = DEFAULT_LONGITUDE
-    ): LiveData<OpenWeatherForecastDTO> {
-
+    ): Single<OpenWeatherForecastDTO> {
         return weatherRepository.getForecastOpenWeather(lat = lat, lon = lon)
     }
 
     fun getOpenWeatherFOrecastData(
         lat: String = DEFAULT_LATITUDE,
         lon: String = DEFAULT_LONGITUDE
-    ): LiveData<CityForecastData> {
-        val data = weatherRepository.getForecastOpenWeather(lat = lat, lon = lon)
-        data.value?.let {
-            cityForecastData.value = mapper.mapOpenForecastToCityForecast(it)
-        }
-        return cityForecastData
+    ): Single<OpenWeatherForecastDTO> {
+//        val disposable =
+        return weatherRepository.getForecastOpenWeather(lat = lat, lon = lon)
     }
 
 //    fun getOpenWeatherCity(city)
@@ -37,7 +35,7 @@ class WeatherUseCase(private val weatherRepository: OpenWeatherRepository) {
     fun getWeatherOpenWeather(
         lat: String = DEFAULT_LATITUDE,
         lon: String = DEFAULT_LONGITUDE
-    ): LiveData<OpenWeatherDto> {
+    ): Single<OpenWeatherDto> {
         return weatherRepository.getWeatherOpenWeather(lat = lat, lon = lon)
     }
 

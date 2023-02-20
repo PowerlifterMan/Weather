@@ -43,9 +43,9 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val list = viewModel.getList()
-        val city = viewModel.getCity()
-
+        val list = viewModel.rvRow
+        val city = viewModel.cityRow
+        viewModel.getForecastData()
         with(binding) {
             cardView.setBackgroundResource(R.drawable.low_cloud_cover)
             btnSetCity.setOnClickListener {

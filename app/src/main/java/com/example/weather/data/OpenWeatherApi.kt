@@ -2,6 +2,7 @@ package com.example.weather.data
 
 import com.example.weather.retrofit.OpenWeatherDto
 import com.example.weather.retrofit.openWeather.OpenWeatherForecastDTO
+import io.reactivex.rxjava3.core.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -13,7 +14,7 @@ interface OpenWeatherApi {
         @Query("units") units: String?,
         @Query("lang") lang: String?,
         @Query("appid") appId: String?,
-    ): retrofit2.Call<OpenWeatherDto>
+    ): Single<OpenWeatherDto>
 
     @GET("data/2.5/weather")
     fun getWeatherByCityName(
@@ -41,7 +42,7 @@ fun getForecastByCoorddinates(
     @Query("lang") lang: String?,
 //    @Query("cnt") nDays: Int?,
     @Query("appid") appId: String?,
-): retrofit2.Call<OpenWeatherForecastDTO>
+): Single<OpenWeatherForecastDTO>
 
 @GET("data/2.5/forecast")
 fun getForecastByCoorddinates(
@@ -51,7 +52,7 @@ fun getForecastByCoorddinates(
     @Query("lang") lang: String?,
     @Query("cnt") nDays: Int?,
     @Query("appid") appId: String?,
-): retrofit2.Call<OpenWeatherForecastDTO>
+): Single<OpenWeatherForecastDTO>
 
 
 }
