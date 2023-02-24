@@ -36,10 +36,8 @@ class WeatherDto(
 class mainWeatherData (
     @SerializedName("temp")
     val currentTemp: Float,
-
     @SerializedName("feels_like")
     val  currentTempFeels: Float   ,
-
     @SerializedName("pressure")
     val  currentPressure: Int
 )

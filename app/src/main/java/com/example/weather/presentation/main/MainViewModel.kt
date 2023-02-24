@@ -30,6 +30,11 @@ class MainViewModel : ViewModel() {
     val mapper = Mappers()
 
     fun getForecastData() {
+        val disposable1 = openWeatherUseCase.getWeatherOpenWeather()
+            .observeOn(Schedulers.computation())
+            .map ( mapper:: )
+            .o
+
         val disposable = openWeatherUseCase.getOpenWeatherFOrecastData()
             .observeOn(Schedulers.computation())
             .map(mapper::mapOpenForecastToCityForecast)

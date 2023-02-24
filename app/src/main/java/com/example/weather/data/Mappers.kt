@@ -3,6 +3,7 @@ package com.example.weather.data
 import com.example.weather.domain.CityForecastData
 import com.example.weather.domain.CurrentCity
 import com.example.weather.domain.TempOnTime
+import com.example.weather.retrofit.OpenWeatherDto
 import com.example.weather.retrofit.openWeather.OpenWeatherForecastDTO
 import com.example.weather.retrofit.openWeather.DayForecast
 import java.text.SimpleDateFormat
@@ -24,6 +25,7 @@ class Mappers {
         tempFeelsLike = dayForecast.mainForecastData.tempFeels
     )
     fun mapToListTempOnTime(list: List<DayForecast>) = list.map { mapDayForecastToTempOnTime(it) }
+
     private fun getDateTime(s: Long): String? {
         try {
             val sdf = SimpleDateFormat("yyyy/MM/dd")
@@ -32,6 +34,19 @@ class Mappers {
         } catch (e: Exception) {
             return e.toString()
         }
+    }
+
+    fun mapOpenWeatherToCurrentWeather(openWeatherDto: OpenWeatherDto) {
+        val data = CityForecastData(
+            city = CurrentCity(
+                name = openWeatherDto.cityName,
+                longitude = openWeatherDto.point.longitudeDto.toString(),
+                latitude =  openWeatherDto.point.latitudeDto.toString(),
+            ),
+            forecastList = mapToListTempOnTime(openWeatherDto.currentWeather)
+        )
+
+
     }
 
 }

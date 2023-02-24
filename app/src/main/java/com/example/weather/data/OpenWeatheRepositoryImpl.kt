@@ -13,8 +13,6 @@ import java.util.*
 
 object OpenWeatheRepositoryImpl : OpenWeatherRepository {
     val myService = OpenWeatherCommon.retrofitService
-    val weatherOnEachDay = MutableLiveData<OpenWeatherForecastDTO>()
-    val currentWeather = MutableLiveData<OpenWeatherDto>()
 
     override fun getForecastOpenWeather(
         lat: String,
@@ -26,30 +24,18 @@ object OpenWeatheRepositoryImpl : OpenWeatherRepository {
             appId = MainFragment.OPEN_WEATHER_API_KEY,
             units = "metric",
             lang = "ru",
-            nDays = 9
         ).subscribeOn(Schedulers.io())
 
-        return  data
+        return data
     }
 
     override fun getWeatherOpenWeather(lat: String, lon: String): Single<OpenWeatherDto> {
-       return myService.getWeatherByCoorddinates(
+        return myService.getWeatherByCoorddinates(
             latitude = lat,
             longitude = lon,
             appId = MainFragment.OPEN_WEATHER_API_KEY,
             units = "metric",
             lang = "ru",
-        )
+        ).subscribeOn(Schedulers.io())
     }
-
-    private fun getDateTime(s: Long): String? {
-        try {
-            val sdf = SimpleDateFormat("MM/dd-hh")
-            val netDate = Date(s * 1000)
-            return sdf.format(netDate)
-        } catch (e: Exception) {
-            return e.toString()
-        }
-    }
-
 }
