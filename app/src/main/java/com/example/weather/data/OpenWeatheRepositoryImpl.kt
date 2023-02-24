@@ -1,21 +1,15 @@
 package com.example.weather.data
 
-import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.weather.domain.OpenWeatherRepository
-import com.example.weather.domain.RecyclerViewItem
 import com.example.weather.presentation.main.MainFragment
 import com.example.weather.retrofit.OpenWeatherDto
 import com.example.weather.retrofit.openWeather.OpenWeatherCommon
 import com.example.weather.retrofit.openWeather.OpenWeatherForecastDTO
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
-import retrofit2.Call
-import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.roundToInt
 
 object OpenWeatheRepositoryImpl : OpenWeatherRepository {
     val myService = OpenWeatherCommon.retrofitService
@@ -25,14 +19,14 @@ object OpenWeatheRepositoryImpl : OpenWeatherRepository {
     override fun getForecastOpenWeather(
         lat: String,
         lon: String
-    ):  Single<OpenWeatherForecastDTO> {
+    ): Single<OpenWeatherForecastDTO> {
         val data = myService.getForecastByCoorddinates(
             latitude = lat,
             longitude = lon,
             appId = MainFragment.OPEN_WEATHER_API_KEY,
             units = "metric",
             lang = "ru",
-            nDays = 8
+            nDays = 9
         ).subscribeOn(Schedulers.io())
 
         return  data

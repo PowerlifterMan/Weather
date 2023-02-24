@@ -5,6 +5,8 @@ import com.example.weather.domain.CurrentCity
 import com.example.weather.domain.TempOnTime
 import com.example.weather.retrofit.openWeather.OpenWeatherForecastDTO
 import com.example.weather.retrofit.openWeather.DayForecast
+import java.text.SimpleDateFormat
+import java.util.*
 
 class Mappers {
     fun mapOpenForecastToCityForecast(openWeatherForecastDTO: OpenWeatherForecastDTO) =
@@ -22,4 +24,14 @@ class Mappers {
         tempFeelsLike = dayForecast.mainForecastData.tempFeels
     )
     fun mapToListTempOnTime(list: List<DayForecast>) = list.map { mapDayForecastToTempOnTime(it) }
+    private fun getDateTime(s: Long): String? {
+        try {
+            val sdf = SimpleDateFormat("yyyy/MM/dd")
+            val netDate = Date(s * 1000)
+            return sdf.format(netDate)
+        } catch (e: Exception) {
+            return e.toString()
+        }
+    }
+
 }

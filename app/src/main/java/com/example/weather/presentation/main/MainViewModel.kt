@@ -17,7 +17,7 @@ import java.util.*
 class MainViewModel : ViewModel() {
     private val repository = OpenWeatheRepositoryImpl
     private val openWeatherUseCase = WeatherUseCase(repository)
-
+    val sdf = SimpleDateFormat("MM/dd-hh")
     //val currentResponce = openWeatherUseCase.getForecastOpenWeather()
     val c: Int = 2
 
@@ -38,7 +38,7 @@ class MainViewModel : ViewModel() {
                 cityRow.value = data.city.name
                 rvRow.value = data.forecastList.map { item ->
                     RecyclerViewItem(
-                        dayNumber = item.timestamp.toString(),
+                        dayNumber = sdf.format(item.timestamp*1000),
                         temperature = item.temp.toString(),
                         description = item.tempFeelsLike.toString()
                     )
@@ -47,4 +47,14 @@ class MainViewModel : ViewModel() {
                 it.printStackTrace()
             })
     }
+    private fun getDateTime(s: Long): String? {
+        try {
+            val sdf = SimpleDateFormat("yyyy/MM/dd")
+            val netDate = Date(s * 1000)
+            return sdf.format(netDate)
+        } catch (e: Exception) {
+            return e.toString()
+        }
+    }
+
 }
