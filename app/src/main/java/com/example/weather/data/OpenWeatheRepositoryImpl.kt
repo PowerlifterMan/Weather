@@ -24,6 +24,7 @@ object OpenWeatheRepositoryImpl : OpenWeatherRepository {
             appId = MainFragment.OPEN_WEATHER_API_KEY,
             units = "metric",
             lang = "ru",
+            nDays = 9
         ).subscribeOn(Schedulers.io())
 
         return data

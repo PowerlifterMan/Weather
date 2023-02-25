@@ -2,7 +2,6 @@ package com.example.weather.presentation.main
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,19 +13,12 @@ import com.example.weather.R
 import com.example.weather.databinding.FragmentMainBinding
 import com.example.weather.domain.CurrentCity
 import com.example.weather.domain.RecyclerViewItem
-import com.example.weather.retrofit.openWeather.OpenWeatherCommon
-import com.example.weather.retrofit.OpenWeatherDto
-import com.example.weather.retrofit.openWeather.OpenWeatherForecastDTO
-import retrofit2.Call
-import retrofit2.Response
 import java.lang.RuntimeException
-import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 class MainFragment : Fragment() {
-    val rvList = mutableListOf<RecyclerViewItem>()
     private lateinit var viewModel: MainViewModel
     private var _binding: FragmentMainBinding? = null
     private val binding: FragmentMainBinding
@@ -38,13 +30,13 @@ class MainFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        // TODO: Use the ViewModel
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val list = viewModel.rvRow
-        val city = viewModel.cityRow
+        val forecastList = viewModel.getForecast()
+        val city = viewModel.getCity()
+        val currentWeather = viewModel.getCurrentWeather()
         viewModel.getForecastData()
         with(binding) {
             cardView.setBackgroundResource(R.drawable.low_cloud_cover)
@@ -61,36 +53,22 @@ class MainFragment : Fragment() {
                 changeCurrentDayInfo(item)
             }
         }
-        list.observe(viewLifecycleOwner){
+
+        forecastList.observe(viewLifecycleOwner){
             adapter.submitList(it)
         }
+
         city.observe(viewLifecycleOwner){
             binding.tvCurrentLocation.text = it
 
         }
-
-
-//        viewModel.currentResponce.observe(requireActivity()) { responceBody ->
-//            val list = responceBody.list
-//            list.forEach {
-//                val date = getDateTime(it.dateOfForecast)
-//                rvList.add(
-//                    RecyclerViewItem(
-//                        dayNumber = date.toString(),
-//                        temperature = it.mainForecastData.temp.toString(),
-//                        description = it.mainForecastData.tempFeels.toString()
-//                    )
-//                )
-//            }
-//            adapter.submitList(rvList)
-//            binding.tvCurrentLocation.text = responceBody.city.cityName
-//        }
-
+        currentWeather.observe(viewLifecycleOwner){
+            binding.tvCurrentTemp.text = "${it.temp.toString()} °C"
+            binding.tvCaption.text = "ощущается как ${ it.tempFeelsLike.toString()} °С"
+        }
     }
 
     private fun getNewCity(): CurrentCity {
-
-
         return myCity
     }
 
@@ -98,10 +76,6 @@ class MainFragment : Fragment() {
         Toast.makeText(requireActivity(), "PRESSED", Toast.LENGTH_SHORT).show()
         binding.tvCurrentLocation.text = "CLICKED"
     }
-
-    // fun fillList(): List<RecyclerViewItem> {
-//
-//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

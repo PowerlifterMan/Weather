@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.weather.data.Mappers
 import com.example.weather.data.OpenWeatheRepositoryImpl
-import com.example.weather.domain.CityForecastData
 import com.example.weather.domain.RecyclerViewItem
 import com.example.weather.domain.TempOnTime
 import com.example.weather.domain.WeatherUseCase
@@ -18,24 +17,39 @@ class MainViewModel : ViewModel() {
     private val repository = OpenWeatheRepositoryImpl
     private val openWeatherUseCase = WeatherUseCase(repository)
     val sdf = SimpleDateFormat("MM/dd-hh")
+
     //val currentResponce = openWeatherUseCase.getForecastOpenWeather()
     val c: Int = 2
 
-    val myCityName = MutableLiveData<String>()
-    val cityForecastDataLD = MutableLiveData<CityForecastData>()
+    private val myCityName = MutableLiveData<String>()
+    private val myCityCurrentWeather = MutableLiveData<TempOnTime>()
     val cityRow = MutableLiveData<String>()
-
     val rvRow = MutableLiveData<List<RecyclerViewItem>>()
-
     val mapper = Mappers()
 
-    fun getForecastData() {
-        val disposable1 = openWeatherUseCase.getWeatherOpenWeather()
-            .observeOn(Schedulers.computation())
-            .map ( mapper:: )
-            .o
+    fun getCity(): LiveData<String> {
+        return myCityName
+    }
 
-        val disposable = openWeatherUseCase.getOpenWeatherFOrecastData()
+    fun getCurrentWeather(): LiveData<TempOnTime> {
+        return myCityCurrentWeather
+    }
+
+    fun getForecast(): LiveData<List<RecyclerViewItem>> {
+        return rvRow
+    }
+
+    fun getForecastData() {
+        openWeatherUseCase.getWeatherOpenWeather()
+            .observeOn(Schedulers.computation())
+            .map(mapper::mapOpenWeatherToCurrentWeather)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { data ->
+                myCityName.value = data.city.name
+                myCityCurrentWeather.value = data.forecastList[0]
+            }
+
+        openWeatherUseCase.getOpenWeatherFOrecastData()
             .observeOn(Schedulers.computation())
             .map(mapper::mapOpenForecastToCityForecast)
             .observeOn(AndroidSchedulers.mainThread())
@@ -43,7 +57,7 @@ class MainViewModel : ViewModel() {
                 cityRow.value = data.city.name
                 rvRow.value = data.forecastList.map { item ->
                     RecyclerViewItem(
-                        dayNumber = sdf.format(item.timestamp*1000),
+                        dayNumber = sdf.format(item.timestamp * 1000),
                         temperature = item.temp.toString(),
                         description = item.tempFeelsLike.toString()
                     )
@@ -52,6 +66,7 @@ class MainViewModel : ViewModel() {
                 it.printStackTrace()
             })
     }
+
     private fun getDateTime(s: Long): String? {
         try {
             val sdf = SimpleDateFormat("yyyy/MM/dd")

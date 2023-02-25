@@ -15,15 +15,17 @@ class Mappers {
             city = CurrentCity(
                 name = openWeatherForecastDTO.city.cityName,
                 longitude = openWeatherForecastDTO.city.cityCoord.coordLongitude.toString(),
-                latitude =  openWeatherForecastDTO.city.cityCoord.coordLatitude.toString(),
+                latitude = openWeatherForecastDTO.city.cityCoord.coordLatitude.toString(),
             ),
             forecastList = mapToListTempOnTime(openWeatherForecastDTO.list)
         )
 
-    fun mapDayForecastToTempOnTime(dayForecast: DayForecast) = TempOnTime(timestamp = dayForecast.dateOfForecast,
+    fun mapDayForecastToTempOnTime(dayForecast: DayForecast) = TempOnTime(
+        timestamp = dayForecast.dateOfForecast,
         temp = dayForecast.mainForecastData.temp,
         tempFeelsLike = dayForecast.mainForecastData.tempFeels
     )
+
     fun mapToListTempOnTime(list: List<DayForecast>) = list.map { mapDayForecastToTempOnTime(it) }
 
     private fun getDateTime(s: Long): String? {
@@ -36,17 +38,22 @@ class Mappers {
         }
     }
 
-    fun mapOpenWeatherToCurrentWeather(openWeatherDto: OpenWeatherDto) {
-        val data = CityForecastData(
+    fun mapOpenWeatherToCurrentWeather(openWeatherDto: OpenWeatherDto)  = CityForecastData(
             city = CurrentCity(
                 name = openWeatherDto.cityName,
                 longitude = openWeatherDto.point.longitudeDto.toString(),
-                latitude =  openWeatherDto.point.latitudeDto.toString(),
+                latitude = openWeatherDto.point.latitudeDto.toString(),
             ),
-            forecastList = mapToListTempOnTime(openWeatherDto.currentWeather)
+            forecastList = listOf(
+                TempOnTime(
+                    timestamp = Date().time,
+                    temp = openWeatherDto.mainWeather.currentTemp,
+                    tempFeelsLike = openWeatherDto.mainWeather.currentTempFeels
+                )
+            )
         )
 
 
-    }
+
 
 }

@@ -23,6 +23,16 @@ interface OpenWeatherApi {
         @Query("units") units: String?,
         @Query("lang") lang: String?,
         @Query("appid") appId: String?,
+        @Query("cnt") nDays: Int
+    ): Single<OpenWeatherForecastDTO>
+
+    @GET("data/2.5/forecast")
+    fun getForecastByCoorddinates(
+        @Query("lat") latitude: String?,
+        @Query("lon") longitude: String?,
+        @Query("units") units: String?,
+        @Query("lang") lang: String?,
+        @Query("appid") appId: String?,
     ): Single<OpenWeatherForecastDTO>
 
 
