@@ -4,6 +4,8 @@ import com.example.weather.domain.CityForecastData
 import com.example.weather.domain.CurrentCity
 import com.example.weather.domain.TempOnTime
 import com.example.weather.retrofit.OpenWeatherDto
+import com.example.weather.retrofit.daData.CityListItem
+import com.example.weather.retrofit.daData.Suggestions
 import com.example.weather.retrofit.openWeather.OpenWeatherForecastDTO
 import com.example.weather.retrofit.openWeather.DayForecast
 import java.text.SimpleDateFormat
@@ -38,22 +40,32 @@ class Mappers {
         }
     }
 
-    fun mapOpenWeatherToCurrentWeather(openWeatherDto: OpenWeatherDto)  = CityForecastData(
-            city = CurrentCity(
-                name = openWeatherDto.cityName,
-                longitude = openWeatherDto.point.longitudeDto.toString(),
-                latitude = openWeatherDto.point.latitudeDto.toString(),
-            ),
-            forecastList = listOf(
-                TempOnTime(
-                    timestamp = Date().time,
-                    temp = openWeatherDto.mainWeather.currentTemp,
-                    tempFeelsLike = openWeatherDto.mainWeather.currentTempFeels
-                )
+    fun mapOpenWeatherToCurrentWeather(openWeatherDto: OpenWeatherDto) = CityForecastData(
+        city = CurrentCity(
+            name = openWeatherDto.cityName,
+            longitude = openWeatherDto.point.longitudeDto.toString(),
+            latitude = openWeatherDto.point.latitudeDto.toString(),
+        ),
+        forecastList = listOf(
+            TempOnTime(
+                timestamp = Date().time,
+                temp = openWeatherDto.mainWeather.currentTemp,
+                tempFeelsLike = openWeatherDto.mainWeather.currentTempFeels
             )
         )
+    )
 
+    fun mapSuggestionsToCityListItem(suggestions: Suggestions): List<CityListItem> =
+        suggestions.suggestions.map { item ->
+            CityListItem(
+                unrestrictedAddres = item.unrestrictedValue,
+                country = item.data.country.toString(),
+                regionWithType = item.data.regionWithType ?: "",
+                lontitude = item.data.lontitude ?: "",
+                latitude = item.data.lantitude ?: ""
 
+            )
+        }
 
 
 }

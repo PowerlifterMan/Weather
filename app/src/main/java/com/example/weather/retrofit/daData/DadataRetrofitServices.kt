@@ -1,5 +1,6 @@
 package com.example.weather.retrofit.daData
 
+import io.reactivex.rxjava3.core.Single
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.Body
@@ -12,6 +13,6 @@ interface DadataRetrofitServices {
         @Header("Content-Type") contentType: String,
         @Header("Authorization") token: String,
         @Body query: RequestBody
-    ): Call<Suggestions>
+    ): Single<Suggestions>
 
 }

@@ -1,5 +1,6 @@
 package com.example.weather.presentation.main
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -32,6 +33,7 @@ class MainFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val forecastList = viewModel.getForecast()
@@ -54,21 +56,24 @@ class MainFragment : Fragment() {
             }
         }
 
-        forecastList.observe(viewLifecycleOwner){
+        forecastList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
 
-        city.observe(viewLifecycleOwner){
+        city.observe(viewLifecycleOwner) {
             binding.tvCurrentLocation.text = it
 
         }
-        currentWeather.observe(viewLifecycleOwner){
-            binding.tvCurrentTemp.text = "${it.temp.toString()} °C"
-            binding.tvCaption.text = "ощущается как ${ it.tempFeelsLike.toString()} °С"
+        currentWeather.observe(viewLifecycleOwner) {
+            binding.tvCurrentTemp.text = "${Math.round(it.temp).toString()} °C"
+            binding.tvCaption.text = "ощущается как ${Math.round(it.tempFeelsLike).toString()} °С"
         }
     }
 
     private fun getNewCity(): CurrentCity {
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.container, InputPlaceFragment.newInstance())
+            .commit()
         return myCity
     }
 

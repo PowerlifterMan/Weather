@@ -32,7 +32,7 @@ interface OpenWeatherApi {
         @Query("lon") longitude: String?,
         @Query("units") units: String?,
         @Query("lang") lang: String?,
-        @Query("appid") appId: String?,
+        @Query("appid") appId: String?
     ): Single<OpenWeatherForecastDTO>
 
 

@@ -40,7 +40,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun getForecastData() {
-        openWeatherUseCase.getWeatherOpenWeather()
+        openWeatherUseCase.getWeatherOpenWeather(lat = "55.75", lon = "37.61")
             .observeOn(Schedulers.computation())
             .map(mapper::mapOpenWeatherToCurrentWeather)
             .observeOn(AndroidSchedulers.mainThread())
@@ -49,7 +49,7 @@ class MainViewModel : ViewModel() {
                 myCityCurrentWeather.value = data.forecastList[0]
             }
 
-        openWeatherUseCase.getOpenWeatherFOrecastData()
+        openWeatherUseCase.getOpenWeatherFOrecastData(lat = "55.75", lon = "37.61")
             .observeOn(Schedulers.computation())
             .map(mapper::mapOpenForecastToCityForecast)
             .observeOn(AndroidSchedulers.mainThread())
@@ -58,8 +58,8 @@ class MainViewModel : ViewModel() {
                 rvRow.value = data.forecastList.map { item ->
                     RecyclerViewItem(
                         dayNumber = sdf.format(item.timestamp * 1000),
-                        temperature = item.temp.toString(),
-                        description = item.tempFeelsLike.toString()
+                        temperature = Math.round(item.temp).toString(),
+                        description = Math.round(item.tempFeelsLike).toString()
                     )
                 }
             }, {

@@ -3,4 +3,7 @@
     <string name="mainfragment">MainFragment</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="search_caption">Найти</string>
+    <string name="moskwa_text">Москва</string>
+    <string name="enter_address_hint">Начните вводить адрес тут</string>
 </resources>

@@ -1,23 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".presentation.main.InputPlaceFragment">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:text="Hello" />
 
     <EditText
         android:id="@+id/placeTextInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="32dp"
         android:ems="10"
-        android:hint="Начните вводить адрес тут"
-        android:inputType="textPersonName"
+        android:hint="@string/enter_address_hint"
+        android:inputType="text"
         android:minHeight="48dp"
-        android:text="Name" />
+        android:text="@string/moskwa_text" />
 
-</FrameLayout>
+    <Button
+        android:id="@+id/btnSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="80dp"
+        android:gravity="fill"
+        android:text="@string/search_caption" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSityName"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

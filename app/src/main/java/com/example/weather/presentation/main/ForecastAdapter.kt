@@ -33,8 +33,8 @@ class ForecastAdapter :
             onItemClickListener?.itemClick(item)
         }
         holder.tvDate.text = item.dayNumber
-        holder.tvTemp.text = item.temperature
-        holder.tvFeels.text = "ощущается как ${item.description}"
+        holder.tvTemp.text = item.temperature + " °C"
+        holder.tvFeels.text = "ощущается как ${item.description} °C"
 
     }
 

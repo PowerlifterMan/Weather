@@ -10,10 +10,6 @@ import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class WeatherUseCase(private val weatherRepository: OpenWeatherRepository) {
-    private val mapper = Mappers()
-    private val cityForecastData = MutableLiveData<CityForecastData>()
-    private val cityForecast = MutableLiveData<CurrentCity>()
-    private val rowForecast = MutableLiveData<List<RecyclerViewItem>>()
 
     fun getForecastOpenWeather(
         lat: String = DEFAULT_LATITUDE,
@@ -26,7 +22,6 @@ class WeatherUseCase(private val weatherRepository: OpenWeatherRepository) {
         lat: String = DEFAULT_LATITUDE,
         lon: String = DEFAULT_LONGITUDE
     ): Single<OpenWeatherForecastDTO> {
-//        val disposable =
         return weatherRepository.getForecastOpenWeather(lat = lat, lon = lon)
     }
 
