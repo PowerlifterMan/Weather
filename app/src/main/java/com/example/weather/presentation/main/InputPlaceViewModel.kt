@@ -1,5 +1,6 @@
 package com.example.weather.presentation.main
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -33,9 +34,13 @@ class InputPlaceViewModel : ViewModel() {
                 listForRv.value = it
             },{
                 it.printStackTrace()
+                Log.d(" ERROR1", it.message.toString())
             })
         }
 
+    override fun onCleared() {
+        super.onCleared()
     }
+}
 
 

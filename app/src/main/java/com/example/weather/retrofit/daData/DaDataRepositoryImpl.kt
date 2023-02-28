@@ -17,9 +17,10 @@ object DaDataRepositoryImpl : DaDataRepository {
         val bodyRequest = jsonObject.toString()
             .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
         val data = myService.getAddrdessesList(
-            "application/json",
-            "ead3ad17504756b283a5439bc2f0f20c27eadbcb",
-            bodyRequest
+            contentType = "application/json",
+            token = "9e01e829bc289bb130dbf457fce0d371f44d487f",
+            secretToken = "ead3ad17504756b283a5439bc2f0f20c27eadbcb",
+            query = bodyRequest
         ).subscribeOn(Schedulers.io())
         return data
     }

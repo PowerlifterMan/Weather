@@ -1,6 +1,7 @@
 package com.example.weather.data
 
 import com.example.weather.retrofit.OpenWeatherDto
+import com.example.weather.retrofit.openWeather.GeocodingDTO
 import com.example.weather.retrofit.openWeather.OpenWeatherForecastDTO
 import io.reactivex.rxjava3.core.Single
 import retrofit2.http.GET
@@ -35,5 +36,10 @@ interface OpenWeatherApi {
         @Query("appid") appId: String?
     ): Single<OpenWeatherForecastDTO>
 
+    @GET("geo/1.0/direct?q")
+    fun getCoordByName(
+        @Query("q") cityName: String?,
+        @Query("appid") appId: String?
+    ):Single<GeocodingDTO>
 
 }

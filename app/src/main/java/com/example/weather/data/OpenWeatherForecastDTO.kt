@@ -16,16 +16,16 @@ class OpenWeatherForecastDTO(
     val city: City
 )
 
-class DayForecast (
+class DayForecast(
     @SerializedName("dt")
     val dateOfForecast: Long,
     @SerializedName("main")
     val mainForecastData: MainForecastData,
 //    @SerializedName("")
 //    val
-        )
+)
 
-class MainForecastData (
+class MainForecastData(
     @SerializedName("temp")
     val temp: Float,
     @SerializedName("feels_like")
@@ -34,14 +34,14 @@ class MainForecastData (
     val humidity: Int
 )
 
-class WeatherData (
+class WeatherData(
     @SerializedName("dt")
     val timeWeatherData: Long,
     @SerializedName("temp")
     val tempOnCurrentTime: DayTemperature
-        )
+)
 
-class DayTemperature (
+class DayTemperature(
     @SerializedName("day")
     val tempOnDay: Float,
     @SerializedName("night")
@@ -58,9 +58,35 @@ class City(
 
 )
 
-class Coordinates (
+class Coordinates(
     @SerializedName("lon")
     val coordLongitude: Float,
     @SerializedName("lat")
     val coordLatitude: Float
+)
+
+class GeocodingDTO(
+    @SerializedName("name")
+    val searchName: String,
+    @SerializedName("local_names")
+    val local_names: List<LocalNamesDTO>,
+    @SerializedName("lat")
+    val lat: String,
+    @SerializedName("lon")
+    val lon: String,
+    @SerializedName("country")
+    val country: String,
+    @SerializedName("state")
+    val state: String
+
+    )
+
+class LocalNamesDTO(
+    @SerializedName("language code")
+    val language_code: String,
+    @SerializedName("ascii")
+    val ascii: String,
+    @SerializedName("feature_name")
+    val feature_name: String,
+
 )

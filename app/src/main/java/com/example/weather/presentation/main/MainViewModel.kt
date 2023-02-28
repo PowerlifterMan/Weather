@@ -25,6 +25,7 @@ class MainViewModel : ViewModel() {
     private val myCityCurrentWeather = MutableLiveData<TempOnTime>()
     val cityRow = MutableLiveData<String>()
     val rvRow = MutableLiveData<List<RecyclerViewItem>>()
+
     val mapper = Mappers()
 
     fun getCity(): LiveData<String> {
