@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.weather.data.Mappers
 import com.example.weather.retrofit.OpenWeatherDto
 import com.example.weather.retrofit.openWeather.City
+import com.example.weather.retrofit.openWeather.GeocodingDTO
 import com.example.weather.retrofit.openWeather.OpenWeatherForecastDTO
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -32,6 +33,9 @@ class WeatherUseCase(private val weatherRepository: OpenWeatherRepository) {
         lon: String = DEFAULT_LONGITUDE
     ): Single<OpenWeatherDto> {
         return weatherRepository.getWeatherOpenWeather(lat = lat, lon = lon)
+    }
+    fun getCityDto(city: String):Single<List<GeocodingDTO>> {
+        return weatherRepository.getCityByName(city)
     }
 
     companion object {

@@ -69,7 +69,7 @@ class GeocodingDTO(
     @SerializedName("name")
     val searchName: String,
     @SerializedName("local_names")
-    val local_names: List<LocalNamesDTO>,
+    val local_names: LocalNamesDTO,
     @SerializedName("lat")
     val lat: String,
     @SerializedName("lon")
@@ -82,11 +82,11 @@ class GeocodingDTO(
     )
 
 class LocalNamesDTO(
-    @SerializedName("language code")
-    val language_code: String,
+    @SerializedName("en")
+    val language_en: String,
+    @SerializedName("ru")
+    val language_ru: String,
     @SerializedName("ascii")
-    val ascii: String,
-    @SerializedName("feature_name")
-    val feature_name: String,
+    val language_ascii: String
 
 )

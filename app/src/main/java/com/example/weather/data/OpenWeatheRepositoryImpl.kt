@@ -3,7 +3,9 @@ package com.example.weather.data
 import androidx.lifecycle.MutableLiveData
 import com.example.weather.domain.OpenWeatherRepository
 import com.example.weather.presentation.main.MainFragment
+import com.example.weather.presentation.main.MainFragment.Companion.OPEN_WEATHER_API_KEY
 import com.example.weather.retrofit.OpenWeatherDto
+import com.example.weather.retrofit.openWeather.GeocodingDTO
 import com.example.weather.retrofit.openWeather.OpenWeatherCommon
 import com.example.weather.retrofit.openWeather.OpenWeatherForecastDTO
 import io.reactivex.rxjava3.core.Single
@@ -14,6 +16,11 @@ import java.util.*
 object OpenWeatheRepositoryImpl : OpenWeatherRepository {
     val myService = OpenWeatherCommon.retrofitService
 
+    override fun getCityByName(cityName: String): Single<List<GeocodingDTO>> {
+        return myService.getCoordByName(cityName, appId = OPEN_WEATHER_API_KEY)
+            .subscribeOn(Schedulers.io())
+    }
+
     override fun getForecastOpenWeather(
         lat: String,
         lon: String
@@ -21,7 +28,7 @@ object OpenWeatheRepositoryImpl : OpenWeatherRepository {
         val data = myService.getForecastByCoorddinates(
             latitude = lat,
             longitude = lon,
-            appId = MainFragment.OPEN_WEATHER_API_KEY,
+            appId = OPEN_WEATHER_API_KEY,
             units = "metric",
             lang = "ru",
             nDays = 25
@@ -34,7 +41,7 @@ object OpenWeatheRepositoryImpl : OpenWeatherRepository {
         return myService.getWeatherByCoorddinates(
             latitude = lat,
             longitude = lon,
-            appId = MainFragment.OPEN_WEATHER_API_KEY,
+            appId = OPEN_WEATHER_API_KEY,
             units = "metric",
             lang = "ru",
         ).subscribeOn(Schedulers.io())

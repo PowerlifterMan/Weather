@@ -36,10 +36,10 @@ interface OpenWeatherApi {
         @Query("appid") appId: String?
     ): Single<OpenWeatherForecastDTO>
 
-    @GET("geo/1.0/direct?q")
+    @GET("geo/1.0/direct")
     fun getCoordByName(
         @Query("q") cityName: String?,
         @Query("appid") appId: String?
-    ):Single<GeocodingDTO>
+    ):Single<List<GeocodingDTO>>
 
 }

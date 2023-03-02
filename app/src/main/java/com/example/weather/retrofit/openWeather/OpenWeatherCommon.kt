@@ -5,8 +5,7 @@ import com.example.weather.retrofit.OpenWeatherRetrofitClient
 
 
 object OpenWeatherCommon {
-    private val BASE_URL_GISMETEO = "https://api.gismeteo.net/v2/weather/"
-    private val BASE_URL_OPEN = "https://api.openweathermap.org"
+    private val BASE_URL_OPEN = "https://api.openweathermap.org/"
     val retrofitService: OpenWeatherApi
         get() = OpenWeatherRetrofitClient.getClient(BASE_URL_OPEN).create(OpenWeatherApi::class.java)
 }

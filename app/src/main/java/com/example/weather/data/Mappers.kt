@@ -8,6 +8,7 @@ import com.example.weather.retrofit.daData.CityListItem
 import com.example.weather.retrofit.daData.Suggestions
 import com.example.weather.retrofit.openWeather.OpenWeatherForecastDTO
 import com.example.weather.retrofit.openWeather.DayForecast
+import com.example.weather.retrofit.openWeather.GeocodingDTO
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -66,6 +67,10 @@ class Mappers {
 
             )
         }
+
+    fun mapGoecodingDtoToCurrentCity(list: List<GeocodingDTO>){
+        list.
+    }
 
 
 }
