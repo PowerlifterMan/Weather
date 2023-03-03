@@ -8,13 +8,8 @@ import com.example.weather.data.Mappers
 import com.example.weather.data.OpenWeatheRepositoryImpl
 import com.example.weather.domain.CurrentCity
 import com.example.weather.domain.WeatherUseCase
-import com.example.weather.retrofit.daData.CityListItem
-import com.example.weather.retrofit.daData.DaDataRepository
-import com.example.weather.retrofit.daData.DaDataRepositoryImpl
-import com.example.weather.retrofit.daData.DaDataUseCase
 import com.example.weather.retrofit.openWeather.GeocodingDTO
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
 
 class InputPlaceViewModel : ViewModel() {
     private val repository = OpenWeatheRepositoryImpl

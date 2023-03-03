@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainFragment">
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.example.weather.presentation.main.MainFragment"
+        android:label="fragment_main"
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_mainFragment_to_inputPlaceFragment"
+            app:destination="@id/inputPlaceFragment" />
+    </fragment>
+    <dialog
+        android:id="@+id/inputPlaceFragment"
+        android:name="com.example.weather.presentation.main.InputPlaceFragment"
+        android:label="fragment_input_place"
+        tools:layout="@layout/fragment_input_place" >
+        <action
+            android:id="@+id/action_inputPlaceFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </dialog>
+</navigation>

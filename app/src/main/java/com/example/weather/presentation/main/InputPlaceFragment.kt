@@ -6,12 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather.R
 import com.example.weather.databinding.FragmentInputPlaceBinding
+import com.example.weather.domain.CurrentCity
 import com.example.weather.retrofit.daData.CityRvAdapter
 
 class InputPlaceFragment : DialogFragment() {
@@ -43,6 +46,15 @@ class InputPlaceFragment : DialogFragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireActivity(),RecyclerView.VERTICAL,false)
         val cityAdapter = CityRvAdapter()
         recyclerView.adapter = cityAdapter
+        cityAdapter.onItemClickListener = object : CityRvAdapter.OnItemClickListener {
+            override fun itemClick(item: CurrentCity) {
+                val args = Bundle().apply {
+                    putParcelable("CITY",item)
+                }
+                Toast.makeText(requireActivity(), "PRESSED", Toast.LENGTH_SHORT).show()
+                findNavController().navigate(R.id.action_inputPlaceFragment_to_mainFragment,args)
+            }
+        }
         listOfCity.observe(viewLifecycleOwner) {
                     cityAdapter.submitList(it)
         }

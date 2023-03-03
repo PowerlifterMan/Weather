@@ -15,13 +15,13 @@ class CityRvAdapter :
     var onItemClickListener: OnItemClickListener? = null
 
     class CityViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val cityRow = view.findViewById<TextView>(android.R.id.text1)
+        val cityRow = view.findViewById<TextView>(R.id.tvCityName)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CityViewHolder {
         val view =
             LayoutInflater.from(parent.context)
-                .inflate(android.R.layout.simple_list_item_1, parent, false)
+                .inflate(R.layout.current_city_item, parent, false)
         return CityViewHolder(view)
     }
 

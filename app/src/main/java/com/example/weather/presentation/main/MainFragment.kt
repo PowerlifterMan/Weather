@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather.R
@@ -71,9 +72,7 @@ class MainFragment : Fragment() {
     }
 
     private fun getNewCity(): CurrentCity {
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.container, InputPlaceFragment.newInstance())
-            .commit()
+        findNavController().navigate(R.id.action_mainFragment_to_inputPlaceFragment)
         return myCity
     }
 
