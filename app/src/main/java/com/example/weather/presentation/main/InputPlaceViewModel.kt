@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.weather.data.Mappers
 import com.example.weather.data.OpenWeatheRepositoryImpl
+import com.example.weather.domain.CurrentCity
 import com.example.weather.domain.WeatherUseCase
 import com.example.weather.retrofit.daData.CityListItem
 import com.example.weather.retrofit.daData.DaDataRepository
@@ -23,10 +24,14 @@ class InputPlaceViewModel : ViewModel() {
     val message: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
     }
-    private val listForRv = MutableLiveData<List<CityListItem>>()
+
+    private var listForRv = MutableLiveData<List<CurrentCity>>()
+        private set(value) {
+            field = value
+        }
     val textForSearch = MutableLiveData<String>()
 
-    fun getListForRv(): LiveData<List<CityListItem>> {
+    fun getListForRv(): LiveData<List<CurrentCity>> {
         return listForRv
     }
 
@@ -37,8 +42,16 @@ class InputPlaceViewModel : ViewModel() {
 //            .observeOn(Schedulers.computation())
 //            .map (mapper::mapSuggestionsToCityListItem)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                cityList.value = it
+            .subscribe({ data ->
+                listForRv.value = data.map { item ->
+                    CurrentCity(
+                        name = item.local_names.language_ru,
+                        longitude = item.lon,
+                        latitude = item.lat,
+                        country = item.country
+                    )
+                }
+                Log.d(" ERROR1", listForRv.value.toString())
 
             }, {
                 it.printStackTrace()

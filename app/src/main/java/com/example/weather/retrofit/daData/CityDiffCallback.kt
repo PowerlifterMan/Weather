@@ -1,13 +1,14 @@
 package com.example.weather.retrofit.daData
 
 import androidx.recyclerview.widget.DiffUtil
+import com.example.weather.domain.CurrentCity
 
-class CityDiffCallback: DiffUtil.ItemCallback<CityListItem>() {
-    override fun areItemsTheSame(oldItem: CityListItem, newItem: CityListItem): Boolean {
+class CityDiffCallback: DiffUtil.ItemCallback<CurrentCity>() {
+    override fun areItemsTheSame(oldItem: CurrentCity, newItem: CurrentCity): Boolean {
             return oldItem == newItem
     }
 
-    override fun areContentsTheSame(oldItem: CityListItem, newItem: CityListItem): Boolean {
-        return oldItem.unrestrictedAddres == newItem.unrestrictedAddres
+    override fun areContentsTheSame(oldItem: CurrentCity, newItem: CurrentCity): Boolean {
+        return oldItem.name == newItem.name
     }
 }

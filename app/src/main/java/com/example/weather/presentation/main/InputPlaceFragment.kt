@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import android.widget.EditText
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.weather.R
 import com.example.weather.databinding.FragmentInputPlaceBinding
 import com.example.weather.retrofit.daData.CityRvAdapter
@@ -38,6 +40,7 @@ class InputPlaceFragment : DialogFragment() {
         val btnGoRequest = binding.btnSearch
         val stringForSearh: EditText = binding.placeTextInput
         val recyclerView = binding.rvSityName
+        recyclerView.layoutManager = LinearLayoutManager(requireActivity(),RecyclerView.VERTICAL,false)
         val cityAdapter = CityRvAdapter()
         recyclerView.adapter = cityAdapter
         listOfCity.observe(viewLifecycleOwner) {

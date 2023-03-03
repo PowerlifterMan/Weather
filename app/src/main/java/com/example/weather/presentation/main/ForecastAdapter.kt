@@ -1,14 +1,12 @@
 package com.example.weather.presentation.main
 
 import android.view.LayoutInflater
-import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather.R
-import com.example.weather.domain.DayData
 import com.example.weather.domain.RecyclerViewItem
 
 

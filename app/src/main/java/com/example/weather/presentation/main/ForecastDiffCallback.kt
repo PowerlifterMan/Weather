@@ -1,7 +1,6 @@
 package com.example.weather.presentation.main
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.weather.domain.DayData
 import com.example.weather.domain.RecyclerViewItem
 
 class ForecastDiffCallback: DiffUtil.ItemCallback<RecyclerViewItem>() {

@@ -7,10 +7,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather.R
+import com.example.weather.domain.CurrentCity
 import com.example.weather.domain.RecyclerViewItem
 
 class CityRvAdapter :
-    ListAdapter<CityListItem, CityRvAdapter.CityViewHolder>(CityDiffCallback()) {
+    ListAdapter<CurrentCity, CityRvAdapter.CityViewHolder>(CityDiffCallback()) {
     var onItemClickListener: OnItemClickListener? = null
 
     class CityViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
@@ -29,11 +30,11 @@ class CityRvAdapter :
         holder.view.setOnClickListener {
             onItemClickListener?.itemClick(item)
         }
-        holder.cityRow.text = item.unrestrictedAddres
+        holder.cityRow.text = item.name
     }
 
     interface OnItemClickListener {
-        fun itemClick(item: CityListItem) {
+        fun itemClick(item: CurrentCity) {
 
         }
     }
