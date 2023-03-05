@@ -22,6 +22,8 @@ class MainViewModel : ViewModel() {
     val c: Int = 2
 
     private val myCityName = MutableLiveData<String>()
+    private val myLongitude = MutableLiveData<String>()
+    private val myLatitude = MutableLiveData<String>()
     private val myCityCurrentWeather = MutableLiveData<TempOnTime>()
     val cityRow = MutableLiveData<String>()
     val rvRow = MutableLiveData<List<RecyclerViewItem>>()
@@ -38,6 +40,12 @@ class MainViewModel : ViewModel() {
 
     fun getForecast(): LiveData<List<RecyclerViewItem>> {
         return rvRow
+    }
+
+    fun setCurrentCity(lat: String, lon: String, city: String) {
+        myCityName.value = city
+        myLatitude.value = lat
+        myLongitude.value = lon
     }
 
     fun getForecastData() {

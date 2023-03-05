@@ -68,9 +68,5 @@ class Mappers {
             )
         }
 
-    fun mapGoecodingDtoToCurrentCity(list: List<GeocodingDTO>){
-//        list.
-    }
-
 
 }

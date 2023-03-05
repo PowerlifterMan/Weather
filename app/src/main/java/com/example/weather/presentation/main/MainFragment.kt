@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -32,6 +33,18 @@ class MainFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel.setCurrentCity(lat = "55.75", lon = "37.61", city = "Москва")
+
+        setFragmentResultListener("requestCity") { requestKey, bundle ->
+            val latitude = bundle.getString("lat")
+            val longitude = bundle.getString("lat")
+            val cityName = bundle.getString("cityName")
+            viewModel.setCurrentCity(
+                lat = latitude ?: "",
+                lon = longitude ?: "",
+                city = cityName ?: ""
+            )
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -41,6 +54,7 @@ class MainFragment : Fragment() {
         val city = viewModel.getCity()
         val currentWeather = viewModel.getCurrentWeather()
         viewModel.getForecastData()
+
         with(binding) {
             cardView.setBackgroundResource(R.drawable.low_cloud_cover)
             btnSetCity.setOnClickListener {

@@ -17,9 +17,5 @@
         android:id="@+id/inputPlaceFragment"
         android:name="com.example.weather.presentation.main.InputPlaceFragment"
         android:label="fragment_input_place"
-        tools:layout="@layout/fragment_input_place" >
-        <action
-            android:id="@+id/action_inputPlaceFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
-    </dialog>
+        tools:layout="@layout/fragment_input_place" />
 </navigation>

@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -43,20 +45,24 @@ class InputPlaceFragment : DialogFragment() {
         val btnGoRequest = binding.btnSearch
         val stringForSearh: EditText = binding.placeTextInput
         val recyclerView = binding.rvSityName
-        recyclerView.layoutManager = LinearLayoutManager(requireActivity(),RecyclerView.VERTICAL,false)
+        recyclerView.layoutManager =
+            LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
         val cityAdapter = CityRvAdapter()
         recyclerView.adapter = cityAdapter
         cityAdapter.onItemClickListener = object : CityRvAdapter.OnItemClickListener {
             override fun itemClick(item: CurrentCity) {
-                val args = Bundle().apply {
-                    putParcelable("CITY",item)
-                }
+                val result = bundleOf(
+                    "lat" to item.latitude,
+                    "lon" to item.longitude,
+                    "cityName" to item.name
+                )
+                setFragmentResult("requestCity", bundleOf("cityData" to result))
+                findNavController().popBackStack()
                 Toast.makeText(requireActivity(), "PRESSED", Toast.LENGTH_SHORT).show()
-                findNavController().navigate(R.id.action_inputPlaceFragment_to_mainFragment,args)
             }
         }
         listOfCity.observe(viewLifecycleOwner) {
-                    cityAdapter.submitList(it)
+            cityAdapter.submitList(it)
         }
         btnGoRequest.setOnClickListener {
             viewModel.textForSearch.value = stringForSearh.text.toString()
