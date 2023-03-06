@@ -33,15 +33,15 @@ class MainFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        viewModel.setCurrentCity(lat = "55.75", lon = "37.61", city = "Москва")
+        viewModel.setCurrentCity(lat = 55.75f, lon = 37.61f, city = "Москва")
 
         setFragmentResultListener("requestCity") { requestKey, bundle ->
             val latitude = bundle.getString("lat")
             val longitude = bundle.getString("lon")
             val cityName = bundle.getString("cityName")
             viewModel.setCurrentCity(
-                lat = latitude ?: "",
-                lon = longitude ?: "",
+                lat = latitude?.toFloatOrNull() ?: 0f,
+                lon = longitude?.toFloatOrNull() ?: 0f,
                 city = cityName ?: ""
             )
             viewModel.getForecastData()
@@ -78,8 +78,8 @@ class MainFragment : Fragment() {
 
         city.observe(viewLifecycleOwner) {
             binding.tvCurrentLocation.text = it
-
         }
+
         currentWeather.observe(viewLifecycleOwner) {
             binding.tvCurrentTemp.text = "${Math.round(it.temp).toString()} °C"
             binding.tvCaption.text = "ощущается как ${Math.round(it.tempFeelsLike).toString()} °С"

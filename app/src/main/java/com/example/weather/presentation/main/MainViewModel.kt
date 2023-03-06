@@ -3,6 +3,9 @@ package com.example.weather.presentation.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.weather.OpenMeteo.OpenMeteoRepository
+import com.example.weather.OpenMeteo.OpenMeteoRepositoryImpl
+import com.example.weather.OpenMeteo.OpenMeteoUseCase
 import com.example.weather.data.Mappers
 import com.example.weather.data.OpenWeatheRepositoryImpl
 import com.example.weather.domain.RecyclerViewItem
@@ -14,9 +17,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class MainViewModel : ViewModel() {
-    private val repository = OpenWeatheRepositoryImpl
-    private val openWeatherUseCase = WeatherUseCase(repository)
+    private val openWeatherRepository = OpenWeatheRepositoryImpl
+    private val openWeatherUseCase = WeatherUseCase(openWeatherRepository)
     val sdf = SimpleDateFormat("MM/dd-hh")
+    private val openMeteoRepository = OpenMeteoRepositoryImpl
+    private val openMeteoUseCase = OpenMeteoUseCase(openMeteoRepository)
 
     //val currentResponce = openWeatherUseCase.getForecastOpenWeather()
     val c: Int = 2
@@ -25,8 +30,8 @@ class MainViewModel : ViewModel() {
         private set(value) {
             field = value
         }
-    private val myLongitude = MutableLiveData<String>()
-    private val myLatitude = MutableLiveData<String>()
+    private val myLongitude = MutableLiveData<Float>()
+    private val myLatitude = MutableLiveData<Float>()
     private val myCityCurrentWeather = MutableLiveData<TempOnTime>()
     val cityRow = MutableLiveData<String>()
     val rvRow = MutableLiveData<List<RecyclerViewItem>>()
@@ -45,34 +50,41 @@ class MainViewModel : ViewModel() {
         return rvRow
     }
 
-    fun setCurrentCity(lat: String, lon: String, city: String) {
+    fun setCurrentCity(lat: Float, lon: Float, city: String) {
         myCityName.value = city
         myLatitude.value = lat
         myLongitude.value = lon
     }
 
     fun getForecastData() {
+        openMeteoUseCase.getForecastOpenMeteo(
+            latitude = myLatitude.value ?: 0f,
+            longitude = myLongitude.value ?: 0f
+        )
+            .observeOn(Schedulers.computation())
+
+
         openWeatherUseCase.getWeatherOpenWeather(
-            lat = myLatitude.value.toString(),
-            lon = myLongitude.value.toString()
+            lat = myLatitude.value ?: 0f,
+            lon = myLongitude.value ?: 0f
         )
             .observeOn(Schedulers.computation())
             .map(mapper::mapOpenWeatherToCurrentWeather)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { data ->
-                myCityName.value = data.city.name
+                myCityName.value = data.city.name ?: ""
                 myCityCurrentWeather.value = data.forecastList[0]
             }
 
         openWeatherUseCase.getOpenWeatherFOrecastData(
-            lat = myLatitude.value.toString(),
-            lon = myLongitude.value.toString()
+            lat = myLatitude.value ?: 0f,
+            lon = myLongitude.value ?: 0f
         )
             .observeOn(Schedulers.computation())
             .map(mapper::mapOpenForecastToCityForecast)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ data ->
-                cityRow.value = data.city.name
+                cityRow.value = data.city.name.orEmpty()
                 rvRow.value = data.forecastList.map { item ->
                     RecyclerViewItem(
                         dayNumber = sdf.format(item.timestamp * 1000),
