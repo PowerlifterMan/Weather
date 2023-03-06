@@ -37,13 +37,14 @@ class MainFragment : Fragment() {
 
         setFragmentResultListener("requestCity") { requestKey, bundle ->
             val latitude = bundle.getString("lat")
-            val longitude = bundle.getString("lat")
+            val longitude = bundle.getString("lon")
             val cityName = bundle.getString("cityName")
             viewModel.setCurrentCity(
                 lat = latitude ?: "",
                 lon = longitude ?: "",
                 city = cityName ?: ""
             )
+            viewModel.getForecastData()
         }
     }
 
@@ -51,7 +52,7 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val forecastList = viewModel.getForecast()
-        val city = viewModel.getCity()
+        val city = viewModel.myCityName
         val currentWeather = viewModel.getCurrentWeather()
         viewModel.getForecastData()
 

@@ -56,7 +56,7 @@ class InputPlaceFragment : DialogFragment() {
                     "lon" to item.longitude,
                     "cityName" to item.name
                 )
-                setFragmentResult("requestCity", bundleOf("cityData" to result))
+                setFragmentResult("requestCity", result)
                 findNavController().popBackStack()
                 Toast.makeText(requireActivity(), "PRESSED", Toast.LENGTH_SHORT).show()
             }
@@ -65,7 +65,7 @@ class InputPlaceFragment : DialogFragment() {
             cityAdapter.submitList(it)
         }
         btnGoRequest.setOnClickListener {
-            viewModel.textForSearch.value = stringForSearh.text.toString()
+            viewModel.textForSearch.value = stringForSearh.text.toString().trim()
             viewModel.requestCity()
 
         }

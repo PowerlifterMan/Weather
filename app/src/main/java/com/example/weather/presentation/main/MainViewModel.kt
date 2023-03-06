@@ -21,7 +21,10 @@ class MainViewModel : ViewModel() {
     //val currentResponce = openWeatherUseCase.getForecastOpenWeather()
     val c: Int = 2
 
-    private val myCityName = MutableLiveData<String>()
+    var myCityName = MutableLiveData<String>()
+        private set(value) {
+            field = value
+        }
     private val myLongitude = MutableLiveData<String>()
     private val myLatitude = MutableLiveData<String>()
     private val myCityCurrentWeather = MutableLiveData<TempOnTime>()
@@ -49,7 +52,10 @@ class MainViewModel : ViewModel() {
     }
 
     fun getForecastData() {
-        openWeatherUseCase.getWeatherOpenWeather(lat = "55.75", lon = "37.61")
+        openWeatherUseCase.getWeatherOpenWeather(
+            lat = myLatitude.value.toString(),
+            lon = myLongitude.value.toString()
+        )
             .observeOn(Schedulers.computation())
             .map(mapper::mapOpenWeatherToCurrentWeather)
             .observeOn(AndroidSchedulers.mainThread())
@@ -58,7 +64,10 @@ class MainViewModel : ViewModel() {
                 myCityCurrentWeather.value = data.forecastList[0]
             }
 
-        openWeatherUseCase.getOpenWeatherFOrecastData(lat = "55.75", lon = "37.61")
+        openWeatherUseCase.getOpenWeatherFOrecastData(
+            lat = myLatitude.value.toString(),
+            lon = myLongitude.value.toString()
+        )
             .observeOn(Schedulers.computation())
             .map(mapper::mapOpenForecastToCityForecast)
             .observeOn(AndroidSchedulers.mainThread())
