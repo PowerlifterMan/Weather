@@ -10,12 +10,12 @@ class OpenMeteoDTO(
     @SerializedName("timezone")
     val timezone: String,
     @SerializedName("hourly")
-    val hourly: Hourly,
+    val hourly: HourlyDTO,
     @SerializedName("current_weather")
-    val currentWeather: OpenMeteoCurrentWeather,
+    val currentWeather: OpenMeteoCurrentWeatherDTO,
 )
 
-class OpenMeteoCurrentWeather(
+class OpenMeteoCurrentWeatherDTO(
     @SerializedName("time")
     val currentTime: String,
     @SerializedName("temperature")
@@ -28,7 +28,7 @@ class OpenMeteoCurrentWeather(
     val winddirection: Int,
 )
 
-class Hourly(
+class HourlyDTO(
     @SerializedName("time")
     val time: List<String>,
     @SerializedName("temperature_2m")

@@ -57,12 +57,15 @@ class MainViewModel : ViewModel() {
     }
 
     fun getForecastData() {
-        openMeteoUseCase.getForecastOpenMeteo(
-            latitude = myLatitude.value ?: 0f,
-            longitude = myLongitude.value ?: 0f
-        )
-            .observeOn(Schedulers.computation())
-
+//        openMeteoUseCase.getForecastOpenMeteo(
+//            latitude = myLatitude.value ?: 0f,
+//            longitude = myLongitude.value ?: 0f
+//        )
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe { data ->
+//                val list1 = data.currentWeather
+//
+//            }
 
         openWeatherUseCase.getWeatherOpenWeather(
             lat = myLatitude.value ?: 0f,
