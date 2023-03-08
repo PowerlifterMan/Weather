@@ -1,5 +1,6 @@
 package com.example.weather.presentation.main
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -57,15 +58,15 @@ class MainViewModel : ViewModel() {
     }
 
     fun getForecastData() {
-//        openMeteoUseCase.getForecastOpenMeteo(
-//            latitude = myLatitude.value ?: 0f,
-//            longitude = myLongitude.value ?: 0f
-//        )
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe { data ->
-//                val list1 = data.currentWeather
-//
-//            }
+        openMeteoUseCase.getForecastOpenMeteo(
+            latitude = myLatitude.value ?: 0f,
+            longitude = myLongitude.value ?: 0f
+        )
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe ({ data ->
+                val list1 = data.currentWeather
+            }, ::onError
+            )
 
         openWeatherUseCase.getWeatherOpenWeather(
             lat = myLatitude.value ?: 0f,
@@ -74,10 +75,12 @@ class MainViewModel : ViewModel() {
             .observeOn(Schedulers.computation())
             .map(mapper::mapOpenWeatherToCurrentWeather)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { data ->
+            .subscribe (
+            { data ->
                 myCityName.value = data.city.name ?: ""
                 myCityCurrentWeather.value = data.forecastList[0]
-            }
+            }, ::onError
+                    )
 
         openWeatherUseCase.getOpenWeatherFOrecastData(
             lat = myLatitude.value ?: 0f,
@@ -98,6 +101,10 @@ class MainViewModel : ViewModel() {
             }, {
                 it.printStackTrace()
             })
+    }
+
+    private fun onError(error: Throwable) {
+        Log.e("MyApp", error.message.toString())
     }
 
     private fun getDateTime(s: Long): String? {
