@@ -35,7 +35,6 @@ class MainViewModel : ViewModel() {
     private val myLongitude = MutableLiveData<Float>()
     private val myLatitude = MutableLiveData<Float>()
     private val myCityCurrentWeather = MutableLiveData<TempOnTime>()
-    val cityRow = MutableLiveData<String>()
     val rvRow = MutableLiveData<List<RecyclerViewItem>>()
 
     val mapper = Mappers()

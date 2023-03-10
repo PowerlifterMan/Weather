@@ -38,6 +38,8 @@ class MainFragment : Fragment() {
         setFragmentResultListener("requestDataSource"){
             requestKey, bundle ->
 
+            val currentDataSource = bundle.getString("source")
+
         }
         setFragmentResultListener("requestCity") { requestKey, bundle ->
             val latitude = bundle.getString("lat")
@@ -89,7 +91,7 @@ class MainFragment : Fragment() {
 
         currentWeather.observe(viewLifecycleOwner) {
             binding.tvCurrentTemp.text = "${Math.round(it.temp).toString()} °C"
-            binding.tvCaption.text = "ощущается как ${Math.round(it.tempFeelsLike).toString()} °С"
+            binding.tvCaption.text = "ощущается как ${(Math.round(it.tempFeelsLike*10)/10).toString()} °С"
         }
     }
 
