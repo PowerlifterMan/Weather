@@ -13,6 +13,8 @@ class OpenMeteoDTO(
     val hourly: HourlyDTO,
     @SerializedName("current_weather")
     val currentWeather: OpenMeteoCurrentWeatherDTO,
+    @SerializedName("daily")
+    val daily: DailyDTO
 )
 
 class OpenMeteoCurrentWeatherDTO(
@@ -32,5 +34,11 @@ class HourlyDTO(
     @SerializedName("time")
     val time: List<String>,
     @SerializedName("temperature_2m")
+    val temperature_2m: List<Float>
+)
+class DailyDTO(
+    @SerializedName("time")
+    val time: List<String>,
+    @SerializedName("temperature_2m_max")
     val temperature_2m: List<Float>
 )

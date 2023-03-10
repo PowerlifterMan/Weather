@@ -11,8 +11,11 @@ object OpenMeteoRepositoryImpl : OpenMeteoRepository {
         return myService.getOpenMeteoForecast(
             latitude = lat,
             longitude = lon,
-            hourly = "temperature_2m",
-            timezone = "Europe/Moscow"
+//            hourly = "temperature_2m",
+            daily = "temperature_2m_max",
+            timezone = "Europe/Moscow",
+            current_weather = true,
+            timeformat = "unixtime"
         ).subscribeOn(Schedulers.io())
     }
 

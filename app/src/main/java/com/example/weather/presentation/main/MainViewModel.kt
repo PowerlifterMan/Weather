@@ -16,6 +16,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.roundToLong
 
 class MainViewModel : ViewModel() {
     private val openWeatherRepository = OpenWeatheRepositoryImpl
@@ -62,10 +63,18 @@ class MainViewModel : ViewModel() {
             latitude = myLatitude.value ?: 0f,
             longitude = myLongitude.value ?: 0f
         )
+//            .observeOn(Schedulers.computation())
+//            .map(mapper)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe ({ data ->
-                val list1 = data.currentWeather
-            }, ::onError
+            .subscribe(
+                { data ->
+                    val tempOnTime = TempOnTime(
+                        timestamp = data.currentWeather.currentTime.toLong(),
+                        temp = data.currentWeather.temperature,
+                        tempFeelsLike = data.currentWeather.temperature
+                    )
+//                myCityCurrentWeather.value = TempOnTime(timestamp = data.currentWeather.currentTime)
+                }, ::onError
             )
 
         openWeatherUseCase.getWeatherOpenWeather(
@@ -75,12 +84,12 @@ class MainViewModel : ViewModel() {
             .observeOn(Schedulers.computation())
             .map(mapper::mapOpenWeatherToCurrentWeather)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe (
-            { data ->
-                myCityName.value = data.city.name ?: ""
-                myCityCurrentWeather.value = data.forecastList[0]
-            }, ::onError
-                    )
+            .subscribe(
+                { data ->
+                    //        myCityName.value = data.city.name ?: ""
+                    myCityCurrentWeather.value = data.forecastList[0]
+                }, ::onError
+            )
 
         openWeatherUseCase.getOpenWeatherFOrecastData(
             lat = myLatitude.value ?: 0f,
@@ -90,12 +99,13 @@ class MainViewModel : ViewModel() {
             .map(mapper::mapOpenForecastToCityForecast)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ data ->
-                cityRow.value = data.city.name.orEmpty()
+                //          cityRow.value = data.city.name.orEmpty()
                 rvRow.value = data.forecastList.map { item ->
                     RecyclerViewItem(
                         dayNumber = sdf.format(item.timestamp * 1000),
-                        temperature = Math.round(item.temp).toString(),
-                        description = Math.round(item.tempFeelsLike).toString()
+                        temperature = (Math.round(item.temp * 10.0) / 10.0).toString(),
+                        description = (Math.round(item.tempFeelsLike * 10) / 10.0).toString()
+
                     )
                 }
             }, {

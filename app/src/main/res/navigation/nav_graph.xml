@@ -12,10 +12,18 @@
         <action
             android:id="@+id/action_mainFragment_to_inputPlaceFragment"
             app:destination="@id/inputPlaceFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
     <dialog
         android:id="@+id/inputPlaceFragment"
         android:name="com.example.weather.presentation.main.InputPlaceFragment"
         android:label="fragment_input_place"
         tools:layout="@layout/fragment_input_place" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.weather.presentation.main.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
 </navigation>

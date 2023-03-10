@@ -35,6 +35,10 @@ class MainFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         viewModel.setCurrentCity(lat = 55.75f, lon = 37.61f, city = "Москва")
 
+        setFragmentResultListener("requestDataSource"){
+            requestKey, bundle ->
+
+        }
         setFragmentResultListener("requestCity") { requestKey, bundle ->
             val latitude = bundle.getString("lat")
             val longitude = bundle.getString("lon")
@@ -58,9 +62,12 @@ class MainFragment : Fragment() {
 
         with(binding) {
             cardView.setBackgroundResource(R.drawable.low_cloud_cover)
-            btnSetCity.setOnClickListener {
+            tvLocation.setOnClickListener {
                 myCity = getNewCity()
 
+            }
+            binding.btnChangeSettings.setOnClickListener {
+                changeSettings()
             }
             forecastRV.layoutManager =
                 LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
@@ -77,13 +84,17 @@ class MainFragment : Fragment() {
         }
 
         city.observe(viewLifecycleOwner) {
-            binding.tvCurrentLocation.text = it
+            binding.tvLocation.text = it
         }
 
         currentWeather.observe(viewLifecycleOwner) {
             binding.tvCurrentTemp.text = "${Math.round(it.temp).toString()} °C"
             binding.tvCaption.text = "ощущается как ${Math.round(it.tempFeelsLike).toString()} °С"
         }
+    }
+
+    private fun changeSettings() {
+        findNavController().navigate(R.id.action_mainFragment_to_settingsFragment)
     }
 
     private fun getNewCity(): CurrentCity {
