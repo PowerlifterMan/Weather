@@ -25,7 +25,7 @@ class OpenMeteoCurrentWeatherDTO(
     @SerializedName("weathercode")
     val weathercode: Int,
     @SerializedName("windspeed")
-    val windspeed: Int,
+    val windspeed: Float,
     @SerializedName("winddirection")
     val winddirection: Int,
 )

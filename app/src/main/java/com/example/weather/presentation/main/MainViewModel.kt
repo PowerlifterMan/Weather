@@ -90,7 +90,7 @@ class MainViewModel : ViewModel() {
                             list1.forEachIndexed { index, value ->
                                 recyclerViewItemList.add(
                                     RecyclerViewItem(
-                                        dayNumber = sdf.format(list2[index]),
+                                        dayNumber = list2[index],
                                         temperature = value.toString(),
                                         description = value.toString()
                                 ))
