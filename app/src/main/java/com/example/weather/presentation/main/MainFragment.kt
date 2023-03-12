@@ -24,6 +24,7 @@ import java.util.*
 class MainFragment : Fragment() {
     private lateinit var viewModel: MainViewModel
     private var _binding: FragmentMainBinding? = null
+    private var currentSourceName: String = SOURCE_OPEN_WEATHER
     private val binding: FragmentMainBinding
         get() = _binding ?: throw RuntimeException("FragmentMainBinding? == null")
     val adapter = ForecastAdapter()
@@ -34,12 +35,12 @@ class MainFragment : Fragment() {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         viewModel.setCurrentCity(lat = 55.75f, lon = 37.61f, city = "Москва")
+        viewModel.setDataSourceType(currentSourceName)
 
-        setFragmentResultListener("requestDataSource"){
-            requestKey, bundle ->
-
-            val currentDataSource = bundle.getString("source")
-
+        setFragmentResultListener("requestDataSource") { requestKey, bundle ->
+            currentSourceName = bundle.getString("source") ?: SOURCE_OPEN_WEATHER
+            viewModel.setDataSourceType(currentSourceName)
+            viewModel.getForecastData(currentSourceName)
         }
         setFragmentResultListener("requestCity") { requestKey, bundle ->
             val latitude = bundle.getString("lat")
@@ -50,7 +51,7 @@ class MainFragment : Fragment() {
                 lon = longitude?.toFloatOrNull() ?: 0f,
                 city = cityName ?: ""
             )
-            viewModel.getForecastData()
+            viewModel.getForecastData(currentSourceName)
         }
     }
 
@@ -60,7 +61,8 @@ class MainFragment : Fragment() {
         val forecastList = viewModel.getForecast()
         val city = viewModel.myCityName
         val currentWeather = viewModel.getCurrentWeather()
-        viewModel.getForecastData()
+        val dataSourceTypeLD = viewModel.dataSourceType
+        viewModel.getForecastData(currentSourceName)
 
         with(binding) {
             cardView.setBackgroundResource(R.drawable.low_cloud_cover)
@@ -89,9 +91,14 @@ class MainFragment : Fragment() {
             binding.tvLocation.text = it
         }
 
+//        dataSourceTypeLD.observe(viewLifecycleOwner){
+//            viewModel.getForecastData(currentSourceName)
+//        }
+
         currentWeather.observe(viewLifecycleOwner) {
             binding.tvCurrentTemp.text = "${Math.round(it.temp).toString()} °C"
-            binding.tvCaption.text = "ощущается как ${(Math.round(it.tempFeelsLike*10)/10).toString()} °С"
+            binding.tvCaption.text =
+                "ощущается как ${(Math.round(it.tempFeelsLike * 10) / 10).toString()} °С"
         }
     }
 
