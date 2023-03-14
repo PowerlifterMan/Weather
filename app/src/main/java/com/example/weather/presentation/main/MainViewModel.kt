@@ -11,13 +11,16 @@ import com.example.weather.data.OpenWeatheRepositoryImpl
 import com.example.weather.domain.RecyclerViewItem
 import com.example.weather.domain.TempOnTime
 import com.example.weather.domain.WeatherUseCase
+import com.example.weather.ninjas.NinjasRepositoryImpl
+import com.example.weather.ninjas.NinjasUseCase
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.text.SimpleDateFormat
 import java.util.*
 
 class MainViewModel : ViewModel() {
-
+    private val ninjasRepository = NinjasRepositoryImpl
+    private val ninjasUseCase = NinjasUseCase(ninjasRepository)
     private val openWeatherRepository = OpenWeatheRepositoryImpl
     private val openWeatherUseCase = WeatherUseCase(openWeatherRepository)
     val sdf = SimpleDateFormat("MM/dd-hh")
@@ -91,10 +94,11 @@ class MainViewModel : ViewModel() {
                             temperatureList.forEachIndexed { index, value ->
                                 recyclerViewItemList.add(
                                     RecyclerViewItem(
-                                        dayNumber = sdf.format(dateList[index].toLong()*1000),
+                                        dayNumber = sdf.format(dateList[index].toLong() * 1000),
                                         temperature = value.toString(),
                                         description = apparent_temperatureList[index].toString()
-                                ))
+                                    )
+                                )
 
                             }
                             rvRow.value = recyclerViewItemList
@@ -103,6 +107,13 @@ class MainViewModel : ViewModel() {
                     )
 
 
+            }
+            SOURCE_NINJAS -> {
+                ninjasUseCase.getWeather(
+                    latitude = myLatitude.value ?: 0f,
+                    longitude = myLongitude.value ?: 0f
+                ).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ data -> })
             }
             SOURCE_OPEN_WEATHER -> {
                 openWeatherUseCase.getWeatherOpenWeather(

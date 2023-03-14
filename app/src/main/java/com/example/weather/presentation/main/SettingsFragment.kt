@@ -18,6 +18,7 @@ import java.lang.RuntimeException
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+const val SOURCE_NINJAS = "ninjas"
 const val SOURCE_OPEN_METEO = "open_meteo"
 const val SOURCE_OPEN_WEATHER = "open_weather"
 
@@ -77,6 +78,15 @@ class SettingsFragment : Fragment() {
                         Toast.LENGTH_SHORT
                     ).show()
                     currentSource = SOURCE_OPEN_WEATHER
+                }
+
+                R.id.rbNinjas -> {
+                    Toast.makeText(
+                        requireContext(),
+                        "OPEN WEATHER",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    currentSource = SOURCE_NINJAS
                 }
             }
 

@@ -42,6 +42,12 @@
             android:layout_height="wrap_content"
             android:text="OPEN METEO" />
 
+        <RadioButton
+            android:id="@+id/rbNinjas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="NINJAS" />
+
     </RadioGroup>
 
     <Button
