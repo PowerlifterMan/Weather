@@ -96,6 +96,7 @@ class MainFragment : Fragment() {
 //        }
 
         currentWeather.observe(viewLifecycleOwner) {
+            binding.tvCurrentLocation.text = currentSourceName
             binding.tvCurrentTemp.text = "${Math.round(it.temp).toString()} °C"
             binding.tvCaption.text =
                 "ощущается как ${(Math.round(it.tempFeelsLike * 10) / 10).toString()} °С"

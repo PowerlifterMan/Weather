@@ -40,5 +40,7 @@ class DailyDTO(
     @SerializedName("time")
     val time: List<String>,
     @SerializedName("temperature_2m_max")
-    val temperature_2m: List<Float>
+    val temperature_2m: List<Float>,
+    @SerializedName("apparent_temperature_max")
+    val apparent_temperature_2m: List<Float>
 )

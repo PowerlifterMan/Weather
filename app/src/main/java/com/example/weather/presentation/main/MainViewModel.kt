@@ -84,15 +84,16 @@ class MainViewModel : ViewModel() {
                                 tempFeelsLike = data.currentWeather.temperature
                             )
                             myCityCurrentWeather.value = tempOnTime
-                            val list1 = data.daily.temperature_2m
-                            val list2 = data.daily.time
+                            val temperatureList = data.daily.temperature_2m
+                            val dateList = data.daily.time
+                            val apparent_temperatureList = data.daily.apparent_temperature_2m
                             val recyclerViewItemList = mutableListOf<RecyclerViewItem>()
-                            list1.forEachIndexed { index, value ->
+                            temperatureList.forEachIndexed { index, value ->
                                 recyclerViewItemList.add(
                                     RecyclerViewItem(
-                                        dayNumber = list2[index],
+                                        dayNumber = sdf.format(dateList[index].toLong()*1000),
                                         temperature = value.toString(),
-                                        description = value.toString()
+                                        description = apparent_temperatureList[index].toString()
                                 ))
 
                             }

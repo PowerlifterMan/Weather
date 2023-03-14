@@ -12,7 +12,7 @@ object OpenMeteoRepositoryImpl : OpenMeteoRepository {
             latitude = lat,
             longitude = lon,
 //            hourly = "temperature_2m",
-            daily = "temperature_2m_max",
+            daily = "temperature_2m_max,apparent_temperature_max",
             timezone = "Europe/Moscow",
             current_weather = true,
             timeformat = "unixtime"
