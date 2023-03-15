@@ -1,14 +1,11 @@
 package com.example.weather.data
 
-import com.example.weather.domain.CityForecastData
-import com.example.weather.domain.CurrentCity
-import com.example.weather.domain.TempOnTime
+import com.example.weather.domain.*
 import com.example.weather.retrofit.OpenWeatherDto
 import com.example.weather.retrofit.daData.CityListItem
 import com.example.weather.retrofit.daData.Suggestions
 import com.example.weather.retrofit.openWeather.OpenWeatherForecastDTO
 import com.example.weather.retrofit.openWeather.DayForecast
-import com.example.weather.retrofit.openWeather.GeocodingDTO
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -67,6 +64,29 @@ class Mappers {
 
             )
         }
+
+    fun mapOpenForecastToCWeatherData(dTO: OpenWeatherForecastDTO) =
+        WeatherData(
+            cityName = dTO.city.cityName,
+            cityLatitude = dTO.city.cityCoord.coordLatitude,
+            cityLongitude = dTO.city.cityCoord.coordLongitude,
+            currentTemp = mapDayForecastToCurrentTemp(dTO.list[0]),
+            forecastList = mapToListCurrentTemp(dTO.list)
+        )
+
+    private fun mapToListCurrentTemp(list: List<DayForecast>): List<CurrentTemp> {
+        return list.map {mapDayForecastToCurrentTemp(it)}
+    }
+
+    fun mapDayForecastToCurrentTemp(dayForecast: DayForecast) = CurrentTemp(
+        timeStamp = dayForecast.dateOfForecast,
+        temperatureMin = dayForecast.mainForecastData.temp,
+        temperatureMax = dayForecast.mainForecastData.temp,
+        temperatureFeelsLikeMax = dayForecast.mainForecastData.tempFeels,
+        temperatureFeelsLikeMin = dayForecast.mainForecastData.tempFeels,
+        humidity = dayForecast.mainForecastData.humidity
+
+    )
 
 
 }

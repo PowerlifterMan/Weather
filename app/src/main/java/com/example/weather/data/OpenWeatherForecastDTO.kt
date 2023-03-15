@@ -34,12 +34,12 @@ class MainForecastData(
     val humidity: Int
 )
 
-class WeatherData(
-    @SerializedName("dt")
-    val timeWeatherData: Long,
-    @SerializedName("temp")
-    val tempOnCurrentTime: DayTemperature
-)
+//class WeatherData(
+//    @SerializedName("dt")
+//    val timeWeatherData: Long,
+//    @SerializedName("temp")
+//    val tempOnCurrentTime: DayTemperature
+//)
 
 class DayTemperature(
     @SerializedName("day")

@@ -26,6 +26,7 @@ class MainViewModel : ViewModel() {
     val sdf = SimpleDateFormat("MM/dd-hh")
     private val openMeteoRepository = OpenMeteoRepositoryImpl
     private val openMeteoUseCase = OpenMeteoUseCase(openMeteoRepository)
+    private val weatherUseCase = WeatherUseCase
     var dataSourceType = MutableLiveData<String>()
         private set
 
@@ -70,6 +71,8 @@ class MainViewModel : ViewModel() {
     }
 
     fun getForecastData(sourceName: String) {
+
+        weatherUseCase.get
         when (sourceName) {
             SOURCE_OPEN_METEO -> {
                 openMeteoUseCase.getForecastOpenMeteo(

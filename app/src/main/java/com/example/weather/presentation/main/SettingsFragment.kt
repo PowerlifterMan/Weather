@@ -21,6 +21,7 @@ private const val ARG_PARAM2 = "param2"
 const val SOURCE_NINJAS = "ninjas"
 const val SOURCE_OPEN_METEO = "open_meteo"
 const val SOURCE_OPEN_WEATHER = "open_weather"
+const val DEFAULT_SOURCE_NAME = "open_weather"
 
 
 /**
