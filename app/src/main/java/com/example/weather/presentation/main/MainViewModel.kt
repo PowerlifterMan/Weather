@@ -112,8 +112,16 @@ class MainViewModel : ViewModel() {
                 ninjasUseCase.getWeather(
                     latitude = myLatitude.value ?: 0f,
                     longitude = myLongitude.value ?: 0f
-                ).observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ data -> })
+                )
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ data ->
+                        myCityCurrentWeather.value = TempOnTime(
+                            timestamp = data.sunset,
+                            temp = data.temperature,
+                            tempFeelsLike = data.temperatureFeelsLike
+                        )
+                        rvRow.value = listOf()
+                    })
             }
             SOURCE_OPEN_WEATHER -> {
                 openWeatherUseCase.getWeatherOpenWeather(

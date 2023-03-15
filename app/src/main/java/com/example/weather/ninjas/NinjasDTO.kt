@@ -6,9 +6,9 @@ class NinjasDTO (
     @SerializedName("cloud_pct")
     val cloud: Int,
     @SerializedName("temp")
-    val temperature: Int,
+    val temperature: Float,
     @SerializedName("feels_like")
-    val temperatureFeelsLike: Int,
+    val temperatureFeelsLike: Float,
     @SerializedName("humidity")
     val humidity: Int,
     @SerializedName("min_temp")
