@@ -25,7 +25,6 @@ object OpenWeatheRepositoryImpl : WeatherRepository {
     }
 
     override fun getWeather(lat: String, lon: String): Single<WeatherData> {
-//        TODO("Not yet implemented")
         val data = myService.getForecastByCoorddinates(
             latitude = lat,
             longitude = lon,
