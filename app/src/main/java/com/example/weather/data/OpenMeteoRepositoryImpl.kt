@@ -1,17 +1,16 @@
 package com.example.weather.data
 
 import com.example.weather.OpenMeteo.OpenMeteoCommon
+import com.example.weather.data.dto.Mappers
 import com.example.weather.domain.WeatherData
 import com.example.weather.retrofit.openWeather.GeocodingDTO
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 object OpenMeteoRepositoryImpl : WeatherRepository {
-
     val service = OpenMeteoCommon.retrofitService
-
+    val mapper = Mappers()
     override fun getWeather(lat: Float, lon: Float): Single<WeatherData> {
-
         val data = service.getOpenMeteoForecast(
             latitude = lat,
             longitude = lon,
@@ -20,7 +19,10 @@ object OpenMeteoRepositoryImpl : WeatherRepository {
             timezone = "Europe/Moscow",
             current_weather = true,
             timeformat = "unixtime"
-        ).subscribeOn(Schedulers.io())
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.computation())
+            .map (mapper.mapOpenMeteoToWeatherData )
         return data
     }
 

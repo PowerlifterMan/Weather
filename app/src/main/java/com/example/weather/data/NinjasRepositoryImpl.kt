@@ -1,5 +1,6 @@
 package com.example.weather.data
 
+import com.example.weather.data.dto.Mappers
 import com.example.weather.domain.WeatherData
 import com.example.weather.ninjas.NinjasCommon
 import com.example.weather.retrofit.openWeather.GeocodingDTO

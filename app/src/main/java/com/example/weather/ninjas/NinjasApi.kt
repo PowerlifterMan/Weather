@@ -1,6 +1,6 @@
 package com.example.weather.ninjas
 
-import com.example.weather.data.NinjasDTO
+import com.example.weather.data.dto.NinjasDTO
 import io.reactivex.rxjava3.core.Single
 import retrofit2.http.GET
 import retrofit2.http.Header

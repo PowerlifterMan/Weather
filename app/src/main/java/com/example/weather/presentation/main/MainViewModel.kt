@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.weather.data.OpenMeteoRepositoryImpl
 import com.example.weather.OpenMeteo.OpenMeteoUseCase
-import com.example.weather.data.Mappers
+import com.example.weather.data.dto.Mappers
 import com.example.weather.data.OpenWeatheRepositoryImpl
 import com.example.weather.domain.RecyclerViewItem
 import com.example.weather.domain.TempOnTime
