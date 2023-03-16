@@ -1,4 +1,4 @@
-package com.example.weather.ninjas
+package com.example.weather.data
 
 import io.reactivex.rxjava3.core.Single
 

@@ -1,4 +1,4 @@
-package com.example.weather.domain
+package com.example.weather.data
 
 import androidx.lifecycle.LiveData
 import com.example.weather.retrofit.OpenWeatherDto

@@ -4,14 +4,14 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.weather.OpenMeteo.OpenMeteoRepositoryImpl
+import com.example.weather.data.OpenMeteoRepositoryImpl
 import com.example.weather.OpenMeteo.OpenMeteoUseCase
 import com.example.weather.data.Mappers
 import com.example.weather.data.OpenWeatheRepositoryImpl
 import com.example.weather.domain.RecyclerViewItem
 import com.example.weather.domain.TempOnTime
 import com.example.weather.domain.WeatherUseCase
-import com.example.weather.ninjas.NinjasRepositoryImpl
+import com.example.weather.data.NinjasRepositoryImpl
 import com.example.weather.ninjas.NinjasUseCase
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -26,7 +26,7 @@ class MainViewModel : ViewModel() {
     val sdf = SimpleDateFormat("MM/dd-hh")
     private val openMeteoRepository = OpenMeteoRepositoryImpl
     private val openMeteoUseCase = OpenMeteoUseCase(openMeteoRepository)
-    private val weatherUseCase = WeatherUseCase
+    private val weatherUseCase = WeatherUseCase()
     var dataSourceType = MutableLiveData<String>()
         private set
 
@@ -71,8 +71,14 @@ class MainViewModel : ViewModel() {
     }
 
     fun getForecastData(sourceName: String) {
+        weatherUseCase.getWeather(
+            lat = myLatitude.value ?: 0f,
+            lon = myLongitude.value ?: 0f,
+            sourceName = sourceName
+        ).observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ data ->
 
-        weatherUseCase.get
+            })
         when (sourceName) {
             SOURCE_OPEN_METEO -> {
                 openMeteoUseCase.getForecastOpenMeteo(

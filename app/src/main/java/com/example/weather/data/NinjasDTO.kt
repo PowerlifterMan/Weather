@@ -1,4 +1,4 @@
-package com.example.weather.ninjas
+package com.example.weather.data
 
 import com.google.gson.annotations.SerializedName
 

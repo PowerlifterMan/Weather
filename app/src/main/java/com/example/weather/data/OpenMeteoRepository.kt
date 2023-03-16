@@ -1,5 +1,6 @@
-package com.example.weather.OpenMeteo
+package com.example.weather.data
 
+import com.example.weather.OpenMeteo.OpenMeteoDTO
 import io.reactivex.rxjava3.core.Single
 
 interface OpenMeteoRepository {
