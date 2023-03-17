@@ -55,6 +55,24 @@ class Mappers {
         )
     )
 
+    fun mapNinjasDtoToWeatherData(dto: NinjasDTO): WeatherData {
+        val returned = WeatherData(
+            cityName = DEFAULT_NAME,
+            cityLatitude = DEFAULT_FLOAT_VALUE,
+            cityLongitude = DEFAULT_FLOAT_VALUE,
+            currentTemp = CurrentTemp(
+                timeStamp = dto.sunrise,
+                temperatureMin = dto.minTemperature,
+                temperatureMax = dto.maxTemperature,
+                temperatureFeelsLikeMin = dto.temperatureFeelsLike,
+                temperatureFeelsLikeMax = dto.temperatureFeelsLike,
+                humidity = dto.humidity
+            ),
+            forecastList = listOf()
+        )
+        return returned
+    }
+
     fun mapOpenMeteoToWeatherData(dto: OpenMeteoDTO): WeatherData =
         WeatherData(
             cityName = "",
@@ -95,7 +113,7 @@ class Mappers {
         val outputList = mutableListOf<CurrentTemp>()
         listTime.forEachIndexed { index, item ->
 
-            val newItem =CurrentTemp(
+            val newItem = CurrentTemp(
                 timeStamp = Timestamp.valueOf(item).time,
                 temperatureMin = listTemperature[index],
                 temperatureMax = listTemperature[index],
@@ -106,7 +124,7 @@ class Mappers {
             )
             outputList.add(newItem)
         }
-    return outputList
+        return outputList
     }
 
 
@@ -130,5 +148,9 @@ class Mappers {
 
     )
 
-
+    companion object {
+        const val DEFAULT_NAME = "noname"
+        const val DEFAULT_FLOAT_VALUE = -1f
+        const val DEFAULT_INT_VALUE = -1
+    }
 }

@@ -13,8 +13,9 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 
 class InputPlaceViewModel : ViewModel() {
     private val repository = OpenWeatheRepositoryImpl
-    private val useCase = WeatherUseCase(repository)
+    private val useCase = WeatherUseCase()
     val mapper = Mappers()
+
     val cityList = MutableLiveData<List<GeocodingDTO>>()
     val message: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
@@ -31,6 +32,7 @@ class InputPlaceViewModel : ViewModel() {
     }
 
     fun requestCity() {
+    useCase.
         val cityNameForSearch =
             if (textForSearch.value != null) textForSearch.value.toString() else "Москва"
         useCase.getCityDto(cityNameForSearch)

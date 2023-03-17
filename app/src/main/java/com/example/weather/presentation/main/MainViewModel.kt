@@ -20,12 +20,12 @@ import java.util.*
 
 class MainViewModel : ViewModel() {
     private val ninjasRepository = NinjasRepositoryImpl
-    private val ninjasUseCase = NinjasUseCase(ninjasRepository)
+//    private val ninjasUseCase = NinjasUseCase(ninjasRepository)
     private val openWeatherRepository = OpenWeatheRepositoryImpl
-    private val openWeatherUseCase = WeatherUseCase(openWeatherRepository)
+//    private val openWeatherUseCase = WeatherUseCase(openWeatherRepository)
     val sdf = SimpleDateFormat("MM/dd-hh")
     private val openMeteoRepository = OpenMeteoRepositoryImpl
-    private val openMeteoUseCase = OpenMeteoUseCase(openMeteoRepository)
+//    private val openMeteoUseCase = OpenMeteoUseCase(openMeteoRepository)
     private val weatherUseCase = WeatherUseCase()
     var dataSourceType = MutableLiveData<String>()
         private set
@@ -78,92 +78,94 @@ class MainViewModel : ViewModel() {
         ).observeOn(AndroidSchedulers.mainThread())
             .subscribe({ data ->
 
+
+
             })
-        when (sourceName) {
-            SOURCE_OPEN_METEO -> {
-                openMeteoUseCase.getForecastOpenMeteo(
-                    latitude = myLatitude.value ?: 0f,
-                    longitude = myLongitude.value ?: 0f
-                )
-//            .observeOn(Schedulers.computation())
-//            .map(mapper)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                        { data ->
-                            val tempOnTime = TempOnTime(
-                                timestamp = data.currentWeather.currentTime.toLong(),
-                                temp = data.currentWeather.temperature,
-                                tempFeelsLike = data.currentWeather.temperature
-                            )
-                            myCityCurrentWeather.value = tempOnTime
-                            val temperatureList = data.daily.temperature_2m
-                            val dateList = data.daily.time
-                            val apparent_temperatureList = data.daily.apparent_temperature_2m
-                            val recyclerViewItemList = mutableListOf<RecyclerViewItem>()
-                            temperatureList.forEachIndexed { index, value ->
-                                recyclerViewItemList.add(
-                                    RecyclerViewItem(
-                                        dayNumber = sdf.format(dateList[index].toLong() * 1000),
-                                        temperature = value.toString(),
-                                        description = apparent_temperatureList[index].toString()
-                                    )
-                                )
-
-                            }
-                            rvRow.value = recyclerViewItemList
-
-                        }, ::onError
-                    )
-
-
-            }
-            SOURCE_NINJAS -> {
-                ninjasUseCase.getWeather(
-                    latitude = myLatitude.value ?: 0f,
-                    longitude = myLongitude.value ?: 0f
-                ).observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ data -> })
-            }
-            SOURCE_OPEN_WEATHER -> {
-                openWeatherUseCase.getWeatherOpenWeather(
-                    lat = myLatitude.value ?: 0f,
-                    lon = myLongitude.value ?: 0f
-                )
-                    .observeOn(Schedulers.computation())
-                    .map(mapper::mapOpenWeatherToCurrentWeather)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                        { data ->
-                            //        myCityName.value = data.city.name ?: ""
-                            myCityCurrentWeather.value = data.forecastList[0]
-                        }, ::onError
-                    )
-
-                openWeatherUseCase.getOpenWeatherFOrecastData(
-                    lat = myLatitude.value ?: 0f,
-                    lon = myLongitude.value ?: 0f
-                )
-                    .observeOn(Schedulers.computation())
-                    .map(mapper::mapOpenForecastToCityForecast)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ data ->
-                        //          cityRow.value = data.city.name.orEmpty()
-                        rvRow.value = data.forecastList.map { item ->
-                            RecyclerViewItem(
-                                dayNumber = sdf.format(item.timestamp * 1000),
-                                temperature = (Math.round(item.temp * 10.0) / 10.0).toString(),
-                                description = (Math.round(item.tempFeelsLike * 10) / 10.0).toString()
-
-                            )
-                        }
-                    }, {
-                        it.printStackTrace()
-                    })
-
-
-            }
-        }
-
+//        when (sourceName) {
+//            SOURCE_OPEN_METEO -> {
+//                openMeteoUseCase.getForecastOpenMeteo(
+//                    latitude = myLatitude.value ?: 0f,
+//                    longitude = myLongitude.value ?: 0f
+//                )
+////            .observeOn(Schedulers.computation())
+////            .map(mapper)
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(
+//                        { data ->
+//                            val tempOnTime = TempOnTime(
+//                                timestamp = data.currentWeather.currentTime.toLong(),
+//                                temp = data.currentWeather.temperature,
+//                                tempFeelsLike = data.currentWeather.temperature
+//                            )
+//                            myCityCurrentWeather.value = tempOnTime
+//                            val temperatureList = data.daily.temperature_2m
+//                            val dateList = data.daily.time
+//                            val apparent_temperatureList = data.daily.apparent_temperature_2m
+//                            val recyclerViewItemList = mutableListOf<RecyclerViewItem>()
+//                            temperatureList.forEachIndexed { index, value ->
+//                                recyclerViewItemList.add(
+//                                    RecyclerViewItem(
+//                                        dayNumber = sdf.format(dateList[index].toLong() * 1000),
+//                                        temperature = value.toString(),
+//                                        description = apparent_temperatureList[index].toString()
+//                                    )
+//                                )
+//
+//                            }
+//                            rvRow.value = recyclerViewItemList
+//
+//                        }, ::onError
+//                    )
+//
+//
+//            }
+//            SOURCE_NINJAS -> {
+//                ninjasUseCase.getWeather(
+//                    latitude = myLatitude.value ?: 0f,
+//                    longitude = myLongitude.value ?: 0f
+//                ).observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe({ data -> })
+//            }
+//            SOURCE_OPEN_WEATHER -> {
+//                openWeatherUseCase.getWeatherOpenWeather(
+//                    lat = myLatitude.value ?: 0f,
+//                    lon = myLongitude.value ?: 0f
+//                )
+//                    .observeOn(Schedulers.computation())
+//                    .map(mapper::mapOpenWeatherToCurrentWeather)
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(
+//                        { data ->
+//                            //        myCityName.value = data.city.name ?: ""
+//                            myCityCurrentWeather.value = data.forecastList[0]
+//                        }, ::onError
+//                    )
+//
+//                openWeatherUseCase.getOpenWeatherFOrecastData(
+//                    lat = myLatitude.value ?: 0f,
+//                    lon = myLongitude.value ?: 0f
+//                )
+//                    .observeOn(Schedulers.computation())
+//                    .map(mapper::mapOpenForecastToCityForecast)
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe({ data ->
+//                        //          cityRow.value = data.city.name.orEmpty()
+//                        rvRow.value = data.forecastList.map { item ->
+//                            RecyclerViewItem(
+//                                dayNumber = sdf.format(item.timestamp * 1000),
+//                                temperature = (Math.round(item.temp * 10.0) / 10.0).toString(),
+//                                description = (Math.round(item.tempFeelsLike * 10) / 10.0).toString()
+//
+//                            )
+//                        }
+//                    }, {
+//                        it.printStackTrace()
+//                    })
+//
+//
+//            }
+//        }
+//
 
     }
 

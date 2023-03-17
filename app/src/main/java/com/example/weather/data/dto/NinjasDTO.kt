@@ -6,15 +6,15 @@ class NinjasDTO (
     @SerializedName("cloud_pct")
     val cloud: Int,
     @SerializedName("temp")
-    val temperature: Int,
+    val temperature: Float,
     @SerializedName("feels_like")
-    val temperatureFeelsLike: Int,
+    val temperatureFeelsLike: Float,
     @SerializedName("humidity")
     val humidity: Int,
     @SerializedName("min_temp")
-    val minTemperature: Int,
+    val minTemperature: Float,
     @SerializedName("max_temp")
-    val maxTemperature: Int,
+    val maxTemperature: Float,
     @SerializedName("wind_speed")
     val windSpeed: Float,
     @SerializedName("wind_degrees")

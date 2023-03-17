@@ -1,9 +1,6 @@
 package com.example.weather.domain
 
-import com.example.weather.data.OpenMeteoRepositoryImpl
-import com.example.weather.data.OpenWeatheRepositoryImpl
-import com.example.weather.data.NinjasRepositoryImpl
-import com.example.weather.data.WeatherRepository
+import com.example.weather.data.*
 import com.example.weather.presentation.main.DEFAULT_SOURCE_NAME
 import com.example.weather.presentation.main.SOURCE_NINJAS
 import com.example.weather.presentation.main.SOURCE_OPEN_METEO
@@ -65,9 +62,10 @@ class WeatherUseCase() {
 //        return weatherRepository.getWeatherOpenWeather(lat = lat.toString(), lon = lon.toString())
 //    }
 //
-//    fun getCityDto(city: String): Single<List<GeocodingDTO>> {
-//        return weatherRepository.getCityByName(city)
-//    }
+    fun getCityDto(city: String): Single<List<Geocodin>> {
+
+        return OpenWeatheRepositoryImpl.getCityByName(city)
+    }
 
     companion object {
         const val DEFAULT_LONGITUDE = 42.86f

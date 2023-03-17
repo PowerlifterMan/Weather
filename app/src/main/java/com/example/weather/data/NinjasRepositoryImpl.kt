@@ -11,19 +11,21 @@ object NinjasRepositoryImpl : WeatherRepository {
     val service = NinjasCommon.retrofitService
     val mapper = Mappers()
 
-    override fun getWeather(lat: Float, lon: Float): Single<WeatherData> {
-        val data = service.getCurrentWeather(
+    override fun getWeather(lat: Float, lon: Float): Single<WeatherData> =
+        service.getCurrentWeather(
             apiKey = "WqthQnLS3J9U8msOMh/iFw==7ZsAWxaBsOpJ9aaf",
             longitude = lon.toString(),
             latitude = lat.toString()
-        ).subscribeOn(Schedulers.io())
-
-
-    }
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.computation())
+            .map { mapper.mapNinjasDtoToWeatherData(it) }
 
     override fun getCityByName(cityName: String): Single<List<GeocodingDTO>> {
         TODO("Not yet implemented")
     }
+}
+
 
 //     fun getWeather1(lon: Float, lat: Float): Single<NinjasDTO> {
 //        return service.getCurrentWeather(
