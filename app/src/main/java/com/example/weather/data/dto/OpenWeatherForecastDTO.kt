@@ -1,6 +1,5 @@
 package com.example.weather.retrofit.openWeather
 
-import com.example.weather.domain.CurrentCity
 import com.google.gson.annotations.SerializedName
 
 class OpenWeatherForecastDTO(
@@ -34,13 +33,6 @@ class MainForecastData(
     val humidity: Int
 )
 
-//class WeatherData(
-//    @SerializedName("dt")
-//    val timeWeatherData: Long,
-//    @SerializedName("temp")
-//    val tempOnCurrentTime: DayTemperature
-//)
-
 class DayTemperature(
     @SerializedName("day")
     val tempOnDay: Float,
@@ -63,30 +55,4 @@ class Coordinates(
     val coordLongitude: Float,
     @SerializedName("lat")
     val coordLatitude: Float
-)
-
-class GeocodingDTO(
-    @SerializedName("name")
-    val searchName: String,
-    @SerializedName("local_names")
-    val local_names: LocalNamesDTO,
-    @SerializedName("lat")
-    val lat: String,
-    @SerializedName("lon")
-    val lon: String,
-    @SerializedName("country")
-    val country: String,
-    @SerializedName("state")
-    val state: String
-
-    )
-
-class LocalNamesDTO(
-    @SerializedName("en")
-    val language_en: String,
-    @SerializedName("ru")
-    val language_ru: String,
-    @SerializedName("ascii")
-    val language_ascii: String
-
 )

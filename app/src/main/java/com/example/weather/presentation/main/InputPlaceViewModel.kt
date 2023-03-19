@@ -4,15 +4,13 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.weather.data.GeocodingDTO
 import com.example.weather.data.dto.Mappers
-import com.example.weather.data.OpenWeatheRepositoryImpl
 import com.example.weather.domain.CurrentCity
 import com.example.weather.domain.WeatherUseCase
-import com.example.weather.retrofit.openWeather.GeocodingDTO
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 
 class InputPlaceViewModel : ViewModel() {
-    private val repository = OpenWeatheRepositoryImpl
     private val useCase = WeatherUseCase()
     val mapper = Mappers()
 
@@ -32,7 +30,6 @@ class InputPlaceViewModel : ViewModel() {
     }
 
     fun requestCity() {
-    useCase.
         val cityNameForSearch =
             if (textForSearch.value != null) textForSearch.value.toString() else "Москва"
         useCase.getCityDto(cityNameForSearch)

@@ -3,7 +3,6 @@ package com.example.weather.data
 import com.example.weather.data.dto.Mappers
 import com.example.weather.domain.WeatherData
 import com.example.weather.presentation.main.MainFragment.Companion.OPEN_WEATHER_API_KEY
-import com.example.weather.retrofit.openWeather.GeocodingDTO
 import com.example.weather.retrofit.openWeather.OpenWeatherCommon
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -23,7 +22,7 @@ object OpenWeatheRepositoryImpl : WeatherRepository {
             appId = OPEN_WEATHER_API_KEY,
             units = "metric",
             lang = "ru",
-            nDays = 25
+//            nDays = 25
         )
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.computation())

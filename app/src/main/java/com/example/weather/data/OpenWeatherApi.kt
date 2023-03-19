@@ -1,7 +1,6 @@
 package com.example.weather.data
 
 import com.example.weather.retrofit.OpenWeatherDto
-import com.example.weather.retrofit.openWeather.GeocodingDTO
 import com.example.weather.retrofit.openWeather.OpenWeatherForecastDTO
 import io.reactivex.rxjava3.core.Single
 import retrofit2.http.GET

@@ -62,7 +62,7 @@ class WeatherUseCase() {
 //        return weatherRepository.getWeatherOpenWeather(lat = lat.toString(), lon = lon.toString())
 //    }
 //
-    fun getCityDto(city: String): Single<List<Geocodin>> {
+    fun getCityDto(city: String): Single<List<GeocodingDTO>> {
 
         return OpenWeatheRepositoryImpl.getCityByName(city)
     }

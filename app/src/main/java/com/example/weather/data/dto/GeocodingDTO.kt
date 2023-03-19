@@ -6,7 +6,7 @@ class GeocodingDTO(
     @SerializedName("name")
     val searchName: String,
     @SerializedName("local_names")
-    val local_names: List<LocalNamesDTO>,
+    val local_names: LocalNamesDTO,
     @SerializedName("lat")
     val lat: String,
     @SerializedName("lon")
@@ -16,14 +16,42 @@ class GeocodingDTO(
     @SerializedName("state")
     val state: String
 
-)
+    )
 
 class LocalNamesDTO(
-    @SerializedName("language code")
-    val language_code: String,
+    @SerializedName("en")
+    val language_en: String,
+    @SerializedName("ru")
+    val language_ru: String,
     @SerializedName("ascii")
-    val ascii: String,
-    @SerializedName("feature_name")
-    val feature_name: String,
+    val language_ascii: String
 
-    )
+)
+
+//
+//
+//class GeocodingDTO(
+//    @SerializedName("name")
+//    val searchName: String,
+//    @SerializedName("local_names")
+//    val local_names: List<LocalNamesDTO>,
+//    @SerializedName("lat")
+//    val lat: String,
+//    @SerializedName("lon")
+//    val lon: String,
+//    @SerializedName("country")
+//    val country: String,
+//    @SerializedName("state")
+//    val state: String
+//
+//)
+//
+//class LocalNamesDTO(
+//    @SerializedName("language code")
+//    val language_code: String,
+//    @SerializedName("ascii")
+//    val ascii: String,
+//    @SerializedName("feature_name")
+//    val feature_name: String,
+//
+//    )

@@ -40,21 +40,6 @@ class Mappers {
         }
     }
 
-    fun mapOpenWeatherToCurrentWeather(openWeatherDto: OpenWeatherDto) = CityForecastData(
-        city = CurrentCity(
-            name = openWeatherDto.cityName,
-            longitude = openWeatherDto.point.longitudeDto.toString(),
-            latitude = openWeatherDto.point.latitudeDto.toString(),
-        ),
-        forecastList = listOf(
-            TempOnTime(
-                timestamp = Date().time,
-                temp = openWeatherDto.mainWeather.currentTemp,
-                tempFeelsLike = openWeatherDto.mainWeather.currentTempFeels
-            )
-        )
-    )
-
     fun mapNinjasDtoToWeatherData(dto: NinjasDTO): WeatherData {
         val returned = WeatherData(
             cityName = DEFAULT_NAME,
@@ -110,11 +95,13 @@ class Mappers {
         val listTemperature = openMeteoDto.temperature_2m
         val listApparentTemperature = openMeteoDto.apparent_temperature_2m
         val listTime = openMeteoDto.time
+        val formatter = SimpleDateFormat("yyyy-mm-dd")
         val outputList = mutableListOf<CurrentTemp>()
         listTime.forEachIndexed { index, item ->
-
+            val dateString = item.substringBefore("T")
+            val date = formatter.parse(dateString)
             val newItem = CurrentTemp(
-                timeStamp = Timestamp.valueOf(item).time,
+                timeStamp = Timestamp.valueOf(item.substringBefore("T")).time,
                 temperatureMin = listTemperature[index],
                 temperatureMax = listTemperature[index],
                 temperatureFeelsLikeMax = listApparentTemperature[index],

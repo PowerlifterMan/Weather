@@ -2,7 +2,6 @@ package com.example.weather.data
 
 import androidx.lifecycle.LiveData
 import com.example.weather.retrofit.OpenWeatherDto
-import com.example.weather.retrofit.openWeather.GeocodingDTO
 import com.example.weather.retrofit.openWeather.OpenWeatherForecastDTO
 import io.reactivex.rxjava3.core.Single
 

@@ -3,9 +3,9 @@ package com.example.weather.data
 import com.example.weather.data.dto.Mappers
 import com.example.weather.domain.WeatherData
 import com.example.weather.ninjas.NinjasCommon
-import com.example.weather.retrofit.openWeather.GeocodingDTO
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
+
 
 object NinjasRepositoryImpl : WeatherRepository {
     val service = NinjasCommon.retrofitService
@@ -34,4 +34,3 @@ object NinjasRepositoryImpl : WeatherRepository {
 //            latitude = lat.toString()
 //        ).subscribeOn(Schedulers.io())
 //    }
-}

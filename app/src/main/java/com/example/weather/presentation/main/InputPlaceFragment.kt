@@ -58,7 +58,7 @@ class InputPlaceFragment : DialogFragment() {
                 )
                 setFragmentResult("requestCity", result)
                 findNavController().popBackStack()
-                Toast.makeText(requireActivity(), "PRESSED", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(requireActivity(), "PRESSED", Toast.LENGTH_SHORT).show()
             }
         }
         listOfCity.observe(viewLifecycleOwner) {
