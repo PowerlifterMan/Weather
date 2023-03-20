@@ -20,12 +20,15 @@ import java.util.*
 
 class MainViewModel : ViewModel() {
     private val ninjasRepository = NinjasRepositoryImpl
-//    private val ninjasUseCase = NinjasUseCase(ninjasRepository)
+
+    //    private val ninjasUseCase = NinjasUseCase(ninjasRepository)
     private val openWeatherRepository = OpenWeatheRepositoryImpl
-//    private val openWeatherUseCase = WeatherUseCase(openWeatherRepository)
+
+    //    private val openWeatherUseCase = WeatherUseCase(openWeatherRepository)
     val sdf = SimpleDateFormat("MM/dd-hh")
     private val openMeteoRepository = OpenMeteoRepositoryImpl
-//    private val openMeteoUseCase = OpenMeteoUseCase(openMeteoRepository)
+
+    //    private val openMeteoUseCase = OpenMeteoUseCase(openMeteoRepository)
     private val weatherUseCase = WeatherUseCase()
     var dataSourceType = MutableLiveData<String>()
         private set
@@ -76,11 +79,20 @@ class MainViewModel : ViewModel() {
             lon = myLongitude.value ?: 0f,
             sourceName = sourceName
         ).observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ data ->
+            .subscribe { data ->
+                val tempOnTime = TempOnTime(
+                    timestamp = data.currentTemp.timeStamp,
+                    temp = data.currentTemp.temperatureMax,
+                    tempFeelsLike = data.currentTemp.temperatureFeelsLikeMax
+                )
+                myCityCurrentWeather.value = tempOnTime
+                rvRow.value =  data.forecastList.map { item -> RecyclerViewItem(
+                    dayNumber = sdf.format(item.timeStamp.toLong() * 1000),
+                    temperature = item.temperatureMax.toString(),
+                    description = item.temperatureFeelsLikeMax.toString()
+                ) }
 
-
-
-            })
+            }
 //        when (sourceName) {
 //            SOURCE_OPEN_METEO -> {
 //                openMeteoUseCase.getForecastOpenMeteo(

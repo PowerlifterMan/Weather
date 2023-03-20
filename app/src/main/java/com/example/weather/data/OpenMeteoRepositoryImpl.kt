@@ -21,7 +21,9 @@ object OpenMeteoRepositoryImpl : WeatherRepository {
         )
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.computation())
-            .map { mapper.mapOpenMeteoToWeatherData(it) }
+            .map (mapper::mapOpenMeteoToWeatherData)
+
+//            .map { mapper.mapOpenMeteoToWeatherData(it) }
         return data
     }
 
