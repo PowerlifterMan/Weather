@@ -15,11 +15,12 @@ data class ForecastDbModel(
     val humidity: Int
 )
 
-@Entity
+@Entity(tableName = "settings")
 data class ForecastSourceDbModel(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
-    val nameSource: String,
-    val urlSource: String,
-    val endPointSource: String
+    var nameSource: String,
+    var urlSource: String,
+    var endPointSource: String,
+
 )
