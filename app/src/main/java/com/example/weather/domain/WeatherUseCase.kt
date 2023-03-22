@@ -11,38 +11,29 @@ class WeatherUseCase() {
     val remoteStorage = WeatherRemoteStorage()
     val localStorage = WeatherLocalStorage()
 
-    fun getWeather(): Single<WeatherData> {
-
-        return remoteStorage.getWeather(
-            lat = DEFAULT_LATITUDE,
-            lon = DEFAULT_LATITUDE,
-            sourceName = DEFAULT_SOURCE_NAME
-        )
-
+    fun getForecast(
+        lat: Float = DEFAULT_LATITUDE,
+        lon: Float = DEFAULT_LONGITUDE,
+        sourceName: String = DEFAULT_SOURCE_NAME
+    ): Single<WeatherData> {
+        val currentRepo: WeatherRepository = when (sourceName) {
+            SOURCE_OPEN_METEO -> {
+                OpenMeteoRepositoryImpl
+            }
+            SOURCE_OPEN_WEATHER -> {
+                OpenWeatheRepositoryImpl
+            }
+            SOURCE_NINJAS -> {
+                NinjasRepositoryImpl
+            }
+            else -> OpenWeatheRepositoryImpl
+        }
+        return currentRepo.getWeather(lat = lat, lon = lon)
     }
-//    fun getWeather(
-//        lat: Float = DEFAULT_LATITUDE,
-//        lon: Float = DEFAULT_LONGITUDE,
-//        sourceName: String = DEFAULT_SOURCE_NAME
-//    ): Single<WeatherData> {
-//        val currentRepo: WeatherRepository = when (sourceName) {
-//            SOURCE_OPEN_METEO -> {
-//                OpenMeteoRepositoryImpl
-//            }
-//            SOURCE_OPEN_WEATHER -> {
-//                OpenWeatheRepositoryImpl
-//            }
-//            SOURCE_NINJAS -> {
-//                NinjasRepositoryImpl
-//            }
-//            else -> OpenWeatheRepositoryImpl
-//        }
-//        return currentRepo.getWeather(lat = lat, lon = lon)
-//    }
-//
-//    fun getCityDto(city: String): Single<List<GeocodingDTO>> {
-//        return OpenWeatheRepositoryImpl.getCityByName(city)
-//    }
+
+    fun getCityDto(city: String): Single<List<GeocodingDTO>> {
+        return OpenWeatheRepositoryImpl.getCityByName(city)
+    }
 
     companion object {
         const val DEFAULT_LONGITUDE = 42.86f

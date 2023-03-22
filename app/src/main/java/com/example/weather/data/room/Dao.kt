@@ -9,14 +9,15 @@ import androidx.room.Query
 @Dao
 interface WeatherForecastDao {
 //    @Query("SELECT * FROM forecast WHERE idSource=:sourceId")
-    @Query("ELECT * FROM forecast WHERE idSource=:sourceId")
-    fun getWeatherList(sourceId: Int):List<ForecastDbModel>
+    @Query("SELECT * FROM forecast WHERE idSource=:sourceId AND latitude:=lat AND longitude:=lon" )
+    fun getWeatherList(sourceId: String, lat: Float, lon: Float):List<ForecastDbModel>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addForecastItem(forecastDbModel: ForecastDbModel)
 
     @Query("DELETE * FROM forecast")
     fun clearData()
+
 }
 
 @Dao

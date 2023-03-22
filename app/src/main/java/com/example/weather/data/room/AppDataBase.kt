@@ -4,15 +4,16 @@ import android.app.Application
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.weather.WeatherApp
 
 @Database(
-    entities = [ForecastDbModel::class, ForecastSourceDbModel::class],
+    entities = [ForecastDbModel::class],
     version = 1,
     exportSchema = false
 )
 abstract class AppDataBase : RoomDatabase() {
 
-
+    abstract fun weatherForecastDao(): WeatherForecastDao
 
     companion object {
         @Volatile
@@ -20,7 +21,7 @@ abstract class AppDataBase : RoomDatabase() {
         private val LOCK = Any()
         private const val DB_NAME = "weather_forecast.db"
 
-        fun getInstance(application: Application): AppDataBase {
+        fun getInstance(): AppDataBase {
             INSTANCE?.let {
                 return it
             }
@@ -29,7 +30,7 @@ abstract class AppDataBase : RoomDatabase() {
                     return it
                 }
                 val db = Room.databaseBuilder(
-                    application,
+                    WeatherApp.get(),
                     AppDataBase::class.java,
                     DB_NAME
                 )

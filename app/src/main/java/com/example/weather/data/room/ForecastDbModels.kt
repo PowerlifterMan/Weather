@@ -8,7 +8,9 @@ import com.example.weather.retrofit.openWeather.DayTemperature
 data class ForecastDbModel(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
-    val idSource: Int,
+    val idSource: String,
+    val latitude: Float,
+    val longitude: Float,
     val timeStamp: Long,
     val temperature: Float,
     val temperatureFeelsLike: Float,
@@ -16,7 +18,7 @@ data class ForecastDbModel(
 )
 
 @Entity(tableName = "settings")
-data class ForecastSourceDbModel(
+data class ForecastSettingDbModel(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     var nameSource: String,

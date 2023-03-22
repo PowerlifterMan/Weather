@@ -9,7 +9,12 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 object OpenMeteoRepositoryImpl : WeatherRepository {
     val service = OpenMeteoCommon.retrofitService
     val mapper = Mappers()
+
     override fun getWeather(lat: Float, lon: Float): Single<WeatherData> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getWeatherFromRemote(lat: Float, lon: Float): Single<WeatherData> {
         val data = service.getOpenMeteoForecast(
             latitude = lat,
             longitude = lon,
@@ -21,13 +26,24 @@ object OpenMeteoRepositoryImpl : WeatherRepository {
         )
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.computation())
-            .map (mapper::mapOpenMeteoToWeatherData)
+            .map(mapper::mapOpenMeteoToWeatherData)
 
 //            .map { mapper.mapOpenMeteoToWeatherData(it) }
         return data
     }
 
 
+    override fun getWeatherFromLocal(): Single<WeatherData> {
+        TODO("Not yet implemented")
+    }
+
+    override fun saveWeatherToLocal(weatherData: WeatherData) {
+        TODO("Not yet implemented")
+    }
+
+    override fun checkLocalNeedToUpdate(): Boolean {
+        return true
+    }
 
     override fun getCityByName(cityName: String): Single<List<GeocodingDTO>> {
         TODO("Not yet implemented")

@@ -74,7 +74,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun getForecastData(sourceName: String) {
-        weatherUseCase.getWeather(
+        weatherUseCase.getForecast(
             lat = myLatitude.value ?: 0f,
             lon = myLongitude.value ?: 0f,
             sourceName = sourceName
