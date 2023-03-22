@@ -29,5 +29,6 @@ object OpenWeatheRepositoryImpl : WeatherRepository {
             .map ( mapper::mapOpenForecastToWeatherData )
         return data
     }
+
 }
 

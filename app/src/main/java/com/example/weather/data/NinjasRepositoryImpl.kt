@@ -11,7 +11,7 @@ object NinjasRepositoryImpl : WeatherRepository {
     val service = NinjasCommon.retrofitService
     val mapper = Mappers()
 
-    override fun getWeather(lat: Float, lon: Float): Single<WeatherData> =
+    override fun getWeatherFromRemote(lat: Float, lon: Float): Single<WeatherData> =
         service.getCurrentWeather(
             apiKey = "WqthQnLS3J9U8msOMh/iFw==7ZsAWxaBsOpJ9aaf",
             longitude = lon.toString(),
