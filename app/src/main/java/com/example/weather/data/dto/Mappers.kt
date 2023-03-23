@@ -3,8 +3,8 @@ package com.example.weather.data.dto
 import com.example.weather.OpenMeteo.DailyDTO
 import com.example.weather.OpenMeteo.OpenMeteoCurrentWeatherDTO
 import com.example.weather.OpenMeteo.OpenMeteoDTO
+import com.example.weather.data.room.ForecastDbModel
 import com.example.weather.domain.*
-import com.example.weather.retrofit.OpenWeatherDto
 import com.example.weather.retrofit.openWeather.DayForecast
 import com.example.weather.retrofit.openWeather.OpenWeatherForecastDTO
 import java.sql.Timestamp
@@ -12,15 +12,27 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class Mappers {
-    fun mapOpenForecastToCityForecast(openWeatherForecastDTO: OpenWeatherForecastDTO) =
-        CityForecastData(
-            city = CurrentCity(
-                name = openWeatherForecastDTO.city.cityName,
-                longitude = openWeatherForecastDTO.city.cityCoord.coordLongitude.toString(),
-                latitude = openWeatherForecastDTO.city.cityCoord.coordLatitude.toString(),
-            ),
-            forecastList = mapToListTempOnTime(openWeatherForecastDTO.list)
+
+    fun mapForecastDbModelListToWeatherData(list: List<ForecastDbModel>): WeatherData {
+
+        return WeatherData(cityName = "",
+            cityLatitude = list[0].latitude,
+            cityLongitude = list[0].longitude,
+            currentTemp = mapDbModelToCurrentTemp(list[0]),
+            forecastList = list.map { item -> mapDbModelToCurrentTemp(item) })
+
+    }
+
+    fun mapDbModelToCurrentTemp(forecastDbModel: ForecastDbModel): CurrentTemp {
+        return CurrentTemp(
+            timeStamp = forecastDbModel.timeStamp,
+            temperatureMin = forecastDbModel.temperature,
+            temperatureMax = forecastDbModel.temperature,
+            temperatureFeelsLikeMax = forecastDbModel.temperatureFeelsLike,
+            temperatureFeelsLikeMin = forecastDbModel.temperatureFeelsLike,
+            humidity = forecastDbModel.humidity
         )
+    }
 
     fun mapDayForecastToTempOnTime(dayForecast: DayForecast) = TempOnTime(
         timestamp = dayForecast.dateOfForecast,
