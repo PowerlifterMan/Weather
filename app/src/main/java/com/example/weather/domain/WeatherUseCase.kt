@@ -8,8 +8,6 @@ import com.example.weather.presentation.main.SOURCE_OPEN_WEATHER
 import io.reactivex.rxjava3.core.Single
 
 class WeatherUseCase() {
-    val remoteStorage = WeatherRemoteStorage()
-    val localStorage = WeatherLocalStorage()
 
     fun getForecast(
         lat: Float = DEFAULT_LATITUDE,

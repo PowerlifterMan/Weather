@@ -5,16 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.weather.data.OpenMeteoRepositoryImpl
-import com.example.weather.OpenMeteo.OpenMeteoUseCase
 import com.example.weather.data.dto.Mappers
 import com.example.weather.data.OpenWeatheRepositoryImpl
 import com.example.weather.domain.RecyclerViewItem
 import com.example.weather.domain.TempOnTime
 import com.example.weather.domain.WeatherUseCase
 import com.example.weather.data.NinjasRepositoryImpl
-import com.example.weather.ninjas.NinjasUseCase
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
 import java.text.SimpleDateFormat
 import java.util.*
 

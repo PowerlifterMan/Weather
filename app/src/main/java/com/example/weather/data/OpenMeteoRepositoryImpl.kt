@@ -11,10 +11,13 @@ object OpenMeteoRepositoryImpl : WeatherRepository {
     val mapper = Mappers()
 
     override fun getWeather(lat: Float, lon: Float): Single<WeatherData> {
+        if (needToUpdate()){
+            getWeatherFromRemote(lat = lat, lon = lon)
+        }
         TODO("Not yet implemented")
     }
 
-    override fun getWeatherFromRemote(lat: Float, lon: Float): Single<WeatherData> {
+    private fun getWeatherFromRemote(lat: Float, lon: Float): Single<WeatherData> {
         val data = service.getOpenMeteoForecast(
             latitude = lat,
             longitude = lon,
@@ -33,15 +36,15 @@ object OpenMeteoRepositoryImpl : WeatherRepository {
     }
 
 
-    override fun getWeatherFromLocal(): Single<WeatherData> {
+    private fun getWeatherFromLocal(): Single<WeatherData> {
         TODO("Not yet implemented")
     }
 
-    override fun saveWeatherToLocal(weatherData: WeatherData) {
+    private fun saveWeatherToLocal(weatherData: WeatherData) {
         TODO("Not yet implemented")
     }
 
-    override fun checkLocalNeedToUpdate(): Boolean {
+    private fun needToUpdate(): Boolean {
         return true
     }
 

@@ -14,18 +14,17 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 object OpenWeatheRepositoryImpl : WeatherRepository {
     val currentSourceName = SOURCE_OPEN_WEATHER
     val service = OpenWeatherCommon.retrofitService
-    val mapper = Mappers()
+    val  mapper = Mappers()
     private val weatherForecastDao =
         AppDataBase.getInstance().weatherForecastDao()
 
     override fun getWeather(lat: Float, lon: Float): Single<WeatherData> {
-
         return if (checkLocalNeedToUpdate()) {
             getWeatherFromRemote(
                 lat = lat,
                 lon = lon
             )
-                .andThen ( getWeatherFromLocal(lat = lat, lon = lon) )
+                .andThen(getWeatherFromLocal(lat = lat, lon = lon))
         } else getWeatherFromLocal(lat = lat, lon = lon)
             .filter { it.forecastList.isEmpty() }.toSingle()
     }

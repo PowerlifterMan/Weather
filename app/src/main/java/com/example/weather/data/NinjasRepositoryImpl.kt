@@ -2,6 +2,7 @@ package com.example.weather.data
 
 import com.example.weather.data.dto.Mappers
 import com.example.weather.data.room.AppDataBase
+import com.example.weather.domain.CurrentTemp
 import com.example.weather.domain.WeatherData
 import com.example.weather.ninjas.NinjasCommon
 import com.example.weather.presentation.main.SOURCE_NINJAS
@@ -18,23 +19,35 @@ object NinjasRepositoryImpl : WeatherRepository {
     override fun getWeather(lat: Float, lon: Float): Single<WeatherData> {
         return if (checkLocalNeedToUpdate()) {
             getWeatherFromRemote(lat = lat, lon = lon)
-        } else getWeatherFromLocal()
+        } else getWeatherFromLocal(lat = lat, lon = lon)
     }
 
-    override fun getWeatherFromLocal(): Single<WeatherData> {
-        weatherForecastDao.getWeatherList(SOURCE_NINJAS)
-        TODO("Not yet implemented")
+    private fun getWeatherFromLocal(lat: Float, lon: Float): Single<WeatherData> {
+        val weatherList = weatherForecastDao.getWeatherList(SOURCE_NINJAS, lat = lat, lon = lon)
+        var weatherData: WeatherData? = null
+        if (weatherList.isNotEmpty()) {
+            weatherData =
+                mapper.mapForecastDbModelListToWeatherData(weatherList)
+        } else {
+            weatherData = WeatherData(
+                cityLatitude = lat,
+                cityLongitude = lon,
+            )
+        }
+        return Single.fromCallable {
+            weatherData
+        }
     }
 
-    override fun saveWeatherToLocal(weatherData: WeatherData) {
-        TODO("Not yet implemented")
+    private fun saveWeatherToLocal(weatherData: WeatherData) {
+
     }
 
-    override fun checkLocalNeedToUpdate(): Boolean {
+    private fun checkLocalNeedToUpdate(): Boolean {
         return true
     }
 
-    override fun getWeatherFromRemote(lat: Float, lon: Float): Single<WeatherData> =
+    private fun getWeatherFromRemote(lat: Float, lon: Float): Single<WeatherData> =
         service.getCurrentWeather(
             apiKey = "WqthQnLS3J9U8msOMh/iFw==7ZsAWxaBsOpJ9aaf",
             longitude = lon.toString(),

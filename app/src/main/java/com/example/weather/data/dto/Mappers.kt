@@ -13,6 +13,7 @@ import java.util.*
 
 class Mappers {
 
+
     fun mapForecastDbModelListToWeatherData(list: List<ForecastDbModel>): WeatherData {
 
         return WeatherData(cityName = "",
