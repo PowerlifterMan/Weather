@@ -8,7 +8,7 @@ import com.example.weather.WeatherApp
 
 @Database(
     entities = [ForecastDbModel::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class AppDataBase : RoomDatabase() {

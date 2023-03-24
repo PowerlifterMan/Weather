@@ -14,12 +14,13 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 object OpenWeatheRepositoryImpl : WeatherRepository {
     val currentSourceName = SOURCE_OPEN_WEATHER
     val service = OpenWeatherCommon.retrofitService
-    val  mapper = Mappers()
+    val mapper = Mappers()
     private val weatherForecastDao =
         AppDataBase.getInstance().weatherForecastDao()
 
     override fun getWeather(lat: Float, lon: Float): Single<WeatherData> {
-        return if (checkLocalNeedToUpdate()) {
+        return if (needToUpdate()) {
+            weatherForecastDao.clearData(sourceId = currentSourceName, lat = lat, lon = lon)
             getWeatherFromRemote(
                 lat = lat,
                 lon = lon
@@ -47,7 +48,6 @@ object OpenWeatheRepositoryImpl : WeatherRepository {
             .observeOn(Schedulers.computation())
             .map(mapper::mapOpenForecastToWeatherData)
             .flatMapCompletable { saveWeatherToLocal(it) }
-
         return data
     }
 
@@ -57,7 +57,7 @@ object OpenWeatheRepositoryImpl : WeatherRepository {
         if (weatherList.size > 0) {
             weatherData = mapper.mapForecastDbModelListToWeatherData(weatherList)
         } else {
-
+            weatherData = WeatherData(cityName = "", cityLongitude = lon, cityLatitude = lat)
         }
         return Single.fromCallable {
             weatherData
@@ -67,28 +67,28 @@ object OpenWeatheRepositoryImpl : WeatherRepository {
     }
 
     private fun saveWeatherToLocal(weatherData: WeatherData): Completable {
+        val latitude = weatherData.cityLatitude
+        val longitude = weatherData.cityLongitude
+        val cityName = weatherData.cityName
         return Completable.fromCallable {
-
-            val latitude = weatherData.cityLatitude
-            val longitude = weatherData.cityLongitude
-            val cityName = weatherData.cityName
             weatherData.forecastList.forEach {
                 val model = ForecastDbModel(
-                    0,
+                    id = 0,
+                    idCity = cityName,
                     idSource = currentSourceName,
                     latitude = latitude,
                     longitude = longitude,
                     timeStamp = it.timeStamp,
                     temperature = it.temperatureMax,
                     temperatureFeelsLike = it.temperatureFeelsLikeMax,
-                    humidity = it.humidity
+                    humidity = it.humidity,
                 )
                 weatherForecastDao.addForecastItem(model)
             }
         }
     }
 
-    private fun checkLocalNeedToUpdate(): Boolean {
+    private fun needToUpdate(): Boolean {
         return true
     }
 }
