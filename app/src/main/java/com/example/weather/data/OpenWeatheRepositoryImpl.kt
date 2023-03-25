@@ -10,6 +10,7 @@ import com.example.weather.retrofit.openWeather.OpenWeatherCommon
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlin.math.round
 
 object OpenWeatheRepositoryImpl : WeatherRepository {
     val currentSourceName = SOURCE_OPEN_WEATHER
@@ -21,10 +22,7 @@ object OpenWeatheRepositoryImpl : WeatherRepository {
     override fun getWeather(lat: Float, lon: Float): Single<WeatherData> {
         return if (needToUpdate()) {
             weatherForecastDao.clearData(sourceId = currentSourceName, lat = lat, lon = lon)
-            getWeatherFromRemote(
-                lat = lat,
-                lon = lon
-            )
+            getWeatherFromRemote(lat = lat, lon = lon)
                 .andThen(getWeatherFromLocal(lat = lat, lon = lon))
         } else getWeatherFromLocal(lat = lat, lon = lon)
             .filter { it.forecastList.isEmpty() }.toSingle()
@@ -42,7 +40,7 @@ object OpenWeatheRepositoryImpl : WeatherRepository {
             appId = OPEN_WEATHER_API_KEY,
             units = "metric",
             lang = "ru",
-            nDays = 25
+            nDays = 5
         )
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.computation())
@@ -76,11 +74,11 @@ object OpenWeatheRepositoryImpl : WeatherRepository {
                     id = 0,
                     idCity = cityName,
                     idSource = currentSourceName,
-                    latitude = latitude,
-                    longitude = longitude,
+                    latitude = round(latitude * 100) / 100,
+                    longitude = round(longitude * 100) / 100,
                     timeStamp = it.timeStamp,
-                    temperature = it.temperatureMax,
-                    temperatureFeelsLike = it.temperatureFeelsLikeMax,
+                    temperature = round(it.temperatureMax * 10) / 10,
+                    temperatureFeelsLike = round(it.temperatureFeelsLikeMax + 10) / 10,
                     humidity = it.humidity,
                 )
                 weatherForecastDao.addForecastItem(model)
