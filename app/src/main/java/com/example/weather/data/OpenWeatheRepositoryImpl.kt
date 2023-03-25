@@ -26,6 +26,19 @@ object OpenWeatheRepositoryImpl : WeatherRepository {
                 .andThen(getWeatherFromLocal(lat = lat, lon = lon))
         } else getWeatherFromLocal(lat = lat, lon = lon)
             .filter { it.forecastList.isEmpty() }.toSingle()
+/*
+        return if (needToUpdate()) {
+            weatherForecastDao.clearData(sourceId = currentSourceName, lat = lat, lon = lon)
+            getWeatherFromRemote(
+                lat = lat,
+                lon = lon
+            )
+                .andThen(getWeatherFromLocal(lat = lat, lon = lon))
+        } else getWeatherFromLocal(lat = lat, lon = lon)
+            .filter { it.forecastList.isEmpty() }.toSingle()
+
+ */
+
     }
 
     override fun getCityByName(cityName: String): Single<List<GeocodingDTO>> {

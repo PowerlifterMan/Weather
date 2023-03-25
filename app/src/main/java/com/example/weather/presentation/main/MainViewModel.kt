@@ -76,7 +76,7 @@ class MainViewModel : ViewModel() {
             lon = myLongitude.value ?: 0f,
             sourceName = sourceName
         ).observeOn(AndroidSchedulers.mainThread())
-            .subscribe { data ->
+            .subscribe ({ data ->
                 val tempOnTime = TempOnTime(
                     timestamp = data.currentTemp.timeStamp,
                     temp = data.currentTemp.temperatureMax,
@@ -89,7 +89,11 @@ class MainViewModel : ViewModel() {
                     description = item.temperatureFeelsLikeMax.toString()
                 ) }
 
-            }
+            },
+        { error ->
+            error.printStackTrace()
+
+        })
 //        when (sourceName) {
 //            SOURCE_OPEN_METEO -> {
 //                openMeteoUseCase.getForecastOpenMeteo(

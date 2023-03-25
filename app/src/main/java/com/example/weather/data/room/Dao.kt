@@ -9,7 +9,7 @@ import androidx.room.Query
 @Dao
 interface WeatherForecastDao {
     //    @Query("SELECT * FROM forecast WHERE idSource=:sourceId")
-    @Query("SELECT * FROM forecast WHERE idSource=:sourceId AND latitude=:lat AND longitude=:lon")
+    @Query("SELECT FROM forecast WHERE idSource=:sourceId AND latitude=:lat AND longitude=:lon")
     fun getWeatherList(
         sourceId: String,
         lat: Float,
