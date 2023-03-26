@@ -2,7 +2,6 @@ package com.example.weather.data.room
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.weather.retrofit.openWeather.DayTemperature
 
 @Entity(tableName = "forecast")
 data class ForecastDbModel(
@@ -10,8 +9,8 @@ data class ForecastDbModel(
     val id: Int,
     val idCity: String,
     val idSource: String,
-    val latitude: Float,
-    val longitude: Float,
+    val latitude: Float?,
+    val longitude: Float?,
     val timeStamp: Long,
     val temperature: Float,
     val temperatureFeelsLike: Float,

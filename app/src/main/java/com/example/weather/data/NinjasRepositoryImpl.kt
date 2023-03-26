@@ -3,7 +3,6 @@ package com.example.weather.data
 import com.example.weather.data.dto.Mappers
 import com.example.weather.data.room.AppDataBase
 import com.example.weather.data.room.ForecastDbModel
-import com.example.weather.domain.CurrentTemp
 import com.example.weather.domain.WeatherData
 import com.example.weather.ninjas.NinjasCommon
 import com.example.weather.presentation.main.SOURCE_NINJAS
@@ -19,7 +18,7 @@ object NinjasRepositoryImpl : WeatherRepository {
     private val weatherForecastDao =
         AppDataBase.getInstance().weatherForecastDao()
 
-    override fun getWeather(lat: Float, lon: Float): Single<WeatherData> {
+    override fun getWeather(lat: Float, lon: Float,cityName: String): Single<WeatherData> {
         return if (needToUpdate()) {
             getWeatherFromRemote(lat = lat, lon = lon)
                 .andThen(

@@ -9,6 +9,7 @@ import com.example.weather.presentation.main.SOURCE_OPEN_METEO
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
+import java.text.DecimalFormat
 
 object OpenMeteoRepositoryImpl : WeatherRepository {
     val currentSourceName = SOURCE_OPEN_METEO
@@ -16,10 +17,16 @@ object OpenMeteoRepositoryImpl : WeatherRepository {
     val mapper = Mappers()
     private val weatherForecastDao =
         AppDataBase.getInstance().weatherForecastDao()
+    private lateinit var cityNameOpenMeteo: String
+    private var lonOpenMeteo: Float? = null
+    private var latOpenMeteo: Float? = null
 
-    override fun getWeather(lat: Float, lon: Float): Single<WeatherData> {
+    override fun getWeather(lat: Float, lon: Float, cityName: String): Single<WeatherData> {
+        cityNameOpenMeteo = cityName
+        latOpenMeteo = lat
+        lonOpenMeteo = lon
         return if (needToUpdate()) {
-            weatherForecastDao.clearData(sourceId = currentSourceName, lat = lat, lon = lon)
+            weatherForecastDao.clearData(sourceId = currentSourceName)
             getWeatherFromRemote(lat = lat,lon = lon)
                 .andThen(getWeatherFromLocal(lat = lat, lon = lon))
         } else getWeatherFromLocal(lat = lat, lon = lon)
@@ -47,26 +54,41 @@ object OpenMeteoRepositoryImpl : WeatherRepository {
 
     private fun getWeatherFromLocal(lat: Float, lon: Float): Single<WeatherData> {
         val weatherList = weatherForecastDao.getWeatherList(
-            OpenWeatheRepositoryImpl.currentSourceName, lat = lat, lon = lon
+            currentSourceName, lat = lat, lon = lon
         )
         var weatherData: WeatherData? = null
         if (weatherList.size > 0) {
             weatherData =
-                OpenWeatheRepositoryImpl.mapper.mapForecastDbModelListToWeatherData(weatherList)
+                mapper.mapForecastDbModelListToWeatherData(weatherList)
         } else {
             weatherData = WeatherData(cityName = "", cityLongitude = lon, cityLatitude = lat)
         }
         return Single.fromCallable {
             weatherData
         }
+    }
 
-
+    private fun getWeatherFromLocal(cityName: String): Single<WeatherData> {
+        val weatherList = weatherForecastDao.getWeatherList(
+            cityName = cityName
+        )
+        var weatherData: WeatherData? = null
+        if (weatherList.size > 0) {
+            weatherData =
+                mapper.mapForecastDbModelListToWeatherData(weatherList)
+        } else {
+            weatherData = WeatherData(cityName = cityName, cityLongitude = lonOpenMeteo, cityLatitude = latOpenMeteo)
+        }
+        return Single.fromCallable {
+            weatherData
+        }
     }
 
     private fun saveWeatherToLocal(weatherData: WeatherData): Completable {
-        val latitude = weatherData.cityLatitude
-        val longitude = weatherData.cityLongitude
-        val cityName = weatherData.cityName
+        val df = DecimalFormat("#.##")
+        val latitude = df.format(weatherData.cityLatitude).toFloat()
+        val longitude = df.format(weatherData.cityLongitude).toFloat()
+        val cityName = cityNameOpenMeteo
         return Completable.fromCallable {
             weatherData.forecastList.forEach {
                 val model = ForecastDbModel(

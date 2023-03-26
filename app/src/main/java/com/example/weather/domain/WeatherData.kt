@@ -2,8 +2,8 @@ package com.example.weather.domain
 
 data class WeatherData(
     val cityName: String = "",
-    val cityLongitude: Float,
-    val cityLatitude: Float,
+    val cityLongitude: Float?,
+    val cityLatitude: Float?,
     val currentTemp: CurrentTemp = CurrentTemp(),
     val forecastList: List<CurrentTemp> = listOf()
 )

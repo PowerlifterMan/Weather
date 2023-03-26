@@ -74,7 +74,8 @@ class MainViewModel : ViewModel() {
         weatherUseCase.getForecast(
             lat = myLatitude.value ?: 0f,
             lon = myLongitude.value ?: 0f,
-            sourceName = sourceName
+            sourceName = sourceName,
+            city = myCityName.value ?: ""
         ).observeOn(AndroidSchedulers.mainThread())
             .subscribe ({ data ->
                 val tempOnTime = TempOnTime(
@@ -92,6 +93,7 @@ class MainViewModel : ViewModel() {
             },
         { error ->
             error.printStackTrace()
+            Log.e("ERROR", error.message.toString())
 
         })
 //        when (sourceName) {

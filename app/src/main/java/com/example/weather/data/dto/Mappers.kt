@@ -16,7 +16,8 @@ class Mappers {
 
     fun mapForecastDbModelListToWeatherData(list: List<ForecastDbModel>): WeatherData {
 
-        return WeatherData(cityName = "",
+        return WeatherData(
+            cityName = "",
             cityLatitude = list[0].latitude,
             cityLongitude = list[0].longitude,
             currentTemp = mapDbModelToCurrentTemp(list[0]),
@@ -111,10 +112,11 @@ class Mappers {
         val formatter = SimpleDateFormat("yyyy-mm-dd")
         val outputList = mutableListOf<CurrentTemp>()
         listTime.forEachIndexed { index, item ->
-            val dateString = item.substringBefore("T")
-            val date = formatter.parse(dateString)
+//            val dateString = item.substringBefore("T")
+//            val date = formatter.parse(dateString)
             val newItem = CurrentTemp(
-                timeStamp = Timestamp.valueOf(item.substringBefore("T")).time,
+                timeStamp = item.toLong(),
+//                timeStamp = Timestamp.valueOf(item.substringBefore("T")).time,
                 temperatureMin = listTemperature[index],
                 temperatureMax = listTemperature[index],
                 temperatureFeelsLikeMax = listApparentTemperature[index],

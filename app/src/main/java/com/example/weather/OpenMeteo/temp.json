@@ -1,12 +1,50 @@
 {
-  "cloud_pct": 75,
-  "temp": 7,
-  "feels_like": 5,
-  "humidity": 90,
-  "min_temp": 6,
-  "max_temp": 7,
-  "wind_speed": 3.09,
-  "wind_degrees": 160,
-  "sunrise": 1678860938,
-  "sunset": 1678903415
+  "latitude": 55.75,
+  "longitude": 37.625,
+  "generationtime_ms": 0.7430315017700195,
+  "utc_offset_seconds": 10800,
+  "timezone": "Europe/Moscow",
+  "timezone_abbreviation": "MSK",
+  "elevation": 141.0,
+  "current_weather": {
+    "temperature": 8.6,
+    "windspeed": 5.9,
+    "winddirection": 223.0,
+    "weathercode": 3,
+    "time": 1679760000
+  },
+  "daily_units": {
+    "time": "unixtime",
+    "temperature_2m_max": "°C",
+    "apparent_temperature_max": "°C"
+  },
+  "daily": {
+    "time": [
+      1679691600,
+      1679778000,
+      1679864400,
+      1679950800,
+      1680037200,
+      1680123600,
+      1680210000
+    ],
+    "temperature_2m_max": [
+      9.7,
+      8.1,
+      9.2,
+      10.8,
+      8.1,
+      7.4,
+      5.9
+    ],
+    "apparent_temperature_max": [
+      7.8,
+      6.2,
+      6.4,
+      7.6,
+      5.9,
+      6.2,
+      2.5
+    ]
+  }
 }

@@ -12,7 +12,8 @@ class WeatherUseCase() {
     fun getForecast(
         lat: Float = DEFAULT_LATITUDE,
         lon: Float = DEFAULT_LONGITUDE,
-        sourceName: String = DEFAULT_SOURCE_NAME
+        sourceName: String = DEFAULT_SOURCE_NAME,
+        city: String
     ): Single<WeatherData> {
         val currentRepo: WeatherRepository = when (sourceName) {
             SOURCE_OPEN_METEO -> {
@@ -26,7 +27,7 @@ class WeatherUseCase() {
             }
             else -> OpenWeatheRepositoryImpl
         }
-        return currentRepo.getWeather(lat = lat, lon = lon)
+        return currentRepo.getWeather(lat = lat, lon = lon, cityName = city)
     }
 
     fun getCityDto(city: String): Single<List<GeocodingDTO>> {
