@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "forecast")
-data class ForecastDbModel(
+class ForecastDbModel(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     val idCity: String,
@@ -18,11 +18,11 @@ data class ForecastDbModel(
 )
 
 @Entity(tableName = "settings")
-data class ForecastSettingDbModel(
+class ForecastSettingDbModel(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     var nameSource: String,
     var urlSource: String,
     var endPointSource: String,
 
-)
+    )

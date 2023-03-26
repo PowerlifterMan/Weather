@@ -17,19 +17,19 @@ object OpenMeteoRepositoryImpl : WeatherRepository {
     val mapper = Mappers()
     private val weatherForecastDao =
         AppDataBase.getInstance().weatherForecastDao()
-    private lateinit var cityNameOpenMeteo: String
+    private lateinit var currentCityName: String
     private var lonOpenMeteo: Float? = null
     private var latOpenMeteo: Float? = null
 
     override fun getWeather(lat: Float, lon: Float, cityName: String): Single<WeatherData> {
-        cityNameOpenMeteo = cityName
+        currentCityName = cityName
         latOpenMeteo = lat
         lonOpenMeteo = lon
         return if (needToUpdate()) {
             weatherForecastDao.clearData(sourceId = currentSourceName)
             getWeatherFromRemote(lat = lat,lon = lon)
-                .andThen(getWeatherFromLocal(lat = lat, lon = lon))
-        } else getWeatherFromLocal(lat = lat, lon = lon)
+                .andThen(getWeatherFromLocal(cityName = cityName))
+        } else getWeatherFromLocal(cityName = cityName)
             .filter { it.forecastList.isEmpty() }.toSingle()
     }
 
@@ -70,7 +70,8 @@ object OpenMeteoRepositoryImpl : WeatherRepository {
 
     private fun getWeatherFromLocal(cityName: String): Single<WeatherData> {
         val weatherList = weatherForecastDao.getWeatherList(
-            cityName = cityName
+            cityName = cityName.trim(),
+            sourceId = currentSourceName.trim()
         )
         var weatherData: WeatherData? = null
         if (weatherList.size > 0) {
@@ -86,17 +87,17 @@ object OpenMeteoRepositoryImpl : WeatherRepository {
 
     private fun saveWeatherToLocal(weatherData: WeatherData): Completable {
         val df = DecimalFormat("#.##")
-        val latitude = df.format(weatherData.cityLatitude).toFloat()
-        val longitude = df.format(weatherData.cityLongitude).toFloat()
-        val cityName = cityNameOpenMeteo
+        val latitude2 = df.format(weatherData.cityLatitude).toFloat()
+        val longitude2 = df.format(weatherData.cityLongitude).toFloat()
+        val cityName = currentCityName
         return Completable.fromCallable {
             weatherData.forecastList.forEach {
                 val model = ForecastDbModel(
                     id = 0,
                     idCity = cityName,
                     idSource = currentSourceName,
-                    latitude = latitude,
-                    longitude = longitude,
+                    latitude = latitude2,
+                    longitude = longitude2,
                     timeStamp = it.timeStamp,
                     temperature = it.temperatureMax,
                     temperatureFeelsLike = it.temperatureFeelsLikeMax,

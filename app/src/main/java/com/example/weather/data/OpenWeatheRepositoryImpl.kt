@@ -10,22 +10,27 @@ import com.example.weather.retrofit.openWeather.OpenWeatherCommon
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
-import java.math.RoundingMode
 import java.text.DecimalFormat
 
 object OpenWeatheRepositoryImpl : WeatherRepository {
     val currentSourceName = SOURCE_OPEN_WEATHER
+    lateinit var currentCity: String
+//    private lateinit var currentLon: Float
+//    private lateinit var currentLat: Float
     val service = OpenWeatherCommon.retrofitService
     val mapper = Mappers()
     private val weatherForecastDao =
         AppDataBase.getInstance().weatherForecastDao()
 
     override fun getWeather(lat: Float, lon: Float, cityName: String): Single<WeatherData> {
+        currentCity = cityName
         return if (needToUpdate()) {
-            weatherForecastDao.clearData(sourceId = currentSourceName)
-            getWeatherFromRemote(lat = lat, lon = lon)
-                .andThen(getWeatherFromLocal(lat = lat, lon = lon))
-        } else getWeatherFromLocal(lat = lat, lon = lon)
+            Completable.fromCallable {
+                weatherForecastDao.clearData(sourceId = currentSourceName)
+            }.andThen(getWeatherFromRemote(lat = lat, lon = lon))
+
+                .andThen(getWeatherFromLocal(cityName = cityName))
+        } else getWeatherFromLocal(cityName = cityName)
             .filter { it.forecastList.isEmpty() }.toSingle()
 /*
         return if (needToUpdate()) {
@@ -60,12 +65,31 @@ object OpenWeatheRepositoryImpl : WeatherRepository {
     }
 
     private fun getWeatherFromLocal(lat: Float, lon: Float): Single<WeatherData> {
-        val weatherList = weatherForecastDao.getWeatherList(currentSourceName, lat = lat, lon = lon)
+        val weatherList =
+            weatherForecastDao.getWeatherList(lon = lon, lat = lat, sourceId = currentSourceName)
         var weatherData: WeatherData? = null
         if (weatherList.size > 0) {
             weatherData = mapper.mapForecastDbModelListToWeatherData(weatherList)
         } else {
-            weatherData = WeatherData(cityName = "", cityLongitude = lon, cityLatitude = lat)
+            weatherData = WeatherData(cityName = currentCity, cityLongitude = lon, cityLatitude = lat)
+        }
+        return Single.fromCallable {
+            weatherData
+        }
+
+
+    }
+    private fun getWeatherFromLocal(cityName: String): Single<WeatherData> {
+        val weatherList =
+            weatherForecastDao.getWeatherList(
+                cityName = cityName.trim(),
+                sourceId = currentSourceName.trim()
+            )
+        var weatherData: WeatherData? = null
+        if (weatherList.size > 0) {
+            weatherData = mapper.mapForecastDbModelListToWeatherData(weatherList)
+        } else {
+            weatherData = WeatherData(cityName = currentCity, cityLongitude = 0f, cityLatitude = 0f)
         }
         return Single.fromCallable {
             weatherData
@@ -76,10 +100,8 @@ object OpenWeatheRepositoryImpl : WeatherRepository {
 
     private fun saveWeatherToLocal(weatherData: WeatherData): Completable {
         val df = DecimalFormat("#.##")
-//        val roundoff = df.format(random)
-//        val latitude = df.format(weatherData.cityLatitude).toFloat()
-        val latitude = weatherData.cityLatitude?.toBigDecimal()?.setScale(2)?.toFloat()
-        val longitude = weatherData.cityLongitude?.toBigDecimal()?.setScale(2)?.toFloat()
+        val latitude2 = df.format(weatherData.cityLatitude).toFloat()
+        val longitude2 = df.format(weatherData.cityLongitude).toFloat()
 //        val longitude = df.format(weatherData.cityLongitude).toFloat()
         val cityName = weatherData.cityName
         return Completable.fromCallable {
@@ -88,8 +110,8 @@ object OpenWeatheRepositoryImpl : WeatherRepository {
                     id = 0,
                     idCity = cityName,
                     idSource = currentSourceName,
-                    latitude =  latitude,
-                    longitude = longitude,
+                    latitude = latitude2,
+                    longitude = longitude2,
                     timeStamp = it.timeStamp,
                     temperature = df.format(it.temperatureMax).toFloat(),
                     temperatureFeelsLike = df.format(it.temperatureFeelsLikeMax).toFloat(),
@@ -103,6 +125,7 @@ object OpenWeatheRepositoryImpl : WeatherRepository {
     private fun needToUpdate(): Boolean {
         return true
     }
+
     override fun getCityByName(cityName: String): Single<List<GeocodingDTO>> {
         return service.getCoordByName(cityName, appId = OPEN_WEATHER_API_KEY)
             .subscribeOn(Schedulers.io())
