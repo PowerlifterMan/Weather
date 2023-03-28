@@ -10,6 +10,7 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.text.DecimalFormat
+import kotlin.math.round
 
 object OpenMeteoRepositoryImpl : WeatherRepository {
     val currentSourceName = SOURCE_OPEN_METEO
@@ -26,7 +27,7 @@ object OpenMeteoRepositoryImpl : WeatherRepository {
         latOpenMeteo = lat
         lonOpenMeteo = lon
         return if (needToUpdate()) {
-            weatherForecastDao.clearData(sourceId = currentSourceName)
+//            weatherForecastDao.clearData(sourceId = currentSourceName)
             getWeatherFromRemote(lat = lat,lon = lon)
                 .andThen(getWeatherFromLocal(cityName = cityName))
         } else getWeatherFromLocal(cityName = cityName)
@@ -86,9 +87,9 @@ object OpenMeteoRepositoryImpl : WeatherRepository {
     }
 
     private fun saveWeatherToLocal(weatherData: WeatherData): Completable {
-        val df = DecimalFormat("#.##")
-        val latitude2 = df.format(weatherData.cityLatitude).toFloat()
-        val longitude2 = df.format(weatherData.cityLongitude).toFloat()
+        val df = DecimalFormat("##.00")
+        val latitude2 = weatherData.cityLatitude
+        val longitude2 = weatherData.cityLongitude
         val cityName = currentCityName
         return Completable.fromCallable {
             weatherData.forecastList.forEach {

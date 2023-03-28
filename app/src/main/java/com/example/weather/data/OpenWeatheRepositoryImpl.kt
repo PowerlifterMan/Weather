@@ -1,5 +1,6 @@
 package com.example.weather.data
 
+import android.util.Log
 import com.example.weather.data.dto.Mappers
 import com.example.weather.data.room.AppDataBase
 import com.example.weather.data.room.ForecastDbModel
@@ -11,11 +12,13 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.text.DecimalFormat
+import kotlin.math.round
 
 object OpenWeatheRepositoryImpl : WeatherRepository {
     val currentSourceName = SOURCE_OPEN_WEATHER
     lateinit var currentCity: String
-//    private lateinit var currentLon: Float
+
+    //    private lateinit var currentLon: Float
 //    private lateinit var currentLat: Float
     val service = OpenWeatherCommon.retrofitService
     val mapper = Mappers()
@@ -26,7 +29,7 @@ object OpenWeatheRepositoryImpl : WeatherRepository {
         currentCity = cityName
         return if (needToUpdate()) {
             Completable.fromCallable {
-                weatherForecastDao.clearData(sourceId = currentSourceName)
+//                weatherForecastDao.clearData(sourceId = currentSourceName)
             }.andThen(getWeatherFromRemote(lat = lat, lon = lon))
 
                 .andThen(getWeatherFromLocal(cityName = cityName))
@@ -67,11 +70,13 @@ object OpenWeatheRepositoryImpl : WeatherRepository {
     private fun getWeatherFromLocal(lat: Float, lon: Float): Single<WeatherData> {
         val weatherList =
             weatherForecastDao.getWeatherList(lon = lon, lat = lat, sourceId = currentSourceName)
+        Log.e("ERROR", weatherList.toString())
         var weatherData: WeatherData? = null
         if (weatherList.size > 0) {
             weatherData = mapper.mapForecastDbModelListToWeatherData(weatherList)
         } else {
-            weatherData = WeatherData(cityName = currentCity, cityLongitude = lon, cityLatitude = lat)
+            weatherData =
+                WeatherData(cityName = currentCity, cityLongitude = lon, cityLatitude = lat)
         }
         return Single.fromCallable {
             weatherData
@@ -79,12 +84,14 @@ object OpenWeatheRepositoryImpl : WeatherRepository {
 
 
     }
+
     private fun getWeatherFromLocal(cityName: String): Single<WeatherData> {
         val weatherList =
             weatherForecastDao.getWeatherList(
-                cityName = cityName.trim(),
-                sourceId = currentSourceName.trim()
+                cityName = cityName,
+                sourceId = currentSourceName
             )
+        Log.e("ERROR", weatherList.toString())
         var weatherData: WeatherData? = null
         if (weatherList.size > 0) {
             weatherData = mapper.mapForecastDbModelListToWeatherData(weatherList)
@@ -99,10 +106,10 @@ object OpenWeatheRepositoryImpl : WeatherRepository {
     }
 
     private fun saveWeatherToLocal(weatherData: WeatherData): Completable {
-        val df = DecimalFormat("#.##")
-        val latitude2 = df.format(weatherData.cityLatitude).toFloat()
-        val longitude2 = df.format(weatherData.cityLongitude).toFloat()
-//        val longitude = df.format(weatherData.cityLongitude).toFloat()
+        val df = DecimalFormat("##.00")
+        val latitude2 = weatherData.cityLatitude
+        val longitude2 = weatherData.cityLongitude
+//        val longitude = weatherData.cityLongitude
         val cityName = weatherData.cityName
         return Completable.fromCallable {
             weatherData.forecastList.forEach {
@@ -113,12 +120,13 @@ object OpenWeatheRepositoryImpl : WeatherRepository {
                     latitude = latitude2,
                     longitude = longitude2,
                     timeStamp = it.timeStamp,
-                    temperature = df.format(it.temperatureMax).toFloat(),
-                    temperatureFeelsLike = df.format(it.temperatureFeelsLikeMax).toFloat(),
+                    temperature = (it.temperatureMax + it.temperatureMin) / 2,
+                    temperatureFeelsLike = (it.temperatureFeelsLikeMax + it.temperatureFeelsLikeMin) / 2,
                     humidity = it.humidity,
                 )
                 weatherForecastDao.addForecastItem(model)
             }
+            Log.e("ERROR", "recording complete")
         }
     }
 
