@@ -12,14 +12,10 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.text.DecimalFormat
-import kotlin.math.round
 
 object OpenWeatheRepositoryImpl : WeatherRepository {
     val currentSourceName = SOURCE_OPEN_WEATHER
     lateinit var currentCity: String
-
-    //    private lateinit var currentLon: Float
-//    private lateinit var currentLat: Float
     val service = OpenWeatherCommon.retrofitService
     val mapper = Mappers()
     private val weatherForecastDao =
@@ -29,9 +25,8 @@ object OpenWeatheRepositoryImpl : WeatherRepository {
         currentCity = cityName
         return if (needToUpdate()) {
             Completable.fromCallable {
-//                weatherForecastDao.clearData(sourceId = currentSourceName)
+//                weatherForecastDao.clearData(sourceId = currentSourceName, cityId = cityName)
             }.andThen(getWeatherFromRemote(lat = lat, lon = lon))
-
                 .andThen(getWeatherFromLocal(cityName = cityName))
         } else getWeatherFromLocal(cityName = cityName)
             .filter { it.forecastList.isEmpty() }.toSingle()
@@ -109,7 +104,7 @@ object OpenWeatheRepositoryImpl : WeatherRepository {
         val df = DecimalFormat("##.00")
         val latitude2 = weatherData.cityLatitude
         val longitude2 = weatherData.cityLongitude
-//        val longitude = weatherData.cityLongitude
+        val weatherList = mutableListOf<ForecastDbModel>()
         val cityName = weatherData.cityName
         return Completable.fromCallable {
             weatherData.forecastList.forEach {
@@ -124,9 +119,10 @@ object OpenWeatheRepositoryImpl : WeatherRepository {
                     temperatureFeelsLike = (it.temperatureFeelsLikeMax + it.temperatureFeelsLikeMin) / 2,
                     humidity = it.humidity,
                 )
-                weatherForecastDao.addForecastItem(model)
+                weatherList.add(model)
             }
-            Log.e("ERROR", "recording complete")
+            weatherForecastDao.addForecastList(weatherList)
+            Log.e("ERROR", "recording List is complete")
         }
     }
 

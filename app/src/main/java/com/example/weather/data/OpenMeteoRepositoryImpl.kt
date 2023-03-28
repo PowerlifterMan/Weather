@@ -1,5 +1,6 @@
 package com.example.weather.data
 
+import android.util.Log
 import com.example.weather.OpenMeteo.OpenMeteoCommon
 import com.example.weather.data.dto.Mappers
 import com.example.weather.data.room.AppDataBase
@@ -10,7 +11,6 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.text.DecimalFormat
-import kotlin.math.round
 
 object OpenMeteoRepositoryImpl : WeatherRepository {
     val currentSourceName = SOURCE_OPEN_METEO
@@ -27,7 +27,8 @@ object OpenMeteoRepositoryImpl : WeatherRepository {
         latOpenMeteo = lat
         lonOpenMeteo = lon
         return if (needToUpdate()) {
-//            weatherForecastDao.clearData(sourceId = currentSourceName)
+//            weatherForecastDao.clearData(sourceId = currentSourceName, cityId = cityName)
+//            weatherForecastDao.updateDataSet(sourceId = currentSourceName)
             getWeatherFromRemote(lat = lat,lon = lon)
                 .andThen(getWeatherFromLocal(cityName = cityName))
         } else getWeatherFromLocal(cityName = cityName)
@@ -90,6 +91,7 @@ object OpenMeteoRepositoryImpl : WeatherRepository {
         val df = DecimalFormat("##.00")
         val latitude2 = weatherData.cityLatitude
         val longitude2 = weatherData.cityLongitude
+        val weatherList = mutableListOf<ForecastDbModel>()
         val cityName = currentCityName
         return Completable.fromCallable {
             weatherData.forecastList.forEach {
@@ -104,8 +106,10 @@ object OpenMeteoRepositoryImpl : WeatherRepository {
                     temperatureFeelsLike = it.temperatureFeelsLikeMax,
                     humidity = it.humidity,
                 )
-                weatherForecastDao.addForecastItem(model)
+                weatherList.add(model)
             }
+            weatherForecastDao.addForecastList(weatherList)
+            Log.e("ERROR", "recording List is complete")
         }
     }
 

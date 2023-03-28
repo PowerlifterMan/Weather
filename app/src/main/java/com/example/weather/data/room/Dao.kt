@@ -23,13 +23,20 @@ interface WeatherForecastDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addForecastItem(forecastDbModel: ForecastDbModel)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun addForecastList(forecastDbModelList: List<ForecastDbModel>)
+
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun updateDB(forecastDbModel: ForecastDbModel)
 
-    @Query("DELETE FROM forecast WHERE idSource = :sourceId")
-    fun clearData(sourceId: String)
+    @Query("DELETE FROM forecast WHERE idSource = :sourceId AND idCity = :cityId")
+    fun clearData(sourceId: String, cityId: String)
+
+    @Query("UPDATE forecast SET idSource = :sourceId")
+    fun updateDataSet(sourceId:String):Int
 
 }
+
 
 
 @Dao
