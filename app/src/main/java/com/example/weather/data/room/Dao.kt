@@ -17,7 +17,7 @@ interface WeatherForecastDao {
 //    @Query("SELECT * FROM forecast WHERE idCity=:cityName AND idSource=:sourceId")
     fun getWeatherList(
         cityName: String,
-        sourceId:String
+        sourceId: String
     ): List<ForecastDbModel>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -29,14 +29,20 @@ interface WeatherForecastDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun updateDB(forecastDbModel: ForecastDbModel)
 
-    @Query("DELETE FROM forecast WHERE idSource = :sourceId AND idCity = :cityId")
-    fun clearData(sourceId: String, cityId: String)
+    @Query("DELETE FROM forecast WHERE idSource = :sourceId")
+//    @Query("DELETE FROM forecast WHERE idSource = :sourceId AND idCity = :cityId")
+    fun clearData(
+        sourceId: String,
+//        cityId: String
+    )
+
+    @Transaction
+
 
     @Query("UPDATE forecast SET idSource = :sourceId")
-    fun updateDataSet(sourceId:String):Int
+    fun updateDataSet(sourceId: String): Int
 
 }
-
 
 
 @Dao

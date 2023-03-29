@@ -81,19 +81,22 @@ object OpenWeatheRepositoryImpl : WeatherRepository {
     }
 
     private fun getWeatherFromLocal(cityName: String): Single<WeatherData> {
-        val weatherList =
-            weatherForecastDao.getWeatherList(
-                cityName = cityName,
-                sourceId = currentSourceName
-            )
-        Log.e("ERROR", weatherList.toString())
-        var weatherData: WeatherData? = null
-        if (weatherList.size > 0) {
-            weatherData = mapper.mapForecastDbModelListToWeatherData(weatherList)
-        } else {
-            weatherData = WeatherData(cityName = currentCity, cityLongitude = 0f, cityLatitude = 0f)
-        }
         return Single.fromCallable {
+            val weatherList =
+                weatherForecastDao.getWeatherList(
+                    cityName = cityName,
+                    sourceId = currentSourceName
+                )
+            Log.e("ERROR", "сделали запрос в локальную БД")
+            var weatherData: WeatherData? = null
+            if (weatherList.size > 0) {
+                Log.e("ERROR", "WeatherData is full")
+                weatherData = mapper.mapForecastDbModelListToWeatherData(weatherList)
+            } else {
+                weatherData =
+                    WeatherData(cityName = currentCity, cityLongitude = 0f, cityLatitude = 0f)
+                Log.e("ERROR", "WeatherData is EMPTY")
+            }
             weatherData
         }
 
@@ -105,10 +108,15 @@ object OpenWeatheRepositoryImpl : WeatherRepository {
         val latitude2 = weatherData.cityLatitude
         val longitude2 = weatherData.cityLongitude
         val weatherList = mutableListOf<ForecastDbModel>()
-        if (weatherData.forecastList.isNotEmpty()){
-            weatherForecastDao.clearData(sourceId = currentSourceName, cityId = weatherData.cityName)
-        }
         val cityName = weatherData.cityName
+        if (weatherData.forecastList.isNotEmpty()) {
+            weatherForecastDao.clearData(
+
+                sourceId = currentSourceName,
+//                cityId = weatherData.cityName
+            )
+            Log.e("ERROR", "OpenWeather затерли $cityName")
+        }
         return Completable.fromCallable {
             weatherData.forecastList.forEach {
                 val model = ForecastDbModel(
@@ -125,7 +133,7 @@ object OpenWeatheRepositoryImpl : WeatherRepository {
                 weatherList.add(model)
             }
             weatherForecastDao.addForecastList(weatherList)
-            Log.e("ERROR", "recording List is complete")
+            Log.e("ERROR", "OpenWeather recording List $cityName is complete")
         }
     }
 

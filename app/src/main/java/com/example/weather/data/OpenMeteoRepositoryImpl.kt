@@ -29,7 +29,7 @@ object OpenMeteoRepositoryImpl : WeatherRepository {
         return if (needToUpdate()) {
 //            weatherForecastDao.clearData(sourceId = currentSourceName, cityId = cityName)
 //            weatherForecastDao.updateDataSet(sourceId = currentSourceName)
-            getWeatherFromRemote(lat = lat,lon = lon)
+            getWeatherFromRemote(lat = lat, lon = lon)
                 .andThen(getWeatherFromLocal(cityName = cityName))
         } else getWeatherFromLocal(cityName = cityName)
             .filter { it.forecastList.isEmpty() }.toSingle()
@@ -48,7 +48,9 @@ object OpenMeteoRepositoryImpl : WeatherRepository {
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.computation())
             .map(mapper::mapOpenMeteoToWeatherData)
-            .flatMapCompletable { saveWeatherToLocal(it) }
+            .flatMapCompletable {
+                saveWeatherToLocal(it)
+            }
 
         return data
     }
@@ -71,18 +73,23 @@ object OpenMeteoRepositoryImpl : WeatherRepository {
     }
 
     private fun getWeatherFromLocal(cityName: String): Single<WeatherData> {
-        val weatherList = weatherForecastDao.getWeatherList(
-            cityName = cityName.trim(),
-            sourceId = currentSourceName.trim()
-        )
-        var weatherData: WeatherData? = null
-        if (weatherList.size > 0) {
-            weatherData =
-                mapper.mapForecastDbModelListToWeatherData(weatherList)
-        } else {
-            weatherData = WeatherData(cityName = cityName, cityLongitude = lonOpenMeteo, cityLatitude = latOpenMeteo)
-        }
         return Single.fromCallable {
+            val weatherList = weatherForecastDao.getWeatherList(
+                cityName = cityName.trim(),
+                sourceId = currentSourceName.trim()
+            )
+            Log.e("ERROR", "данные запрошены")
+            var weatherData: WeatherData? = null
+            if (weatherList.size > 0) {
+                weatherData =
+                    mapper.mapForecastDbModelListToWeatherData(weatherList)
+            } else {
+                weatherData = WeatherData(
+                    cityName = cityName,
+                    cityLongitude = lonOpenMeteo,
+                    cityLatitude = latOpenMeteo
+                )
+            }
             weatherData
         }
     }
@@ -93,8 +100,13 @@ object OpenMeteoRepositoryImpl : WeatherRepository {
         val longitude2 = weatherData.cityLongitude
         val weatherList = mutableListOf<ForecastDbModel>()
         val cityName = currentCityName
-        if (weatherData.forecastList.isNotEmpty()){
-            weatherForecastDao.clearData(sourceId = currentSourceName, cityId = weatherData.cityName)
+        if (weatherData.forecastList.isNotEmpty()) {
+            weatherForecastDao.clearData(
+                sourceId = currentSourceName,
+//                cityId = weatherData.cityName
+            )
+            Log.e("ERROR", "OpenMeteo затерли $currentSourceName ")
+
         }
 
         return Completable.fromCallable {
@@ -113,7 +125,7 @@ object OpenMeteoRepositoryImpl : WeatherRepository {
                 weatherList.add(model)
             }
             weatherForecastDao.addForecastList(weatherList)
-            Log.e("ERROR", "recording List is complete")
+            Log.e("ERROR", "OpenMeteo recording $cityName List is complete")
         }
     }
 
