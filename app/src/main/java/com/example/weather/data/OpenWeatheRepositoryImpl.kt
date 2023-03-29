@@ -105,6 +105,9 @@ object OpenWeatheRepositoryImpl : WeatherRepository {
         val latitude2 = weatherData.cityLatitude
         val longitude2 = weatherData.cityLongitude
         val weatherList = mutableListOf<ForecastDbModel>()
+        if (weatherData.forecastList.isNotEmpty()){
+            weatherForecastDao.clearData(sourceId = currentSourceName, cityId = weatherData.cityName)
+        }
         val cityName = weatherData.cityName
         return Completable.fromCallable {
             weatherData.forecastList.forEach {
