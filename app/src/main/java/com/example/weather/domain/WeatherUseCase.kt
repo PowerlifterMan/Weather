@@ -8,7 +8,7 @@ import com.example.weather.presentation.main.SOURCE_OPEN_WEATHER
 import io.reactivex.rxjava3.core.Single
 
 class WeatherUseCase() {
-
+    val weatherDataList = mutableListOf<WeatherData>()
     fun getForecast(
         lat: Float = DEFAULT_LATITUDE,
         lon: Float = DEFAULT_LONGITUDE,
@@ -28,6 +28,34 @@ class WeatherUseCase() {
             else -> OpenWeatheRepositoryImpl
         }
         return currentRepo.getWeather(lat = lat, lon = lon, cityName = city)
+    }
+
+    fun getForecast(
+        lat: Float = DEFAULT_LATITUDE,
+        lon: Float = DEFAULT_LONGITUDE,
+        sourceNameList: List<String> = listOf(),
+        city: String
+    ): Single<List<WeatherData>> {
+        if (sourceNameList.isNotEmpty()){
+            sourceNameList.forEach { sourceName ->
+                val currentRepo: WeatherRepository = when (sourceName) {
+                    SOURCE_OPEN_METEO -> {
+                        OpenMeteoRepositoryImpl
+                    }
+                    SOURCE_OPEN_WEATHER -> {
+                        OpenWeatheRepositoryImpl
+                    }
+                    SOURCE_NINJAS -> {
+                        NinjasRepositoryImpl
+                    }
+                    else -> OpenWeatheRepositoryImpl
+                }
+                currentRepo.getWeather(lat = lat, lon = lon, cityName = city).map {
+                    weatherDataList.add(it)
+                }
+            }
+        }
+        return Single.just(weatherDataList)
     }
 
     fun getCityDto(city: String): Single<List<GeocodingDTO>> {

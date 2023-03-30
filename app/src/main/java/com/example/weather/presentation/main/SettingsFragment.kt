@@ -55,7 +55,6 @@ class SettingsFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
-//    inflater.inflate(R.layout.fragment_settings, container, false)
         binding.btnSubmit.setOnClickListener {
             val result = bundleOf(
                 "source" to currentSource

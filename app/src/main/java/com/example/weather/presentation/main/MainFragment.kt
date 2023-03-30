@@ -3,6 +3,7 @@ package com.example.weather.presentation.main
 import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -23,6 +24,7 @@ import java.util.*
 
 class MainFragment : Fragment() {
     private lateinit var viewModel: MainViewModel
+    private val sourceList = mutableListOf<String>()
     private var _binding: FragmentMainBinding? = null
     private var currentSourceName: String = SOURCE_OPEN_WEATHER
     private val binding: FragmentMainBinding
@@ -41,6 +43,16 @@ class MainFragment : Fragment() {
             currentSourceName = bundle.getString("source") ?: SOURCE_OPEN_WEATHER
             viewModel.setDataSourceType(currentSourceName)
             viewModel.getForecastData(currentSourceName)
+        }
+        setFragmentResultListener("settingsFragment2Checked") { requestKey, bundle ->
+            sourceList.clear()
+            if (bundle.getBoolean("sourceChecked1")) sourceList.add(SOURCE_NINJAS)
+            if (bundle.getBoolean("sourceChecked2")) sourceList.add(SOURCE_OPEN_WEATHER)
+            if (bundle.getBoolean("sourceChecked3")) sourceList.add(SOURCE_OPEN_METEO)
+            Log.e("SETTING", sourceList.toString())
+            if (sourceList.isNotEmpty()) {
+                viewModel.setListDataSource(sourceList)
+            }
         }
         setFragmentResultListener("requestCity") { requestKey, bundle ->
             val latitude = bundle.getString("lat")
@@ -104,7 +116,10 @@ class MainFragment : Fragment() {
     }
 
     private fun changeSettings() {
+        /* старое**
         findNavController().navigate(R.id.action_mainFragment_to_settingsFragment)
+        */
+        findNavController().navigate(R.id.action_mainFragment_to_settings2Fragment)
     }
 
     private fun getNewCity(): CurrentCity {

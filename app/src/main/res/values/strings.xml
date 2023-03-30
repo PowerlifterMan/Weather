@@ -6,4 +6,9 @@
     <string name="search_caption">Найти</string>
     <string name="moskwa_text">Москва</string>
     <string name="enter_address_hint">Начните вводить адрес тут</string>
+    <string name="checkBoxOption1Text">NINJAS WEATHER</string>
+    <string name="checkBoxOption2Text">OPEN WEATHER</string>
+    <string name="checkBoxOption3Text">OPEN METEO</string>
+    <string name="btnOKtext">OK</string>
+    <string name="setting2TitleText">Выберите источники</string>
 </resources>

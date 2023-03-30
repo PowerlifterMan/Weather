@@ -30,6 +30,9 @@ class MainViewModel : ViewModel() {
     var dataSourceType = MutableLiveData<String>()
         private set
 
+    private var listOfDataSource = MutableLiveData<List<String>>()
+        private set
+
     //val currentResponce = openWeatherUseCase.getForecastOpenWeather()
     val c: Int = 2
 
@@ -48,8 +51,17 @@ class MainViewModel : ViewModel() {
         return myCityName
     }
 
+
     fun setDataSourceType(sourceName: String) {
         dataSourceType.value = sourceName
+    }
+
+    fun setListDataSource(list: List<String>) {
+        listOfDataSource.value = list
+    }
+
+    fun getListDataSource(): LiveData<List<String>> {
+        return listOfDataSource
     }
 
     fun getDataSourceType(): LiveData<String> {
@@ -77,25 +89,27 @@ class MainViewModel : ViewModel() {
             sourceName = sourceName,
             city = myCityName.value ?: ""
         ).observeOn(AndroidSchedulers.mainThread())
-            .subscribe ({ data ->
+            .subscribe({ data ->
                 val tempOnTime = TempOnTime(
                     timestamp = data.currentTemp.timeStamp,
                     temp = data.currentTemp.temperatureMax,
                     tempFeelsLike = data.currentTemp.temperatureFeelsLikeMax
                 )
                 myCityCurrentWeather.value = tempOnTime
-                rvRow.value =  data.forecastList.map { item -> RecyclerViewItem(
-                    dayNumber = sdf.format(item.timeStamp.toLong() * 1000),
-                    temperature = item.temperatureMax.toString(),
-                    description = item.temperatureFeelsLikeMax.toString()
-                ) }
+                rvRow.value = data.forecastList.map { item ->
+                    RecyclerViewItem(
+                        dayNumber = sdf.format(item.timeStamp.toLong() * 1000),
+                        temperature = item.temperatureMax.toString(),
+                        description = item.temperatureFeelsLikeMax.toString()
+                    )
+                }
 
             },
-        { error ->
-            error.printStackTrace()
-            Log.e("ERROR", error.message.toString())
+                { error ->
+                    error.printStackTrace()
+                    Log.e("ERROR", error.message.toString())
 
-        })
+                })
 //        when (sourceName) {
 //            SOURCE_OPEN_METEO -> {
 //                openMeteoUseCase.getForecastOpenMeteo(
