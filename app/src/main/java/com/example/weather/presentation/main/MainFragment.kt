@@ -35,9 +35,11 @@ class MainFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        sourceList.add(SOURCE_OPEN_WEATHER)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         viewModel.setCurrentCity(lat = 55.75f, lon = 37.61f, city = "Москва")
         viewModel.setDataSourceType(currentSourceName)
+        viewModel.setListDataSource(sourceList)
 
         setFragmentResultListener("requestDataSource") { requestKey, bundle ->
             currentSourceName = bundle.getString("source") ?: SOURCE_OPEN_WEATHER
@@ -74,8 +76,8 @@ class MainFragment : Fragment() {
         val city = viewModel.myCityName
         val currentWeather = viewModel.getCurrentWeather()
         val dataSourceTypeLD = viewModel.dataSourceType
-        viewModel.getForecastData(currentSourceName)
-
+//        viewModel.getForecastData(currentSourceName)
+        viewModel.getForecastDataCombine()
         with(binding) {
             cardView.setBackgroundResource(R.drawable.low_cloud_cover)
             tvLocation.setOnClickListener {

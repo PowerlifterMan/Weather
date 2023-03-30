@@ -35,7 +35,8 @@ class WeatherUseCase() {
         lon: Float = DEFAULT_LONGITUDE,
         sourceNameList: List<String> = listOf(),
         city: String
-    ): Single<List<WeatherData>> {
+    ): Single<WeatherData> {
+        val sources = mutableListOf<Single<WeatherData>>()
         if (sourceNameList.isNotEmpty()){
             sourceNameList.forEach { sourceName ->
                 val currentRepo: WeatherRepository = when (sourceName) {
@@ -50,12 +51,18 @@ class WeatherUseCase() {
                     }
                     else -> OpenWeatheRepositoryImpl
                 }
-                currentRepo.getWeather(lat = lat, lon = lon, cityName = city).map {
-                    weatherDataList.add(it)
-                }
+                sources.add(currentRepo.getWeather(lat = lat, lon = lon, cityName = city)
+                    )
             }
+
         }
-        return Single.just(weatherDataList)
+        return Single.zip(sources, { dataArray ->
+//            dataArray[0] as WeatherData
+            var result = WeatherData()
+            dataArray[0] as WeatherData
+
+        })
+
     }
 
     fun getCityDto(city: String): Single<List<GeocodingDTO>> {

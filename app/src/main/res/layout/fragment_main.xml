@@ -31,7 +31,7 @@
         android:background="@color/teal_700"
         app:cardBackgroundColor="@color/teal_700"
         app:cardCornerRadius="20dp"
-        app:layout_constraintBottom_toBottomOf="@id/guideline40"
+        app:layout_constraintBottom_toBottomOf="@id/guideline30"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +44,7 @@
             android:layout_gravity="center|top"
             android:layout_margin="28dp"
             android:text="LOCATION"
-            android:textSize="32dp" />
+            android:textSize="24dp" />
 
         <TextView
             android:id="@+id/tvCurrentTemp"
@@ -53,7 +53,7 @@
             android:layout_gravity="center"
             android:layout_margin="28dp"
             android:text="TEMP"
-            android:textSize="32dp" />
+            android:textSize="24dp" />
 
 
         <TextView
@@ -63,18 +63,34 @@
             android:layout_gravity="bottom|center_horizontal"
             android:layout_margin="28dp"
             android:text="0писание погоды"
-            android:textSize="32dp" />
+            android:textSize="24dp" />
     </androidx.cardview.widget.CardView>
 
+    <com.github.mikephil.charting.charts.BarChart
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="2dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline60"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guideline30" />
+
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline40"
+        android:id="@+id/guideline30"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_begin="219dp" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline80"
+        android:id="@+id/guideline60"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="292dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline90"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -85,14 +101,13 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="@id/guideline80"
+        app:layout_constraintBottom_toBottomOf="@id/guideline90"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/guideline40" />
+        app:layout_constraintTop_toBottomOf="@+id/guideline60" />
 
     <ImageView
         android:id="@+id/btnChangeSettings"

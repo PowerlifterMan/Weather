@@ -53,7 +53,7 @@ object OpenWeatheRepositoryImpl : WeatherRepository {
             appId = OPEN_WEATHER_API_KEY,
             units = "metric",
             lang = "ru",
-            nDays = 5
+//            nDays = 5
         )
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.computation())
