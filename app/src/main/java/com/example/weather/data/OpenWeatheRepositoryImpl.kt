@@ -44,7 +44,7 @@ object OpenWeatheRepositoryImpl : WeatherRepository {
         )
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.computation())
-            .map(mapper::mapOpenForecastToWeatherData)
+            .map(mapper::mapOpenWeatherToWeatherData)
 //            .map {  }
             .flatMapCompletable { saveWeatherToLocal(it) }
         return data

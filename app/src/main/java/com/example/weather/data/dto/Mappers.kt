@@ -90,7 +90,7 @@ class Mappers {
         )
 
 
-    fun mapOpenForecastToWeatherData(dTO: OpenWeatherForecastDTO) =
+    fun mapOpenWeatherToWeatherData(dTO: OpenWeatherForecastDTO) =
         WeatherData(
             cityName = dTO.city.cityName,
             cityLatitude = dTO.city.cityCoord.coordLatitude,

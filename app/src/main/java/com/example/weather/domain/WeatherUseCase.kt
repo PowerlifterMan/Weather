@@ -6,6 +6,9 @@ import com.example.weather.presentation.main.SOURCE_NINJAS
 import com.example.weather.presentation.main.SOURCE_OPEN_METEO
 import com.example.weather.presentation.main.SOURCE_OPEN_WEATHER
 import io.reactivex.rxjava3.core.Single
+import java.text.SimpleDateFormat
+import java.time.Period
+import java.util.*
 
 class WeatherUseCase() {
     val weatherDataList = mutableListOf<WeatherData>()
@@ -37,7 +40,7 @@ class WeatherUseCase() {
         city: String
     ): Single<WeatherData> {
         val sources = mutableListOf<Single<WeatherData>>()
-        if (sourceNameList.isNotEmpty()){
+        if (sourceNameList.isNotEmpty()) {
             sourceNameList.forEach { sourceName ->
                 val currentRepo: WeatherRepository = when (sourceName) {
                     SOURCE_OPEN_METEO -> {
@@ -51,15 +54,16 @@ class WeatherUseCase() {
                     }
                     else -> OpenWeatheRepositoryImpl
                 }
-                sources.add(currentRepo.getWeather(lat = lat, lon = lon, cityName = city)
-                    )
+                sources.add(
+                    currentRepo.getWeather(lat = lat, lon = lon, cityName = city)
+                )
             }
 
         }
         return Single.zip(sources, { dataArray ->
             val resultWeatherData = WeatherData()
-            dataArray.forEachIndexed() { index, weatherData ->
-
+            dataArray.forEachIndexed() { index, value ->
+                weatherDataList = combineWeatherData(summaryData = resultWeatherData, data = value)
             }
 //            dataArray[0] as WeatherData
 
@@ -75,5 +79,13 @@ class WeatherUseCase() {
         const val DEFAULT_LONGITUDE = 42.86f
         const val DEFAULT_CITY = "Yessentuki"
         const val DEFAULT_LATITUDE = 44.044f
+    }
+
+    fun combineWeatherData(summaryData: WeatherData, data: WeatherData): WeatherData {
+        val currentDate = SimpleDateFormat("dd/M/yyyy").format(Date())
+        val list = data.forecastList
+        //val period = Period(0,0,1)
+        val summaryList = summaryData.forecastList
+        return summaryData
     }
 }
