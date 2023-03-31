@@ -57,9 +57,11 @@ class WeatherUseCase() {
 
         }
         return Single.zip(sources, { dataArray ->
+            val resultWeatherData = WeatherData()
+            dataArray.forEachIndexed() { index, weatherData ->
+
+            }
 //            dataArray[0] as WeatherData
-            var result = WeatherData()
-            dataArray[0] as WeatherData
 
         })
 
