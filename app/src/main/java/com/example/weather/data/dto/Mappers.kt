@@ -17,7 +17,7 @@ import java.util.*
 class Mappers {
 
     val startDayTime = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        LocalDate.now().atStartOfDay(ZoneId.systemDefault())
+        LocalDate.now().atStartOfDay(ZoneId.systemDefault()).
     } else {
         TODO("VERSION.SDK_INT < O")
     }
