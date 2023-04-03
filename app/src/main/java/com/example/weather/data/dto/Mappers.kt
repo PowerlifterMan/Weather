@@ -1,5 +1,6 @@
 package com.example.weather.data.dto
 
+import android.os.Build
 import com.example.weather.OpenMeteo.DailyDTO
 import com.example.weather.OpenMeteo.OpenMeteoCurrentWeatherDTO
 import com.example.weather.OpenMeteo.OpenMeteoDTO
@@ -9,12 +10,24 @@ import com.example.weather.retrofit.openWeather.DayForecast
 import com.example.weather.retrofit.openWeather.OpenWeatherForecastDTO
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.ZoneId
 import java.util.*
 
 class Mappers {
 
+    val startDayTime = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        LocalDate.now().atStartOfDay(ZoneId.systemDefault())
+    } else {
+        TODO("VERSION.SDK_INT < O")
+    }
 
     fun mapForecastDbModelListToWeatherData(list: List<ForecastDbModel>): WeatherData {
+        var list1 = mutableListOf<ForecastDbModel>()
+        repeat(5) { counter ->
+            val currenrDayTime = startDayTime + SECONDS_IN_DAY + 9*SECONDS_IN_HOUR
+            list.first { it.timeStamp > (startDayTime + counter * SECONDS_IN_DAY + 9 * SECONDS_IN_HOUR) }
+        }
 
         return WeatherData(
             cityName = "",
@@ -154,5 +167,7 @@ class Mappers {
         const val DEFAULT_NAME = "noname"
         const val DEFAULT_FLOAT_VALUE = -1f
         const val DEFAULT_INT_VALUE = -1
+        const val SECONDS_IN_DAY = 86400f
+        const val SECONDS_IN_HOUR = 3600f
     }
 }
