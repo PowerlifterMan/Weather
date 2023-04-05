@@ -19,6 +19,9 @@ import com.example.weather.domain.CurrentCity
 import com.example.weather.domain.RecyclerViewItem
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import java.lang.RuntimeException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -31,7 +34,10 @@ class MainFragment : Fragment() {
     private var currentSourceName: String = SOURCE_OPEN_WEATHER
     private val binding: FragmentMainBinding
         get() = _binding ?: throw RuntimeException("FragmentMainBinding? == null")
-    private var barChartLabels = mutableListOf<String>()
+    private var barChartLabels = mutableListOf<String>("one", "two", "three")
+    private val lineEntry = mutableListOf<Entry>(Entry(20f, 0), Entry(31f, 1), Entry(34f, 2))
+    private val lineDataset = LineDataSet(lineEntry, "firstLine")
+
     private var barChartEntries = mutableListOf<BarEntry>()
     private var barChartDataSet = BarDataSet(barChartEntries, BAR_DATA_SET_NAME1)
     val adapter = ForecastAdapter()
@@ -46,7 +52,6 @@ class MainFragment : Fragment() {
         viewModel.setCurrentCity(lat = 55.75f, lon = 37.61f, city = "Москва")
         viewModel.setDataSourceType(currentSourceName)
         viewModel.setListDataSource(sourceList)
-
         setFragmentResultListener("requestDataSource") { requestKey, bundle ->
             currentSourceName = bundle.getString("source") ?: SOURCE_OPEN_WEATHER
             viewModel.setDataSourceType(currentSourceName)
@@ -78,12 +83,17 @@ class MainFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        lineDataset.color = resources.getColor(R.color.grey_blue)
+//        val chartData = LineData(barChartLabels,lineDataset )
         val forecastList = viewModel.getForecast()
+
         val city = viewModel.myCityName
         val currentWeather = viewModel.getCurrentWeather()
         val dataSourceTypeLD = viewModel.dataSourceType
 //        viewModel.getForecastData(currentSourceName)
         viewModel.getForecastDataCombine()
+        val lineDataLD = viewModel.chartLineData
+        binding.fragMainBarChart.data = viewModel.getLineChartData()
         with(binding) {
             cardView.setBackgroundResource(R.drawable.low_cloud_cover)
             tvLocation.setOnClickListener {
@@ -104,7 +114,6 @@ class MainFragment : Fragment() {
                 changeCurrentDayInfo(item)
             }
         }
-        binding.fragMainBarChart.setData(barChartDataSet)
         forecastList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
@@ -113,6 +122,9 @@ class MainFragment : Fragment() {
             binding.tvLocation.text = it
         }
 
+        lineDataLD.observe(viewLifecycleOwner) { it ->
+            binding.fragMainBarChart.data = it
+        }
 //        dataSourceTypeLD.observe(viewLifecycleOwner){
 //            viewModel.getForecastData(currentSourceName)
 //        }

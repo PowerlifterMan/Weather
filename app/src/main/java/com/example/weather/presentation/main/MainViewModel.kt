@@ -11,6 +11,9 @@ import com.example.weather.domain.RecyclerViewItem
 import com.example.weather.domain.TempOnTime
 import com.example.weather.domain.WeatherUseCase
 import com.example.weather.data.NinjasRepositoryImpl
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import java.text.SimpleDateFormat
 import java.util.*
@@ -40,7 +43,10 @@ class MainViewModel : ViewModel() {
         private set(value) {
             field = value
         }
+    val chartLineData = MutableLiveData<LineData>()
+
     private val myLongitude = MutableLiveData<Float>()
+
     private val myLatitude = MutableLiveData<Float>()
     private val myCityCurrentWeather = MutableLiveData<TempOnTime>()
     val rvRow = MutableLiveData<List<RecyclerViewItem>>()
@@ -76,6 +82,28 @@ class MainViewModel : ViewModel() {
         return rvRow
     }
 
+    private fun setLineChartData() {
+        val lineLabels = mutableListOf<String>()
+        rvRow.value?.forEach {
+            lineLabels.add(it.dayNumber)
+        }
+        val lineLabels2 = rvRow.value?.map { it ->
+            it.dayNumber
+        }
+        val lineEntryList = rvRow.value?.mapIndexed { index, item ->
+            Entry(item.temperature.toFloat(), index)
+
+        }
+        val lineDataSet = LineDataSet(lineEntryList, "BLUE LINE")
+
+        chartLineData.value = LineData(lineLabels2,lineDataSet)
+
+    }
+
+    fun getLineChartData(): LineData? {
+        return chartLineData.value
+    }
+
     fun setCurrentCity(lat: Float, lon: Float, city: String) {
         myCityName.value = city
         myLatitude.value = lat
@@ -103,6 +131,7 @@ class MainViewModel : ViewModel() {
                         description = item.temperatureFeelsLikeMax.toString()
                     )
                 }
+                setLineChartData()
 
             },
                 { error ->
@@ -112,6 +141,7 @@ class MainViewModel : ViewModel() {
                 })
 
     }
+
     fun getForecastDataCombine() {
         weatherUseCase.getForecast(
             lat = myLatitude.value ?: 0f,

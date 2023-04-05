@@ -66,7 +66,7 @@
             android:textSize="24dp" />
     </androidx.cardview.widget.CardView>
 
-    <com.github.mikephil.charting.charts.BarChart
+    <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/frag_main_barChart"
         android:layout_width="match_parent"
         android:layout_height="0dp"
