@@ -1,6 +1,7 @@
 package com.example.weather.domain
 
 import android.os.Build
+import androidx.room.util.copy
 import com.example.weather.data.*
 import com.example.weather.presentation.main.DEFAULT_SOURCE_NAME
 import com.example.weather.presentation.main.SOURCE_NINJAS
@@ -98,7 +99,8 @@ class WeatherUseCase() {
         summaryData.cityName = data.cityName
         summaryData.currentTemp = combineCurrentTemp(summaryData.currentTemp, data.currentTemp)
         val list = data.forecastList
-        summaryData.forecastList = combineListCurrentTemp(summaryData.forecastList, data.forecastList)
+        val oldList = summaryData.forecastList`
+        summaryData.forecastList = combineListCurrentTemp(summaryData.forecastList.copy(), data.forecastList)
         //val period = Period(0,0,1)
         val calendar = Calendar.getInstance()
         val summaryList = summaryData.forecastList

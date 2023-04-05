@@ -21,12 +21,18 @@ class Mappers {
     } else {
         TODO("VERSION.SDK_INT < O")
     }
+    val timeDayBegin = (startDayTime + 8 * SECONDS_IN_HOUR) * 1000
+    val timeDayEnd = startDayTime + 18 * SECONDS_IN_HOUR
+
 
     fun mapForecastDbModelListToWeatherData(list: List<ForecastDbModel>): WeatherData {
-        var list1 = mutableListOf<ForecastDbModel>()
+        var resultList = mutableListOf<ForecastDbModel>()
+        resultList.add(list.find{ it.timeStamp>timeDayBegin} ?:list[0])
         repeat(5) { counter ->
-            val currenrDayTime = startDayTime + SECONDS_IN_DAY + 9*SECONDS_IN_HOUR
-            list.first { it.timeStamp > (startDayTime + counter * SECONDS_IN_DAY + 9 * SECONDS_IN_HOUR) }
+            val item = list.find{
+                it.timeStamp > (timeDayBegin + counter * SECONDS_IN_DAY*1000)
+            } ?: list[0]
+            resultList.add(item)
         }
 
         return WeatherData(
@@ -34,7 +40,7 @@ class Mappers {
             cityLatitude = list[0].latitude,
             cityLongitude = list[0].longitude,
             currentTemp = mapDbModelToCurrentTemp(list[0]),
-            forecastList = list.map { item -> mapDbModelToCurrentTemp(item) })
+            forecastList = resultList.map { item -> mapDbModelToCurrentTemp(item) })
 
     }
 
