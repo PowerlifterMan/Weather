@@ -21,7 +21,7 @@ class Mappers {
     } else {
         TODO("VERSION.SDK_INT < O")
     }
-    val timeDayBegin = (startDayTime + 8 * SECONDS_IN_HOUR) * 1000
+    val timeDayBegin = (startDayTime + 8 * SECONDS_IN_HOUR)
     val timeDayEnd = startDayTime + 18 * SECONDS_IN_HOUR
 
 
@@ -30,7 +30,7 @@ class Mappers {
         resultList.add(list.find{ it.timeStamp>timeDayBegin} ?:list[0])
         repeat(5) { counter ->
             val item = list.find{
-                it.timeStamp > (timeDayBegin + counter * SECONDS_IN_DAY*1000)
+                it.timeStamp > (timeDayBegin + counter * SECONDS_IN_DAY)
             } ?: list[0]
             resultList.add(item)
         }

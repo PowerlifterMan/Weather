@@ -67,8 +67,10 @@
     </androidx.cardview.widget.CardView>
 
     <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/frag_main_barChart"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_margin="8dp"
         android:layout_marginBottom="2dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline60"
         app:layout_constraintEnd_toEndOf="parent"

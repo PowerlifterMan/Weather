@@ -17,6 +17,8 @@ import com.example.weather.R
 import com.example.weather.databinding.FragmentMainBinding
 import com.example.weather.domain.CurrentCity
 import com.example.weather.domain.RecyclerViewItem
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
 import java.lang.RuntimeException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -29,7 +31,11 @@ class MainFragment : Fragment() {
     private var currentSourceName: String = SOURCE_OPEN_WEATHER
     private val binding: FragmentMainBinding
         get() = _binding ?: throw RuntimeException("FragmentMainBinding? == null")
+    private var barChartLabels = mutableListOf<String>()
+    private var barChartEntries = mutableListOf<BarEntry>()
+    private var barChartDataSet = BarDataSet(barChartEntries, BAR_DATA_SET_NAME1)
     val adapter = ForecastAdapter()
+
     var myCity = CurrentCity()
 
 
@@ -84,19 +90,21 @@ class MainFragment : Fragment() {
                 myCity = getNewCity()
 
             }
-            binding.btnChangeSettings.setOnClickListener {
+            btnChangeSettings.setOnClickListener {
                 changeSettings()
             }
             forecastRV.layoutManager =
                 LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
             forecastRV.adapter = adapter
+
+
         }
         adapter.onItemClickListener = object : ForecastAdapter.OnItemClickListener {
             override fun itemClick(item: RecyclerViewItem) {
                 changeCurrentDayInfo(item)
             }
         }
-
+        binding.fragMainBarChart.setData(barChartDataSet)
         forecastList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
@@ -155,6 +163,7 @@ class MainFragment : Fragment() {
 
     companion object {
         fun newInstance() = MainFragment()
+        const val BAR_DATA_SET_NAME1 = "AVERAGE TEMP"
         const val OPEN_WEATHER_API_KEY = "5d1db59ebde74404687cd4a218b50859"
     }
 }

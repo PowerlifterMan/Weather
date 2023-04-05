@@ -70,7 +70,7 @@ class WeatherUseCase() {
 
         }
         return Single.zip(sources, { dataArray ->
-            var resultWeatherData = WeatherData()
+            var resultWeatherData = dataArray[0] as WeatherData
             dataArray.forEachIndexed() { index, value ->
                 resultWeatherData =
                     combineWeatherData(summaryData = resultWeatherData, data = value as WeatherData)
@@ -99,8 +99,8 @@ class WeatherUseCase() {
         summaryData.cityName = data.cityName
         summaryData.currentTemp = combineCurrentTemp(summaryData.currentTemp, data.currentTemp)
         val list = data.forecastList
-        val oldList = summaryData.forecastList`
-        summaryData.forecastList = combineListCurrentTemp(summaryData.forecastList.copy(), data.forecastList)
+        val oldList = summaryData.forecastList.toList()
+        summaryData.forecastList = combineListCurrentTemp(oldList, data.forecastList)
         //val period = Period(0,0,1)
         val calendar = Calendar.getInstance()
         val summaryList = summaryData.forecastList
