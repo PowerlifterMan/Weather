@@ -82,7 +82,7 @@ class MainViewModel : ViewModel() {
         return rvRow
     }
 
-    private fun setLineChartData() {
+     fun setLineChartData() {
         val lineLabels = mutableListOf<String>()
         rvRow.value?.forEach {
             lineLabels.add(it.dayNumber)
@@ -132,7 +132,6 @@ class MainViewModel : ViewModel() {
                     )
                 }
                 setLineChartData()
-
             },
                 { error ->
                     error.printStackTrace()

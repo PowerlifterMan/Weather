@@ -116,6 +116,7 @@ class MainFragment : Fragment() {
         }
         forecastList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
+            viewModel.setLineChartData()
         }
 
         city.observe(viewLifecycleOwner) {
