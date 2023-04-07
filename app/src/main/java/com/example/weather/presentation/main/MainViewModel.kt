@@ -11,6 +11,9 @@ import com.example.weather.domain.RecyclerViewItem
 import com.example.weather.domain.TempOnTime
 import com.example.weather.domain.WeatherUseCase
 import com.example.weather.data.NinjasRepositoryImpl
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
@@ -44,6 +47,7 @@ class MainViewModel : ViewModel() {
             field = value
         }
     val chartLineData = MutableLiveData<LineData>()
+    val chartBarData = MutableLiveData<BarData>()
 
     private val myLongitude = MutableLiveData<Float>()
 
@@ -82,21 +86,25 @@ class MainViewModel : ViewModel() {
         return rvRow
     }
 
-     fun setLineChartData() {
-        val lineLabels = mutableListOf<String>()
+    fun setLineChartData() {
+        val chartLabels = mutableListOf<String>()
         rvRow.value?.forEach {
-            lineLabels.add(it.dayNumber)
+            chartLabels.add(it.dayNumber)
         }
         val lineLabels2 = rvRow.value?.map { it ->
             it.dayNumber
         }
         val lineEntryList = rvRow.value?.mapIndexed { index, item ->
             Entry(item.temperature.toFloat(), index)
-
         }
+        val barEntryList = rvRow.value?.mapIndexed { index, item ->
+            BarEntry(item.temperature.toFloat(),index)
+        }
+        val barDataSet = BarDataSet(barEntryList,"WEATHER")
         val lineDataSet = LineDataSet(lineEntryList, "BLUE LINE")
 
-        chartLineData.value = LineData(lineLabels2,lineDataSet)
+        chartLineData.value = LineData(chartLabels, lineDataSet)
+        chartBarData.value = BarData(chartLabels,barDataSet)
 
     }
 

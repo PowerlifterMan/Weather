@@ -93,6 +93,7 @@ class MainFragment : Fragment() {
 //        viewModel.getForecastData(currentSourceName)
         viewModel.getForecastDataCombine()
         val lineDataLD = viewModel.chartLineData
+        val barDataLD = viewModel.chartBarData
         binding.fragMainBarChart.data = viewModel.getLineChartData()
         with(binding) {
             cardView.setBackgroundResource(R.drawable.low_cloud_cover)
