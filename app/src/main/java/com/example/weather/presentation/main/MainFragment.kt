@@ -20,7 +20,6 @@ import com.example.weather.domain.RecyclerViewItem
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import java.lang.RuntimeException
 import java.text.SimpleDateFormat
@@ -94,7 +93,8 @@ class MainFragment : Fragment() {
         viewModel.getForecastDataCombine()
         val lineDataLD = viewModel.chartLineData
         val barDataLD = viewModel.chartBarData
-        binding.fragMainBarChart.data = viewModel.getLineChartData()
+
+        binding.fragMainBarChart.data = viewModel.chartBarData.value
         with(binding) {
             cardView.setBackgroundResource(R.drawable.low_cloud_cover)
             tvLocation.setOnClickListener {
@@ -125,6 +125,9 @@ class MainFragment : Fragment() {
         }
 
         lineDataLD.observe(viewLifecycleOwner) { it ->
+//            binding.fragMainBarChart.data = it
+        }
+        barDataLD.observe(viewLifecycleOwner){
             binding.fragMainBarChart.data = it
         }
 //        dataSourceTypeLD.observe(viewLifecycleOwner){
@@ -133,7 +136,7 @@ class MainFragment : Fragment() {
 
         currentWeather.observe(viewLifecycleOwner) {
             binding.tvCurrentLocation.text = currentSourceName
-            binding.tvCurrentTemp.text = "${Math.round(it.temp).toString()} °C"
+            binding.tvCurrentTemp.text = "${(Math.round(it.temp*10) / 10).toString()} °C"
             binding.tvCaption.text =
                 "ощущается как ${(Math.round(it.tempFeelsLike * 10) / 10).toString()} °С"
         }

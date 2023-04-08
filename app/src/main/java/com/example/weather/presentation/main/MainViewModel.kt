@@ -87,11 +87,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun setLineChartData() {
-        val chartLabels = mutableListOf<String>()
-        rvRow.value?.forEach {
-            chartLabels.add(it.dayNumber)
-        }
-        val lineLabels2 = rvRow.value?.map { it ->
+        val chartLabels = rvRow.value?.map { it ->
             it.dayNumber
         }
         val lineEntryList = rvRow.value?.mapIndexed { index, item ->
@@ -108,7 +104,7 @@ class MainViewModel : ViewModel() {
 
     }
 
-    fun getLineChartData(): LineData? {
+    fun getChartData(): LineData? {
         return chartLineData.value
     }
 
@@ -140,6 +136,7 @@ class MainViewModel : ViewModel() {
                     )
                 }
                 setLineChartData()
+
             },
                 { error ->
                     error.printStackTrace()

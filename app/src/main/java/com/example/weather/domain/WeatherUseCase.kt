@@ -69,14 +69,14 @@ class WeatherUseCase() {
             }
 
         }
-        return Single.zip(sources, { dataArray ->
+        return Single.zip(sources) { dataArray ->
             var resultWeatherData = dataArray[0] as WeatherData
             dataArray.forEachIndexed() { index, value ->
                 resultWeatherData =
                     combineWeatherData(summaryData = resultWeatherData, data = value as WeatherData)
             }
             resultWeatherData
-        })
+        }
 
     }
 
