@@ -117,6 +117,7 @@ class MainFragment : Fragment() {
         }
         forecastList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
+            binding.forecastRV.invalidate()
             viewModel.setLineChartData()
         }
 
@@ -129,6 +130,8 @@ class MainFragment : Fragment() {
         }
         barDataLD.observe(viewLifecycleOwner){
             binding.fragMainBarChart.data = it
+            binding.fragMainBarChart.invalidate()
+
         }
 //        dataSourceTypeLD.observe(viewLifecycleOwner){
 //            viewModel.getForecastData(currentSourceName)
