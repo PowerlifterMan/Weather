@@ -12,8 +12,9 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.text.DecimalFormat
+import javax.inject.Inject
 
-object OpenWeatheRepositoryImpl : WeatherRepository {
+class OpenWeatheRepositoryImpl @Inject constructor(): WeatherRepository {
     val currentSourceName = SOURCE_OPEN_WEATHER
     lateinit var currentCity: String
     val service = OpenWeatherCommon.retrofitService

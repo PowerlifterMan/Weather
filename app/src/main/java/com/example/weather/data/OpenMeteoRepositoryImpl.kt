@@ -11,8 +11,9 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.text.DecimalFormat
+import javax.inject.Inject
 
-object OpenMeteoRepositoryImpl : WeatherRepository {
+class OpenMeteoRepositoryImpl @Inject constructor(): WeatherRepository {
     val currentSourceName = SOURCE_OPEN_METEO
     val service = OpenMeteoCommon.retrofitService
     val mapper = Mappers()

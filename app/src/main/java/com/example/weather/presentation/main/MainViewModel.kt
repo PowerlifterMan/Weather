@@ -20,19 +20,17 @@ import com.github.mikephil.charting.data.LineDataSet
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
-class MainViewModel : ViewModel() {
-    private val ninjasRepository = NinjasRepositoryImpl
+
+class MainViewModel @Inject constructor(
+    private val weatherUseCase: WeatherUseCase
+) : ViewModel() {
 
     //    private val ninjasUseCase = NinjasUseCase(ninjasRepository)
-    private val openWeatherRepository = OpenWeatheRepositoryImpl
 
     //    private val openWeatherUseCase = WeatherUseCase(openWeatherRepository)
     val sdf = SimpleDateFormat("MM/dd-hh")
-    private val openMeteoRepository = OpenMeteoRepositoryImpl
-
-    //    private val openMeteoUseCase = OpenMeteoUseCase(openMeteoRepository)
-    private val weatherUseCase = WeatherUseCase()
     var dataSourceType = MutableLiveData<String>()
         private set
 

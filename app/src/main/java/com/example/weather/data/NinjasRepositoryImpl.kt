@@ -9,9 +9,10 @@ import com.example.weather.presentation.main.SOURCE_NINJAS
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
+import javax.inject.Inject
 
 
-object NinjasRepositoryImpl : WeatherRepository {
+class NinjasRepositoryImpl @Inject constructor() : WeatherRepository {
     val currentSourceName = SOURCE_NINJAS
     val service = NinjasCommon.retrofitService
     val mapper = Mappers()

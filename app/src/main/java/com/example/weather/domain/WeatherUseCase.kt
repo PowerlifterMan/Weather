@@ -1,8 +1,10 @@
 package com.example.weather.domain
 
 import android.os.Build
-import androidx.room.util.copy
 import com.example.weather.data.*
+import com.example.weather.di.NinjaRepo
+import com.example.weather.di.OpenMeteoRepo
+import com.example.weather.di.OpenWeatherRepo
 import com.example.weather.presentation.main.DEFAULT_SOURCE_NAME
 import com.example.weather.presentation.main.SOURCE_NINJAS
 import com.example.weather.presentation.main.SOURCE_OPEN_METEO
@@ -12,14 +14,25 @@ import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.*
+import javax.inject.Inject
 
-class WeatherUseCase() {
+class WeatherUseCase @Inject constructor(
+    @NinjaRepo
+    private val ninjaRepo: WeatherRepository,
+
+    @OpenMeteoRepo
+    private val openMeteoRepo: WeatherRepository,
+
+    @OpenWeatherRepo
+    private val openWeatherRepo: WeatherRepository,
+) {
     val weatherDataList = mutableListOf<WeatherData>()
     val startDayTime = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         LocalDate.now().atStartOfDay(ZoneId.systemDefault())
     } else {
         TODO("VERSION.SDK_INT < O")
     }
+
 
     fun getForecast(
         lat: Float = DEFAULT_LATITUDE,
@@ -29,15 +42,15 @@ class WeatherUseCase() {
     ): Single<WeatherData> {
         val currentRepo: WeatherRepository = when (sourceName) {
             SOURCE_OPEN_METEO -> {
-                OpenMeteoRepositoryImpl
+                openMeteoRepo
             }
             SOURCE_OPEN_WEATHER -> {
-                OpenWeatheRepositoryImpl
+                openWeatherRepo
             }
             SOURCE_NINJAS -> {
-                NinjasRepositoryImpl
+                openMeteoRepo
             }
-            else -> OpenWeatheRepositoryImpl
+            else -> openWeatherRepo
         }
         return currentRepo.getWeather(lat = lat, lon = lon, cityName = city)
     }
@@ -53,15 +66,15 @@ class WeatherUseCase() {
             sourceNameList.forEach { sourceName ->
                 val currentRepo: WeatherRepository = when (sourceName) {
                     SOURCE_OPEN_METEO -> {
-                        OpenMeteoRepositoryImpl
+                        openMeteoRepo
                     }
                     SOURCE_OPEN_WEATHER -> {
-                        OpenWeatheRepositoryImpl
+                        openWeatherRepo
                     }
                     SOURCE_NINJAS -> {
-                        NinjasRepositoryImpl
+                        ninjaRepo
                     }
-                    else -> OpenWeatheRepositoryImpl
+                    else -> openWeatherRepo
                 }
                 sources.add(
                     currentRepo.getWeather(lat = lat, lon = lon, cityName = city)
@@ -81,7 +94,7 @@ class WeatherUseCase() {
     }
 
     fun getCityDto(city: String): Single<List<GeocodingDTO>> {
-        return OpenWeatheRepositoryImpl.getCityByName(city)
+        return openWeatherRepo.getCityByName(city)
     }
 
     companion object {
@@ -107,18 +120,30 @@ class WeatherUseCase() {
         return summaryData
     }
 
-    private fun combineListCurrentTemp(averageForecastList: List<CurrentTemp>, forecastList: List<CurrentTemp>): List<CurrentTemp> {
-        return averageForecastList.mapIndexed { index, currentTemp ->  combineCurrentTemp(currentTemp, forecastList[index])}
+    private fun combineListCurrentTemp(
+        averageForecastList: List<CurrentTemp>,
+        forecastList: List<CurrentTemp>
+    ): List<CurrentTemp> {
+        return averageForecastList.mapIndexed { index, currentTemp ->
+            combineCurrentTemp(
+                currentTemp,
+                forecastList[index]
+            )
+        }
     }
 
-    private fun combineCurrentTemp(averageCurrentTemp: CurrentTemp, currentTemp: CurrentTemp): CurrentTemp {
+    private fun combineCurrentTemp(
+        averageCurrentTemp: CurrentTemp,
+        currentTemp: CurrentTemp
+    ): CurrentTemp {
 //        val tempMin = currentTemp.temperatureMin
-        return CurrentTemp(timeStamp = currentTemp.timeStamp,
-            temperatureMin = (averageCurrentTemp.temperatureMin + currentTemp.temperatureMin)/2,
-            temperatureMax = (averageCurrentTemp.temperatureMax + currentTemp.temperatureMax)/2,
-            temperatureFeelsLikeMin = (averageCurrentTemp.temperatureFeelsLikeMin + currentTemp.temperatureFeelsLikeMin)/2,
-            temperatureFeelsLikeMax = (averageCurrentTemp.temperatureFeelsLikeMax + currentTemp.temperatureFeelsLikeMax)/2,
-        humidity = currentTemp.humidity
+        return CurrentTemp(
+            timeStamp = currentTemp.timeStamp,
+            temperatureMin = (averageCurrentTemp.temperatureMin + currentTemp.temperatureMin) / 2,
+            temperatureMax = (averageCurrentTemp.temperatureMax + currentTemp.temperatureMax) / 2,
+            temperatureFeelsLikeMin = (averageCurrentTemp.temperatureFeelsLikeMin + currentTemp.temperatureFeelsLikeMin) / 2,
+            temperatureFeelsLikeMax = (averageCurrentTemp.temperatureFeelsLikeMax + currentTemp.temperatureFeelsLikeMax) / 2,
+            humidity = currentTemp.humidity
         )
 
     }
