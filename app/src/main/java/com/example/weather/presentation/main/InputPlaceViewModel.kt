@@ -9,10 +9,14 @@ import com.example.weather.data.dto.Mappers
 import com.example.weather.domain.CurrentCity
 import com.example.weather.domain.WeatherUseCase
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import javax.inject.Inject
 
-class InputPlaceViewModel : ViewModel() {
-    private val useCase = WeatherUseCase()
-    val mapper = Mappers()
+class InputPlaceViewModel @Inject constructor(
+    private val useCase: WeatherUseCase,
+    private val mapper: Mappers
+) : ViewModel() {
+//    private val useCase = WeatherUseCase()
+//    val mapper = Mappers()
 
     val cityList = MutableLiveData<List<GeocodingDTO>>()
     val message: MutableLiveData<String> by lazy {

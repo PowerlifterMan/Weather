@@ -13,8 +13,9 @@ import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.*
+import javax.inject.Inject
 
-class Mappers {
+class Mappers @Inject constructor() {
 
     val startDayTime = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant().epochSecond

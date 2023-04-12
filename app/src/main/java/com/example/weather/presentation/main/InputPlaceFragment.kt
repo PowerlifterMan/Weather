@@ -16,8 +16,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather.R
 import com.example.weather.databinding.FragmentInputPlaceBinding
+import com.example.weather.di.WeatherComponent
 import com.example.weather.domain.CurrentCity
 import com.example.weather.retrofit.daData.CityRvAdapter
+import javax.inject.Inject
 
 class InputPlaceFragment : DialogFragment() {
     //    private val dataModel: InputPlaceViewModel
@@ -27,8 +29,9 @@ class InputPlaceFragment : DialogFragment() {
     companion object {
         fun newInstance() = InputPlaceFragment()
     }
-
-    private lateinit var viewModel: InputPlaceViewModel
+    @Inject
+    lateinit var viewModel: InputPlaceViewModel
+//    private val component = WeatherComponent.
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
