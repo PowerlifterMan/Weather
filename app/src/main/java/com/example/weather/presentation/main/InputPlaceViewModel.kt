@@ -13,10 +13,10 @@ import javax.inject.Inject
 
 class InputPlaceViewModel @Inject constructor(
     private val useCase: WeatherUseCase,
-    private val mapper: Mappers
+//    private val mapper: Mappers
 ) : ViewModel() {
 //    private val useCase = WeatherUseCase()
-//    val mapper = Mappers()
+    val mapper = Mappers()
 
     val cityList = MutableLiveData<List<GeocodingDTO>>()
     val message: MutableLiveData<String> by lazy {
