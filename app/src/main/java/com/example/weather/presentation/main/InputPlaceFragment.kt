@@ -29,6 +29,7 @@ class InputPlaceFragment : DialogFragment() {
     companion object {
         fun newInstance() = InputPlaceFragment()
     }
+
     @Inject
     lateinit var viewModel: InputPlaceViewModel
 //    private val component = WeatherComponent.
@@ -37,6 +38,7 @@ class InputPlaceFragment : DialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         binding = FragmentInputPlaceBinding.inflate(inflater)
         return binding.root
     }

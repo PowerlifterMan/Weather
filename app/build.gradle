@@ -89,7 +89,14 @@ dependencies {
     */
     implementation 'com.github.PhilJay:MPAndroidChart:v2.2.3'
     //******DAGGER
-    implementation 'com.google.dagger:dagger:2.45'
-    kapt  'com.google.dagger:dagger-compiler:2.45'
+//    implementation 'com.google.dagger:dagger:2.45'
+    implementation 'com.google.dagger:dagger-android-support:2.45'
+    kapt  'com.google.dagger:dagger-compiler:2.45:'
+    kapt 'com.google.dagger:dagger-android-processor:2.45'
+
+//    dagger = { module = "com.google.dagger:dagger-android-support", version.ref = "dagger" }
+//    dagger_android_processor = {module = "com.google.dagger:dagger-android-processor", version.ref = "dagger" }
+//    dagger_compiller = {module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
+
 
 }
