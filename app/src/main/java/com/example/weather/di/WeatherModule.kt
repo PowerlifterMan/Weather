@@ -11,7 +11,7 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
-abstract class WeatherModule {
+abstract class  WeatherModule {
     @Singleton
     @Binds
     abstract fun bindWeatherUseCase(impl: WeatherUseCase): WeatherUseCase
@@ -30,9 +30,8 @@ abstract class WeatherModule {
     @Binds
     @OpenWeatherRepo
     abstract fun bindOpenWeatherRepo(impl: OpenWeatheRepositoryImpl): WeatherRepository
-
-
 }
+
 @Qualifier
 annotation class NinjaRepo
 

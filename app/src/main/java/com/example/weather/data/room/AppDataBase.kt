@@ -1,6 +1,7 @@
 package com.example.weather.data.room
 
 import android.app.Application
+import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -12,7 +13,9 @@ import javax.inject.Inject
     version = 4,
     exportSchema = false
 )
-abstract class AppDataBase (): RoomDatabase() {
+abstract class AppDataBase @Inject constructor(
+//    private val context: Context
+    ): RoomDatabase() {
 
     abstract fun weatherForecastDao(): WeatherForecastDao
 
