@@ -24,6 +24,7 @@ import com.github.mikephil.charting.data.LineDataSet
 import java.lang.RuntimeException
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
 
 class MainFragment : Fragment() {
@@ -43,11 +44,13 @@ class MainFragment : Fragment() {
 
     var myCity = CurrentCity()
 
+    @Inject
+    lateinit var viemodelFactory: ViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sourceList.add(SOURCE_OPEN_WEATHER)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(this,viemodelFactory).get(MainViewModel::class.java)
         viewModel.setCurrentCity(lat = 55.75f, lon = 37.61f, city = "Москва")
         viewModel.setDataSourceType(currentSourceName)
         viewModel.setListDataSource(sourceList)
