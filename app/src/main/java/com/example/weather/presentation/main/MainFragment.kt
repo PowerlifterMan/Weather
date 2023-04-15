@@ -1,6 +1,7 @@
 package com.example.weather.presentation.main
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
@@ -21,6 +22,9 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineDataSet
+import dagger.android.AndroidInjection
+import dagger.android.support.AndroidSupportInjection
+import dagger.android.support.DaggerFragment
 import java.lang.RuntimeException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -34,10 +38,8 @@ class MainFragment : Fragment() {
     private var currentSourceName: String = SOURCE_OPEN_WEATHER
     private val binding: FragmentMainBinding
         get() = _binding ?: throw RuntimeException("FragmentMainBinding? == null")
-    private var barChartLabels = mutableListOf<String>("one", "two", "three")
     private val lineEntry = mutableListOf<Entry>(Entry(20f, 0), Entry(31f, 1), Entry(34f, 2))
     private val lineDataset = LineDataSet(lineEntry, "firstLine")
-
     private var barChartEntries = mutableListOf<BarEntry>()
     private var barChartDataSet = BarDataSet(barChartEntries, BAR_DATA_SET_NAME1)
     val adapter = ForecastAdapter()
@@ -48,7 +50,9 @@ class MainFragment : Fragment() {
     lateinit var viemodelFactory: ViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
+
         sourceList.add(SOURCE_OPEN_WEATHER)
         viewModel = ViewModelProvider(this,viemodelFactory).get(MainViewModel::class.java)
         viewModel.setCurrentCity(lat = 55.75f, lon = 37.61f, city = "Москва")
@@ -80,6 +84,11 @@ class MainFragment : Fragment() {
             )
             viewModel.getForecastData(currentSourceName)
         }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
     }
 
     @SuppressLint("SetTextI18n")

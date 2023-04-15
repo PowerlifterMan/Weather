@@ -1,13 +1,21 @@
 package com.example.weather
 
+import android.app.Activity
 import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
 import com.example.weather.presentation.main.MainFragment
+import dagger.android.AndroidInjection
+import dagger.android.AndroidInjector
+import dagger.android.HasAndroidInjector
+import dagger.android.support.DaggerAppCompatActivity
+import javax.inject.Inject
 
 
 class MainActivity : AppCompatActivity() {
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,4 +44,5 @@ class MainActivity : AppCompatActivity() {
     companion object {
         const val INTERNET_REQUEST_CODE = 11
     }
+
 }

@@ -14,13 +14,15 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import java.text.DecimalFormat
 import javax.inject.Inject
 
-class OpenWeatheRepositoryImpl @Inject constructor(): WeatherRepository {
+class OpenWeatheRepositoryImpl @Inject constructor(
+    appDataBase: AppDataBase
+): WeatherRepository {
     val currentSourceName = SOURCE_OPEN_WEATHER
     lateinit var currentCity: String
     val service = OpenWeatherCommon.retrofitService
     val mapper = Mappers()
     private val weatherForecastDao =
-        AppDataBase.getInstance().weatherForecastDao()
+        appDataBase.weatherForecastDao()
 
     override fun getWeather(lat: Float, lon: Float, cityName: String): Single<WeatherData> {
         currentCity = cityName

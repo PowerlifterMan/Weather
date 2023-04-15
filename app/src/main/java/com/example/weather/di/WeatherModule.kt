@@ -5,16 +5,37 @@ import com.example.weather.data.OpenMeteoRepositoryImpl
 import com.example.weather.data.OpenWeatheRepositoryImpl
 import com.example.weather.data.WeatherRepository
 import com.example.weather.domain.WeatherUseCase
+import com.example.weather.presentation.main.MainFragment
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
+import dagger.android.ContributesAndroidInjector
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
 abstract class  WeatherModule {
-    @Singleton
-    @Binds
-    abstract fun bindWeatherUseCase(impl: WeatherUseCase): WeatherUseCase
+    companion object{
+        @Singleton
+        @Provides
+        fun provideWeatherUseCase(
+            @NinjaRepo
+            ninjaRepo: WeatherRepository,
+
+            @OpenMeteoRepo
+            openMeteoRepo: WeatherRepository,
+
+            @OpenWeatherRepo
+            openWeatherRepo: WeatherRepository
+        ): WeatherUseCase {
+            return WeatherUseCase(
+                ninjaRepo, openMeteoRepo, openWeatherRepo
+            )
+        }
+    }
+//    @Singleton
+//    @Binds
+//    abstract fun bindWeatherUseCase(impl: WeatherUseCase): WeatherUseCase
 
     @Singleton
     @Binds
@@ -30,6 +51,12 @@ abstract class  WeatherModule {
     @Binds
     @OpenWeatherRepo
     abstract fun bindOpenWeatherRepo(impl: OpenWeatheRepositoryImpl): WeatherRepository
+
+    @ContributesAndroidInjector
+    abstract fun mainFragment():MainFragment
+
+//    @ContributesAndroidInjector
+//    abstract fun mainFragment():MainFragment
 }
 
 @Qualifier

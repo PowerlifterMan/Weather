@@ -16,14 +16,9 @@ import java.time.ZoneId
 import java.util.*
 import javax.inject.Inject
 
-class WeatherUseCase @Inject constructor(
-    @NinjaRepo
+class WeatherUseCase(
     private val ninjaRepo: WeatherRepository,
-
-    @OpenMeteoRepo
     private val openMeteoRepo: WeatherRepository,
-
-    @OpenWeatherRepo
     private val openWeatherRepo: WeatherRepository,
 ) {
     val weatherDataList = mutableListOf<WeatherData>()

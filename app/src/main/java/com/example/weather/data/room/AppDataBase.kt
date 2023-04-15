@@ -13,37 +13,35 @@ import javax.inject.Inject
     version = 4,
     exportSchema = false
 )
-abstract class AppDataBase @Inject constructor(
-//    private val context: Context
-    ): RoomDatabase() {
+abstract class AppDataBase (): RoomDatabase() {
 
     abstract fun weatherForecastDao(): WeatherForecastDao
 
-    companion object {
-        @Volatile
-        private var INSTANCE: AppDataBase? = null
-        private val LOCK = Any()
-        private const val DB_NAME = "weather_forecast.db"
-
-        fun getInstance(): AppDataBase {
-            INSTANCE?.let {
-                return it
-            }
-            synchronized(LOCK) {
-                INSTANCE?.let {
-                    return it
-                }
-                val db = Room.databaseBuilder(
-                    WeatherApp.get(),
-                    AppDataBase::class.java,
-                    DB_NAME
-                )
-                    .allowMainThreadQueries()
-                    .fallbackToDestructiveMigration()
-                    .build()
-                INSTANCE = db
-                return db
-            }
-        }
-    }
+//    companion object {
+//        @Volatile
+//        private var INSTANCE: AppDataBase? = null
+//        private val LOCK = Any()
+//        private const val DB_NAME = "weather_forecast.db"
+//
+//        fun getInstance(): AppDataBase {
+//            INSTANCE?.let {
+//                return it
+//            }
+//            synchronized(LOCK) {
+//                INSTANCE?.let {
+//                    return it
+//                }
+//                val db = Room.databaseBuilder(
+//                    WeatherApp.get(),
+//                    AppDataBase::class.java,
+//                    DB_NAME
+//                )
+//                    .allowMainThreadQueries()
+//                    .fallbackToDestructiveMigration()
+//                    .build()
+//                INSTANCE = db
+//                return db
+//            }
+//        }
+//    }
 }

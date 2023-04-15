@@ -1,5 +1,6 @@
 package com.example.weather.presentation.main
 
+import android.app.Application
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -19,9 +20,11 @@ import com.example.weather.databinding.FragmentInputPlaceBinding
 import com.example.weather.di.WeatherComponent
 import com.example.weather.domain.CurrentCity
 import com.example.weather.retrofit.daData.CityRvAdapter
+import dagger.android.AndroidInjection
+import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
-class InputPlaceFragment : DialogFragment() {
+class InputPlaceFragment : Fragment() {
     //    private val dataModel: InputPlaceViewModel
     lateinit var binding: FragmentInputPlaceBinding
 
@@ -34,6 +37,15 @@ class InputPlaceFragment : DialogFragment() {
     lateinit var viewModel: InputPlaceViewModel
 //    private val component = WeatherComponent.
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+
+        AndroidSupportInjection.inject(this)
+
+//        val component =
+
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,6 +54,7 @@ class InputPlaceFragment : DialogFragment() {
         binding = FragmentInputPlaceBinding.inflate(inflater)
         return binding.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

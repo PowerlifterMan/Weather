@@ -1,27 +1,46 @@
 package com.example.weather.di
 
+import android.app.Application
 import android.content.Context
+import com.example.weather.WeatherApp
 import com.example.weather.presentation.main.InputPlaceFragment
-import com.example.weather.presentation.main.InputPlaceViewModel
 import com.example.weather.presentation.main.MainFragment
 import dagger.BindsInstance
 import dagger.Component
-import dagger.Module
+import dagger.android.AndroidInjectionModule
+import dagger.android.AndroidInjector
+import javax.inject.Singleton
 
-@Component(modules = [WeatherModule::class,DataModule::class,ViewModelModule::class])
-interface WeatherComponent {
+@Singleton
+@Component(modules = [
+    WeatherModule::class,
+    DataBaseModule::class,
+    ViewModelModule::class,
+    AndroidInjectionModule::class
+])
+interface WeatherComponent: AndroidInjector<WeatherApp> {
 
     fun inject(inputPlaceFragment: InputPlaceFragment)
 
     fun inject(mainFragment: MainFragment)
 
-    @Component.Factory
-    interface WeatherComponentFactory{
+    @Component.Builder
+    interface Builder {
+        @BindsInstance
+        fun application(application: Application): Builder
 
-        fun create(
-            @BindsInstance context: Context,
+        @BindsInstance
+        fun withContext(context: Context): Builder
 
-            ): WeatherComponent
+        fun build(): WeatherComponent
     }
+//    @Component.Factory
+//    interface WeatherComponentFactory{
+//
+//        fun create(
+//            @BindsInstance context: Context,
+//
+//            ): WeatherComponent
+//    }
 
 }

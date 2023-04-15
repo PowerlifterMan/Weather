@@ -12,12 +12,15 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
 
-class NinjasRepositoryImpl @Inject constructor() : WeatherRepository {
+class NinjasRepositoryImpl @Inject constructor(
+    appDataBase: AppDataBase
+
+) : WeatherRepository {
     val currentSourceName = SOURCE_NINJAS
     val service = NinjasCommon.retrofitService
     val mapper = Mappers()
     private val weatherForecastDao =
-        AppDataBase.getInstance().weatherForecastDao()
+        appDataBase.weatherForecastDao()
 
     override fun getWeather(lat: Float, lon: Float,cityName: String): Single<WeatherData> {
         return if (needToUpdate()) {

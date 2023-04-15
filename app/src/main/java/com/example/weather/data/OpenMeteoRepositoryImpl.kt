@@ -13,12 +13,14 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import java.text.DecimalFormat
 import javax.inject.Inject
 
-class OpenMeteoRepositoryImpl @Inject constructor(): WeatherRepository {
+class OpenMeteoRepositoryImpl @Inject constructor(
+    appDataBase: AppDataBase
+): WeatherRepository {
     val currentSourceName = SOURCE_OPEN_METEO
     val service = OpenMeteoCommon.retrofitService
     val mapper = Mappers()
     private val weatherForecastDao =
-        AppDataBase.getInstance().weatherForecastDao()
+        appDataBase.weatherForecastDao()
     private lateinit var currentCityName: String
     private var lonOpenMeteo: Float? = null
     private var latOpenMeteo: Float? = null
