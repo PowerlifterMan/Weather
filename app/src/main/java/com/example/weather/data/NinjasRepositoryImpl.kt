@@ -63,8 +63,10 @@ class NinjasRepositoryImpl @Inject constructor(
                     timeStamp = it.timeStamp,
                     temperature = (it.temperatureMax + it.temperatureMin) / 2,
                     temperatureFeelsLike = (it.temperatureFeelsLikeMax - it.temperatureFeelsLikeMin) / 2,
-                    humidity = it.humidity
-                )
+                    humidity = it.humidity,
+                    weatherCondition = null,
+                    weatherConditionIconId = null
+                    )
                 weatherForecastDao.addForecastItem(model)
             }
 

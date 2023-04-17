@@ -156,7 +156,9 @@ class Mappers @Inject constructor() {
         temperatureMax = dayForecast.mainForecastData.temp,
         temperatureFeelsLikeMax = dayForecast.mainForecastData.tempFeels,
         temperatureFeelsLikeMin = dayForecast.mainForecastData.tempFeels,
-        humidity = dayForecast.mainForecastData.humidity
+        humidity = dayForecast.mainForecastData.humidity,
+        condition = dayForecast.WeatherCondition[0].descriptionCondition,
+        conditionIconId = dayForecast.WeatherCondition[0].iconCondition
 
     )
 

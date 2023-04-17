@@ -120,6 +120,8 @@ class OpenWeatheRepositoryImpl @Inject constructor(
                     temperature = (it.temperatureMax + it.temperatureMin) / 2,
                     temperatureFeelsLike = (it.temperatureFeelsLikeMax + it.temperatureFeelsLikeMin) / 2,
                     humidity = it.humidity,
+                    weatherCondition = it.condition,
+                    weatherConditionIconId = it.conditionIconId
                 )
                 weatherList.add(model)
             }

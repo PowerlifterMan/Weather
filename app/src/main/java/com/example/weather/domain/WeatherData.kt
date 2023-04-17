@@ -14,5 +14,7 @@ data class CurrentTemp(
     val temperatureMax: Float = 0f,
     val temperatureFeelsLikeMin: Float = 0f,
     val temperatureFeelsLikeMax: Float = 0f,
-    val humidity: Int = 0
+    val humidity: Int = 0,
+    val condition: String? = null,
+    val conditionIconId: String? = null
 )

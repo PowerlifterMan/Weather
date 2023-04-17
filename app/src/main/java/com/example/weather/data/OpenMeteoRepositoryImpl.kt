@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 class OpenMeteoRepositoryImpl @Inject constructor(
     appDataBase: AppDataBase
-): WeatherRepository {
+) : WeatherRepository {
     val currentSourceName = SOURCE_OPEN_METEO
     val service = OpenMeteoCommon.retrofitService
     val mapper = Mappers()
@@ -124,6 +124,8 @@ class OpenMeteoRepositoryImpl @Inject constructor(
                     temperature = it.temperatureMax,
                     temperatureFeelsLike = it.temperatureFeelsLikeMax,
                     humidity = it.humidity,
+                    weatherCondition = null,
+                    weatherConditionIconId = null
                 )
                 weatherList.add(model)
             }

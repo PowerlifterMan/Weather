@@ -35,10 +35,10 @@ class ForecastDbModel(
     val humidity: Int,
 
     @ColumnInfo(name = "weatherCondition")
-    val weatherCondition: String,
+    val weatherCondition: String?,
 
     @ColumnInfo(name = "weatherConditionIconId")
-    val weatherConditionIconId: String
+    val weatherConditionIconId: String?
 )
 
 @Entity(tableName = "settings")
