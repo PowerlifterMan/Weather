@@ -20,8 +20,21 @@ class DayForecast(
     val dateOfForecast: Long,
     @SerializedName("main")
     val mainForecastData: MainForecastData,
+    @SerializedName("weather")
+    val WeatherCondition: List<WeatherConditionDTO>,
 //    @SerializedName("")
 //    val
+)
+
+data class WeatherConditionDTO(
+    @SerializedName("id")
+    val idCondition: Int,
+    @SerializedName("main")
+    val mainCondition: String,
+    @SerializedName("description")
+    val descriptionCondition: String,
+    @SerializedName("icon")
+    val iconCondition: String,
 )
 
 class MainForecastData(

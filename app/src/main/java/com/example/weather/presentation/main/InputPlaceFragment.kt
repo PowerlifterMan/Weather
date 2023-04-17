@@ -25,7 +25,7 @@ import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
 class InputPlaceFragment : Fragment() {
-    //    private val dataModel: InputPlaceViewModel
+     private lateinit var viewModel: InputPlaceViewModel
     lateinit var binding: FragmentInputPlaceBinding
 
     //    var binding:View?=null
@@ -34,15 +34,12 @@ class InputPlaceFragment : Fragment() {
     }
 
     @Inject
-    lateinit var viewModel: InputPlaceViewModel
+    lateinit var viemodelFactory: ViewModelFactory
 //    private val component = WeatherComponent.
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         AndroidSupportInjection.inject(this)
-
 //        val component =
-
         super.onCreate(savedInstanceState)
     }
 
@@ -58,7 +55,7 @@ class InputPlaceFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(InputPlaceViewModel::class.java)
+        viewModel = ViewModelProvider(this,viemodelFactory).get(InputPlaceViewModel::class.java)
         val listOfCity = viewModel.getListForRv()
         val btnGoRequest = binding.btnSearch
         val stringForSearh: EditText = binding.placeTextInput

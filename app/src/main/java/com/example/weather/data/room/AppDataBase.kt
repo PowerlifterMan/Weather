@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 @Database(
     entities = [ForecastDbModel::class],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 abstract class AppDataBase (): RoomDatabase() {

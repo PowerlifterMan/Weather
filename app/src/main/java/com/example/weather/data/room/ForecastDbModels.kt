@@ -32,7 +32,13 @@ class ForecastDbModel(
     val temperatureFeelsLike: Float,
 
     @ColumnInfo(name = "humidity")
-    val humidity: Int
+    val humidity: Int,
+
+    @ColumnInfo(name = "weatherCondition")
+    val weatherCondition: String,
+
+    @ColumnInfo(name = "weatherConditionIconId")
+    val weatherConditionIconId: String
 )
 
 @Entity(tableName = "settings")
