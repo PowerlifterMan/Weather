@@ -94,6 +94,9 @@ dependencies {
     kapt  'com.google.dagger:dagger-compiler:2.45:'
     kapt 'com.google.dagger:dagger-android-processor:2.45'
 
+    ////************************GLIDE*****************************///
+    implementation 'com.github.bumptech.glide:glide:4.15.1'
+
 //    dagger = { module = "com.google.dagger:dagger-android-support", version.ref = "dagger" }
 //    dagger_android_processor = {module = "com.google.dagger:dagger-android-processor", version.ref = "dagger" }
 //    dagger_compiller = {module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
