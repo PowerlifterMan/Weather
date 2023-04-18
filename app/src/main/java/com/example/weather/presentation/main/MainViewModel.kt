@@ -1,5 +1,6 @@
 package com.example.weather.presentation.main
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -112,6 +113,7 @@ class MainViewModel @Inject constructor(
         myLongitude.value = lon
     }
 
+    @SuppressLint("CheckResult")
     fun getForecastData(sourceName: String) {
         weatherUseCase.getForecast(
             lat = myLatitude.value ?: 0f,
@@ -130,7 +132,8 @@ class MainViewModel @Inject constructor(
                     RecyclerViewItem(
                         dayNumber = sdf.format(item.timeStamp.toLong() * 1000),
                         temperature = item.temperatureMax.toString(),
-                        description = item.temperatureFeelsLikeMax.toString()
+                        description = item.condition.toString(),
+                    pictureUrl = "https://openweathermap.org/img/wn/${item.conditionIconId}@2x.png"
                     )
                 }
                 setLineChartData()
