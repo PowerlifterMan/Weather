@@ -19,7 +19,7 @@
             android:id="@+id/action_mainFragment_to_settings2Fragment"
             app:destination="@id/settings2Fragment" />
     </fragment>
-    <dialog
+    <fragment
         android:id="@+id/inputPlaceFragment"
         android:name="com.example.weather.presentation.main.InputPlaceFragment"
         android:label="fragment_input_place"

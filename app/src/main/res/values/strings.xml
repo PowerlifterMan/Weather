@@ -11,4 +11,5 @@
     <string name="checkBoxOption3Text">OPEN METEO</string>
     <string name="btnOKtext">OK</string>
     <string name="setting2TitleText">Выберите источники</string>
+    <string name="none">_</string>
 </resources>

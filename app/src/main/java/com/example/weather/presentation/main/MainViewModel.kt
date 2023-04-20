@@ -93,13 +93,13 @@ class MainViewModel @Inject constructor(
             Entry(item.temperature.toFloat(), index)
         }
         val barEntryList = rvRow.value?.mapIndexed { index, item ->
-            BarEntry(item.temperature.toFloat(),index)
+            BarEntry(item.temperature.toFloat(), index)
         }
-        val barDataSet = BarDataSet(barEntryList,"WEATHER")
+        val barDataSet = BarDataSet(barEntryList, "WEATHER")
         val lineDataSet = LineDataSet(lineEntryList, "BLUE LINE")
 
         chartLineData.value = LineData(chartLabels, lineDataSet)
-        chartBarData.value = BarData(chartLabels,barDataSet)
+        chartBarData.value = BarData(chartLabels, barDataSet)
 
     }
 
@@ -125,7 +125,9 @@ class MainViewModel @Inject constructor(
                 val tempOnTime = TempOnTime(
                     timestamp = data.currentTemp.timeStamp,
                     temp = data.currentTemp.temperatureMax,
-                    tempFeelsLike = data.currentTemp.temperatureFeelsLikeMax
+                    tempFeelsLike = data.currentTemp.temperatureFeelsLikeMax,
+
+
                 )
                 myCityCurrentWeather.value = tempOnTime
                 rvRow.value = data.forecastList.map { item ->
@@ -133,7 +135,7 @@ class MainViewModel @Inject constructor(
                         dayNumber = sdf.format(item.timeStamp.toLong() * 1000),
                         temperature = item.temperatureMax.toString(),
                         description = item.condition.toString(),
-                    pictureUrl = "https://openweathermap.org/img/wn/${item.conditionIconId}@2x.png"
+                        pictureUrl = "https://openweathermap.org/img/wn/${item.conditionIconId}@2x.png"
                     )
                 }
                 setLineChartData()
@@ -147,6 +149,7 @@ class MainViewModel @Inject constructor(
 
     }
 
+    @SuppressLint("CheckResult")
     fun getForecastDataCombine() {
         weatherUseCase.getForecast(
             lat = myLatitude.value ?: 0f,
@@ -165,7 +168,10 @@ class MainViewModel @Inject constructor(
                     RecyclerViewItem(
                         dayNumber = sdf.format(item.timeStamp.toLong() * 1000),
                         temperature = item.temperatureMax.toString(),
-                        description = item.temperatureFeelsLikeMax.toString()
+                        temperatureFeelsLike = item.temperatureFeelsLikeMax.toString(),
+                        description = item.condition.toString(),
+                        pictureUrl = item.conditionIconId
+
                     )
                 }
 

@@ -52,7 +52,10 @@ class Mappers @Inject constructor() {
             temperatureMax = forecastDbModel.temperature,
             temperatureFeelsLikeMax = forecastDbModel.temperatureFeelsLike,
             temperatureFeelsLikeMin = forecastDbModel.temperatureFeelsLike,
-            humidity = forecastDbModel.humidity
+            humidity = forecastDbModel.humidity,
+            condition = forecastDbModel.weatherCondition,
+            conditionIconId = forecastDbModel.weatherConditionIconId
+
         )
     }
 
@@ -103,7 +106,8 @@ class Mappers @Inject constructor() {
                 temperatureMin = dto.currentWeather.temperature,
                 temperatureFeelsLikeMin = dto.currentWeather.temperature,
                 temperatureFeelsLikeMax = dto.currentWeather.temperature,
-                humidity = 0
+                humidity = 0,
+
             ),
             forecastList = mapDaylyDTOCurrentTemp(dto.daily)
 

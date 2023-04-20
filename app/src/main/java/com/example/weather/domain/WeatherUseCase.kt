@@ -39,12 +39,15 @@ class WeatherUseCase(
             SOURCE_OPEN_METEO -> {
                 openMeteoRepo
             }
+
             SOURCE_OPEN_WEATHER -> {
                 openWeatherRepo
             }
+
             SOURCE_NINJAS -> {
                 openMeteoRepo
             }
+
             else -> openWeatherRepo
         }
         return currentRepo.getWeather(lat = lat, lon = lon, cityName = city)
@@ -63,12 +66,15 @@ class WeatherUseCase(
                     SOURCE_OPEN_METEO -> {
                         openMeteoRepo
                     }
+
                     SOURCE_OPEN_WEATHER -> {
                         openWeatherRepo
                     }
+
                     SOURCE_NINJAS -> {
                         ninjaRepo
                     }
+
                     else -> openWeatherRepo
                 }
                 sources.add(
@@ -138,7 +144,9 @@ class WeatherUseCase(
             temperatureMax = (averageCurrentTemp.temperatureMax + currentTemp.temperatureMax) / 2,
             temperatureFeelsLikeMin = (averageCurrentTemp.temperatureFeelsLikeMin + currentTemp.temperatureFeelsLikeMin) / 2,
             temperatureFeelsLikeMax = (averageCurrentTemp.temperatureFeelsLikeMax + currentTemp.temperatureFeelsLikeMax) / 2,
-            humidity = currentTemp.humidity
+            humidity = currentTemp.humidity,
+            condition = currentTemp.condition ?: averageCurrentTemp.condition,
+            conditionIconId = currentTemp.conditionIconId ?: averageCurrentTemp.conditionIconId
         )
 
     }

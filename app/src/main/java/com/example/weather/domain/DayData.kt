@@ -4,7 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 
 
-const val DEFAULT_DESCRIPTION = "none"
+const val DEFAULT_DESCRIPTION = ""
 
 const val DEFAULT_TEMPERATURE = 20f
 const val DEFAULT_LOCATION_NAME = "Москва"
@@ -55,6 +55,7 @@ data class CurrentCity(
 data class RecyclerViewItem(
     var dayNumber: String = "",
     val temperature: String = DEFAULT_TEMPERATURE.toString(),
+    val temperatureFeelsLike: String = DEFAULT_TEMPERATURE.toString(),
     val description: String = DEFAULT_DESCRIPTION,
     var pictureUrl: String? = null
 
