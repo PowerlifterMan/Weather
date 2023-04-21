@@ -21,14 +21,6 @@ class WeatherUseCase(
     private val openMeteoRepo: WeatherRepository,
     private val openWeatherRepo: WeatherRepository,
 ) {
-    val weatherDataList = mutableListOf<WeatherData>()
-    val startDayTime = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        LocalDate.now().atStartOfDay(ZoneId.systemDefault())
-    } else {
-        TODO("VERSION.SDK_INT < O")
-    }
-
-
     fun getForecast(
         lat: Float = DEFAULT_LATITUDE,
         lon: Float = DEFAULT_LONGITUDE,

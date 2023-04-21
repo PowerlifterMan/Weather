@@ -13,7 +13,8 @@ interface WeatherForecastDao {
         lon: Float,
     ): List<ForecastDbModel>
 
-    @Query("SELECT * FROM forecast WHERE idCity = :cityName AND idSource = :sourceId ORDER BY timeStamp")
+    @Query("SELECT * FROM forecast WHERE idCity = :cityName  ORDER BY timeStamp")
+//    @Query("SELECT * FROM forecast WHERE idCity = :cityName AND idSource = :sourceId ORDER BY timeStamp")
 //    @Query("SELECT * FROM forecast WHERE idCity=:cityName AND idSource=:sourceId")
     fun getWeatherList(
         cityName: String,

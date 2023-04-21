@@ -72,6 +72,7 @@ class OpenWeatheRepositoryImpl @Inject constructor(
     }
 
     private fun getWeatherFromLocal(cityName: String): Single<WeatherData> {
+        var weatherData: WeatherData? = null
         return Single.fromCallable {
             val weatherList =
                 weatherForecastDao.getWeatherList(
@@ -79,7 +80,6 @@ class OpenWeatheRepositoryImpl @Inject constructor(
                     sourceId = currentSourceName
                 )
             Log.e("ERROR", "сделали запрос в локальную БД")
-            var weatherData: WeatherData? = null
             if (weatherList.size > 0) {
                 Log.e("ERROR", "WeatherData is full")
                 weatherData = mapper.mapForecastDbModelListToWeatherData(weatherList)
