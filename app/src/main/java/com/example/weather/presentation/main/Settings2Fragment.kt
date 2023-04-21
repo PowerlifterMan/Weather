@@ -8,11 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.weather.R
 import com.example.weather.databinding.FragmentSettings2Binding
 import com.example.weather.databinding.FragmentSettingsBinding
+import dagger.android.support.AndroidSupportInjection
 import java.lang.RuntimeException
+import javax.inject.Inject
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,20 +27,28 @@ private const val ARG_PARAM2 = "param2"
  * Use the [Settings2Fragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class Settings2Fragment : Fragment() {
+class Settings2Fragment @Inject constructor() : Fragment() {
     // TODO: Rename and change types of parameters
+
     private var param1: String? = null
     private var param2: String? = null
     private var source1checked = false
     private var source2checked = false
     private var source3checked = false
+    private lateinit var viewModel: Settings2ViewModel
+
+    @Inject
+    lateinit var viemodelFactory: ViewModelFactory
+
     private var _binding: FragmentSettings2Binding? = null
     private val binding: FragmentSettings2Binding
         get() = _binding ?: throw RuntimeException("FragmentSettings2Binding? == null")
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this,viemodelFactory).get(Settings2ViewModel::class.java)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
@@ -55,7 +66,7 @@ class Settings2Fragment : Fragment() {
                 val result = bundleOf(
                     "sourceChecked1" to source1checked,
                     "sourceChecked2" to source2checked,
-                    "sourceChecked3" to source3checked,
+                    "sourceChecked3" to source3checked  ,
                 )
                 setFragmentResult(requestKey = "settingsFragment2Checked", result = result)
                 findNavController().popBackStack()

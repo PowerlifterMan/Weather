@@ -3,6 +3,7 @@ package com.example.weather.di
 import androidx.lifecycle.ViewModel
 import com.example.weather.presentation.main.InputPlaceViewModel
 import com.example.weather.presentation.main.MainViewModel
+import com.example.weather.presentation.main.Settings2ViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -20,4 +21,9 @@ interface ViewModelModule {
     @ViewModelKey(InputPlaceViewModel::class)
     @Binds
     fun bindInputPlaceViewModel(impl: InputPlaceViewModel): ViewModel
+
+    @IntoMap
+    @ViewModelKey(Settings2ViewModel::class)
+    @Binds
+    fun bindSettingsViewModel(impl: Settings2ViewModel): ViewModel
 }

@@ -7,6 +7,7 @@ import com.example.weather.data.WeatherRepository
 import com.example.weather.domain.WeatherUseCase
 import com.example.weather.presentation.main.InputPlaceFragment
 import com.example.weather.presentation.main.MainFragment
+import com.example.weather.presentation.main.Settings2Fragment
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -58,6 +59,8 @@ abstract class  WeatherModule {
 
     @ContributesAndroidInjector
     abstract fun inputPlaceFragment():InputPlaceFragment
+    @ContributesAndroidInjector
+    abstract fun settingFragment():Settings2Fragment
 
 //    @ContributesAndroidInjector
 //    abstract fun mainFragment():MainFragment

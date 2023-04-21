@@ -82,7 +82,7 @@ class MainFragment : Fragment() {
                 lon = longitude?.toFloatOrNull() ?: 0f,
                 city = cityName ?: ""
             )
-            viewModel.getForecastData(currentSourceName)
+            viewModel.getForecastDataCombine()
         }
     }
 

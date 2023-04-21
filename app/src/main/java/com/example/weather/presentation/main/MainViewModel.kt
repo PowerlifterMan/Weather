@@ -135,7 +135,7 @@ class MainViewModel @Inject constructor(
                         dayNumber = sdf.format(item.timeStamp.toLong() * 1000),
                         temperature = item.temperatureMax.toString(),
                         description = item.condition.toString(),
-                        pictureUrl = "https://openweathermap.org/img/wn/${item.conditionIconId}@2x.png"
+                        pictureUrl = item.conditionIconId
                     )
                 }
                 setLineChartData()
