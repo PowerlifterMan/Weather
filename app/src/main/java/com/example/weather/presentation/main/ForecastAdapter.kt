@@ -41,8 +41,8 @@ class ForecastAdapter :
         holder.tvFeels.text = "${item.description}, ощущается как ${item.temperatureFeelsLike} °C"
 
         if (item.pictureUrl?.isNotEmpty() == true) {
-            val glideUrl = "https://openweathermap.org/img/wn/${item.pictureUrl}@2x.png"
-            Glide.with(holder.view.context).load(glideUrl).into(holder.descrIcon)
+//            val glideUrl = "https://openweathermap.org/img/wn/${item.pictureUrl}@2x.png"
+            Glide.with(holder.view.context).load("https://openweathermap.org/img/wn/${item.pictureUrl}@2x.png").into(holder.descrIcon)
 //            holder.tvFeels.setBackgroundResource()
         }
 

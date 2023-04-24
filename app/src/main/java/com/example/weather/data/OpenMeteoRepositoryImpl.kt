@@ -81,7 +81,7 @@ class OpenMeteoRepositoryImpl @Inject constructor(
                 cityName = cityName.trim(),
                 sourceId = currentSourceName.trim()
             )
-            Log.e("ERROR", "данные запрошены")
+            Log.e("ERROR", "$cityName данные запрошены")
             var weatherData: WeatherData? = null
             if (weatherList.size > 0) {
                 weatherData =
@@ -91,7 +91,10 @@ class OpenMeteoRepositoryImpl @Inject constructor(
                     cityName = cityName,
                     cityLongitude = lonOpenMeteo,
                     cityLatitude = latOpenMeteo
+
                 )
+                     Log.e("ERROR", "$currentCityName WeatherData is EMPTY")
+
             }
             weatherData
         }
@@ -106,7 +109,7 @@ class OpenMeteoRepositoryImpl @Inject constructor(
         if (weatherData.forecastList.isNotEmpty()) {
             weatherForecastDao.clearData(
                 sourceId = currentSourceName,
-//                cityId = weatherData.cityName
+                cityId = weatherData.cityName
             )
             Log.e("ERROR", "OpenMeteo затерли $currentSourceName ")
 
@@ -131,6 +134,8 @@ class OpenMeteoRepositoryImpl @Inject constructor(
             }
             weatherForecastDao.addForecastList(weatherList)
             Log.e("ERROR", "OpenMeteo recording $cityName List is complete")
+            weatherForecastDao.updateDB(weatherList)
+            Log.e("ERROR", "OpenMeteo Update $cityName List is complete")
         }
     }
 

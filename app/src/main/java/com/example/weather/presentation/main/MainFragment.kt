@@ -43,7 +43,6 @@ class MainFragment : Fragment() {
     private var barChartEntries = mutableListOf<BarEntry>()
     private var barChartDataSet = BarDataSet(barChartEntries, BAR_DATA_SET_NAME1)
     val adapter = ForecastAdapter()
-
     var myCity = CurrentCity()
 
     @Inject

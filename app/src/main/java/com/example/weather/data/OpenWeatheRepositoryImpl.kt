@@ -31,7 +31,7 @@ class OpenWeatheRepositoryImpl @Inject constructor(
 //                weatherForecastDao.clearData(sourceId = currentSourceName, cityId = cityName)
             }.andThen(getWeatherFromRemote(lat = lat, lon = lon))
                 .andThen(getWeatherFromLocal(cityName = cityName))
-        } else getWeatherFromLocal(cityName = cityName)
+        } else getWeatherFromLocal(cityName = currentCity)
             .filter { it.forecastList.isEmpty() }.toSingle()
     }
 
@@ -49,7 +49,12 @@ class OpenWeatheRepositoryImpl @Inject constructor(
             .observeOn(Schedulers.computation())
             .map(mapper::mapOpenWeatherToWeatherData)
 //            .map {  }
-            .flatMapCompletable { saveWeatherToLocal(it) }
+            .flatMapCompletable {
+
+                Log.e("ERROR", "WeatherData $it")
+
+                saveWeatherToLocal(it)
+            }
         return data
     }
 
@@ -76,17 +81,17 @@ class OpenWeatheRepositoryImpl @Inject constructor(
         return Single.fromCallable {
             val weatherList =
                 weatherForecastDao.getWeatherList(
-                    cityName = cityName,
+                    cityName = currentCity,
                     sourceId = currentSourceName
                 )
-            Log.e("ERROR", "сделали запрос в локальную БД")
+            Log.e("ERROR", "$cityName сделали запрос в локальную БД")
             if (weatherList.size > 0) {
                 Log.e("ERROR", "WeatherData is full")
                 weatherData = mapper.mapForecastDbModelListToWeatherData(weatherList)
             } else {
                 weatherData =
                     WeatherData(cityName = currentCity, cityLongitude = 0f, cityLatitude = 0f)
-                Log.e("ERROR", "WeatherData is EMPTY")
+                Log.e("ERROR", "$currentCity WeatherData is EMPTY")
             }
             weatherData
         }
@@ -100,11 +105,11 @@ class OpenWeatheRepositoryImpl @Inject constructor(
         val longitude2 = weatherData.cityLongitude
         val weatherList = mutableListOf<ForecastDbModel>()
         val cityName = weatherData.cityName
+        currentCity = weatherData.cityName
         if (weatherData.forecastList.isNotEmpty()) {
             weatherForecastDao.clearData(
-
                 sourceId = currentSourceName,
-//                cityId = weatherData.cityName
+                cityId = weatherData.cityName
             )
             Log.e("ERROR", "OpenWeather затерли $cityName")
         }
@@ -127,6 +132,8 @@ class OpenWeatheRepositoryImpl @Inject constructor(
             }
             weatherForecastDao.addForecastList(weatherList)
             Log.e("ERROR", "OpenWeather recording List $cityName is complete")
+            weatherForecastDao.updateDB(weatherList)
+            Log.e("ERROR", "OpenWeather update List $cityName is complete")
         }
     }
 

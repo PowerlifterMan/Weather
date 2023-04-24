@@ -51,6 +51,7 @@ class WeatherUseCase(
         sourceNameList: List<String> = listOf(),
         city: String
     ): Single<WeatherData> {
+        val d = LinkedList<String>()
         val sources = mutableListOf<Single<WeatherData>>()
         if (sourceNameList.isNotEmpty()) {
             sourceNameList.forEach { sourceName ->

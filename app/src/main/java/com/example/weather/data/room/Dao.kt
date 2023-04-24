@@ -13,12 +13,19 @@ interface WeatherForecastDao {
         lon: Float,
     ): List<ForecastDbModel>
 
-    @Query("SELECT * FROM forecast WHERE idCity = :cityName  ORDER BY timeStamp")
-//    @Query("SELECT * FROM forecast WHERE idCity = :cityName AND idSource = :sourceId ORDER BY timeStamp")
+//    @Query("SELECT * FROM forecast WHERE idCity LIKE :cityName  ORDER BY timeStamp")
+    @Query("SELECT * FROM forecast WHERE idCity LIKE :cityName AND idSource LIKE :sourceId ORDER BY timeStamp")
 //    @Query("SELECT * FROM forecast WHERE idCity=:cityName AND idSource=:sourceId")
     fun getWeatherList(
         cityName: String,
         sourceId: String
+    ): List<ForecastDbModel>
+
+    @Query("SELECT * FROM forecast WHERE idCity LIKE :cityName  ORDER BY timeStamp")
+//    @Query("SELECT * FROM forecast WHERE idCity = :cityName AND idSource = :sourceId ORDER BY timeStamp")
+//    @Query("SELECT * FROM forecast WHERE idCity=:cityName AND idSource=:sourceId")
+    fun getWeatherList(
+        cityName: String,
     ): List<ForecastDbModel>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -30,11 +37,14 @@ interface WeatherForecastDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun updateDB(forecastDbModel: ForecastDbModel)
 
-    @Query("DELETE FROM forecast WHERE idSource = :sourceId")
-//    @Query("DELETE FROM forecast WHERE idSource = :sourceId AND idCity = :cityId")
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    fun updateDB(forecastDbModel: List<ForecastDbModel>)
+
+//    @Query("DELETE FROM forecast WHERE idSource = :sourceId")
+    @Query("DELETE FROM forecast WHERE idSource = :sourceId AND idCity = :cityId")
     fun clearData(
         sourceId: String,
-//        cityId: String
+        cityId: String
     )
 
     @Transaction
