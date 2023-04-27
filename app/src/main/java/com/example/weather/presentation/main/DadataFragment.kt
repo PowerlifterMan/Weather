@@ -11,7 +11,11 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.room.util.query
 import com.example.weather.databinding.FragmentDadataBinding
+import com.example.weather.retrofit.daData.DaDataRepository
+import com.example.weather.retrofit.daData.DaDataRepositoryImpl
+import com.example.weather.retrofit.daData.DaDataUseCase
 import com.example.weather.retrofit.daData.DadataCommon
 import com.google.gson.JsonObject
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -21,6 +25,7 @@ import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.schedulers.Schedulers
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.util.concurrent.TimeUnit
 
 
 //import com.jakewharton.rxbinding4.widget.tex
@@ -42,7 +47,8 @@ class DadataFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-
+    private val repository = DaDataRepositoryImpl
+    private val useCase =  DaDataUseCase(repository)
     private var _binding: FragmentDadataBinding? = null
     private val binding: FragmentDadataBinding
         get() = _binding ?: throw RuntimeException("FragmentDadataBinding is null")
@@ -65,7 +71,7 @@ class DadataFragment : Fragment() {
         binding.fragmentDadataBtnSubmit.setOnClickListener {
             val jsonObject = JsonObject()
             jsonObject.addProperty("query", "Ессентуки")
-    //            jsonObject.addProperty("query", editText.text.toString())
+            //            jsonObject.addProperty("query", editText.text.toString())
 //            jsonObject.addProperty("from_bound", "city")
 //            jsonObject.addProperty("to_bound", "city")
             //    jsonObject.addProperty("query", "Ессентуки")
@@ -73,6 +79,7 @@ class DadataFragment : Fragment() {
                 .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
             myService.getAddrdessesList(
                 contentType = "application/json",
+                accept = "application/json",
                 token = "9e01e829bc289bb130dbf457fce0d371f44d487f",
                 query = bodyRequest
             ).subscribeOn(Schedulers.io())
@@ -89,24 +96,21 @@ class DadataFragment : Fragment() {
 
     @SuppressLint("CheckResult")
     private fun setupFields(editText: EditText, outTextView: TextView) {
-        Observable.create { emitter: ObservableEmitter<Any?> ->
+        Observable.create { emitter: ObservableEmitter<String> ->
             val watcher: TextWatcher = object : TextWatcher {
                 override fun beforeTextChanged(
                     charSequence: CharSequence,
                     start: Int,
                     count: Int,
                     after: Int
-                ) {
-                }
+                ) = Unit
 
                 override fun onTextChanged(
                     charSequence: CharSequence,
                     start: Int,
                     before: Int,
                     count: Int
-                ) {
-                    if (start > 2) outTextView.text = charSequence
-                }
+                ) = Unit
 
                 override fun afterTextChanged(editable: Editable) {
                     if (!emitter.isDisposed) { //если еще не отписались
@@ -120,7 +124,23 @@ class DadataFragment : Fragment() {
                 )
             } //удаляем листенер при отписке от observable
             editText.addTextChangedListener(watcher)
-        }.subscribe()
+        }
+            .filter { it.length > 3 }
+            .debounce(1, TimeUnit.SECONDS)
+            .observeOn(Schedulers.io())
+            .flatMapSingle { queryString ->
+                Log.e("ERROR",queryString)
+                useCase.getCityDto(queryString)
+            }
+            .map { suggestList ->
+
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ rvList ->
+
+            },{
+                it.printStackTrace()
+            })
 
 
     }

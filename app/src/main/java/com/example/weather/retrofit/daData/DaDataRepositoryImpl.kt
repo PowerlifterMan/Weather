@@ -13,14 +13,16 @@ object DaDataRepositoryImpl : DaDataRepository {
 
     override fun getCity(name: String): Single<Suggestions> {
         val jsonObject = JsonObject().addProperty("query", name)
-        Log.e("dadata",jsonObject.toString() )
+        Log.e("ERROR",jsonObject.toString() )
         val bodyRequest = jsonObject.toString()
             .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
         val data = myService.getAddrdessesList(
             contentType = "application/json",
-            token = "9e01e829bc289bb130dbf457fce0d371f44d487f",
+            accept = "application/json",
+            token = "Token 9e01e829bc289bb130dbf457fce0d371f44d487f",
             query = bodyRequest
-        ).subscribeOn(Schedulers.io())
+        )
+//            .subscribeOn(Schedulers.io())
         return data
     }
 }

@@ -164,7 +164,8 @@ class MainFragment : Fragment() {
     }
 
     private fun getNewCity(): CurrentCity {
-        findNavController().navigate(R.id.action_mainFragment_to_inputPlaceFragment)
+        findNavController().navigate(R.id.action_mainFragment_to_dadataFragment)
+//        findNavController().navigate(R.id.action_mainFragment_to_inputPlaceFragment)
         return myCity
     }
 

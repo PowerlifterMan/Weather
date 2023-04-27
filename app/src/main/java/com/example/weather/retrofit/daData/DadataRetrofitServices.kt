@@ -9,9 +9,10 @@ import retrofit2.http.POST
 
 interface DadataRetrofitServices {
 //    @POST("suggest/address")
-    @POST("clean/address")
+    @POST("suggest/address")
     fun getAddrdessesList(
         @Header("Content-Type") contentType: String,
+        @Header("Accept") accept: String,
         @Header("Authorization") token: String,
         @Body query: RequestBody
     ): Single<Suggestions>
