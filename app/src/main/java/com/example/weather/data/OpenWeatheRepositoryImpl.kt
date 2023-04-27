@@ -105,11 +105,10 @@ class OpenWeatheRepositoryImpl @Inject constructor(
         val longitude2 = weatherData.cityLongitude
         val weatherList = mutableListOf<ForecastDbModel>()
         val cityName = weatherData.cityName
-        currentCity = weatherData.cityName
         if (weatherData.forecastList.isNotEmpty()) {
             weatherForecastDao.clearData(
                 sourceId = currentSourceName,
-                cityId = weatherData.cityName
+//                cityId = currentCity
             )
             Log.e("ERROR", "OpenWeather затерли $cityName")
         }
@@ -117,7 +116,7 @@ class OpenWeatheRepositoryImpl @Inject constructor(
             weatherData.forecastList.forEach {
                 val model = ForecastDbModel(
                     id = 0,
-                    idCity = cityName,
+                    idCity = currentCity,
                     idSource = currentSourceName,
                     latitude = latitude2,
                     longitude = longitude2,

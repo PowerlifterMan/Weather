@@ -19,7 +19,6 @@ object DaDataRepositoryImpl : DaDataRepository {
         val data = myService.getAddrdessesList(
             contentType = "application/json",
             token = "9e01e829bc289bb130dbf457fce0d371f44d487f",
-            secretToken = "ead3ad17504756b283a5439bc2f0f20c27eadbcb",
             query = bodyRequest
         ).subscribeOn(Schedulers.io())
         return data

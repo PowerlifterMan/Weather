@@ -13,7 +13,6 @@ interface DadataRetrofitServices {
     fun getAddrdessesList(
         @Header("Content-Type") contentType: String,
         @Header("Authorization") token: String,
-        @Header("X-Secret") secretToken: String,
         @Body query: RequestBody
     ): Single<Suggestions>
 

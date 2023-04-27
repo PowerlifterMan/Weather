@@ -46,6 +46,10 @@ interface WeatherForecastDao {
         sourceId: String,
         cityId: String
     )
+    @Query("DELETE FROM forecast WHERE idSource = :sourceId ")
+    fun clearData(
+        sourceId: String,
+    )
 
     @Transaction
 
