@@ -70,17 +70,19 @@ class DadataFragment : Fragment() {
         setupFields(editText, outTextView)
         binding.fragmentDadataBtnSubmit.setOnClickListener {
             val jsonObject = JsonObject()
+            val jsonObjectBound = JsonObject()
+            jsonObjectBound.addProperty("value","city")
             jsonObject.addProperty("query", "Ессентуки")
             //            jsonObject.addProperty("query", editText.text.toString())
-//            jsonObject.addProperty("from_bound", "city")
-//            jsonObject.addProperty("to_bound", "city")
+            jsonObject.add("from_bound", jsonObjectBound)
+            jsonObject.add("to_bound", jsonObjectBound)
             //    jsonObject.addProperty("query", "Ессентуки")
             val bodyRequest = jsonObject.toString()
                 .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
             myService.getAddrdessesList(
                 contentType = "application/json",
                 accept = "application/json",
-                token = "9e01e829bc289bb130dbf457fce0d371f44d487f",
+                token = "Token 9e01e829bc289bb130dbf457fce0d371f44d487f",
                 query = bodyRequest
             ).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

@@ -22,7 +22,7 @@ object DaDataRepositoryImpl : DaDataRepository {
             token = "Token 9e01e829bc289bb130dbf457fce0d371f44d487f",
             query = bodyRequest
         )
-//            .subscribeOn(Schedulers.io())
+            .subscribeOn(Schedulers.io())
         return data
     }
 }
