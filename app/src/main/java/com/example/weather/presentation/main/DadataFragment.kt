@@ -9,15 +9,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.room.util.query
+import com.example.weather.data.dto.Mappers
 import com.example.weather.databinding.FragmentDadataBinding
+import com.example.weather.domain.CurrentCity
+import com.example.weather.retrofit.daData.CityRvAdapter
 import com.example.weather.retrofit.daData.DaDataRepository
 import com.example.weather.retrofit.daData.DaDataRepositoryImpl
 import com.example.weather.retrofit.daData.DaDataUseCase
 import com.example.weather.retrofit.daData.DadataCommon
 import com.google.gson.JsonObject
+import dagger.android.support.AndroidSupportInjection
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.ObservableEmitter
@@ -26,6 +36,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 
 //import com.jakewharton.rxbinding4.widget.tex
@@ -40,7 +51,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [DadataFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class DadataFragment : Fragment() {
+class DadataFragment @Inject constructor(): Fragment() {
 //    private var outTextView: TextView? = null
 //    private var editText: EditText? = null
 
@@ -48,12 +59,15 @@ class DadataFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     private val repository = DaDataRepositoryImpl
-    private val useCase =  DaDataUseCase(repository)
+    private val useCase = DaDataUseCase(repository)
+    private val mapper = Mappers()
     private var _binding: FragmentDadataBinding? = null
+    val adapter by lazy { CityRvAdapter()}
     private val binding: FragmentDadataBinding
         get() = _binding ?: throw RuntimeException("FragmentDadataBinding is null")
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
@@ -65,39 +79,30 @@ class DadataFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val myService = DadataCommon.retrofitService
+//        val adapter = CityRvAdapter()
+        val recyclerView = binding.dadataFragmentRv
+        recyclerView.layoutManager = LinearLayoutManager(requireContext(),RecyclerView.VERTICAL,false)
+        recyclerView.adapter = adapter
         val editText = binding.DadataEditText
-        val outTextView = binding.dDataTextView
-        setupFields(editText, outTextView)
-        binding.fragmentDadataBtnSubmit.setOnClickListener {
-            val jsonObject = JsonObject()
-            val jsonObjectBound = JsonObject()
-            jsonObjectBound.addProperty("value","city")
-            jsonObject.addProperty("query", "Ессентуки")
-            //            jsonObject.addProperty("query", editText.text.toString())
-            jsonObject.add("from_bound", jsonObjectBound)
-            jsonObject.add("to_bound", jsonObjectBound)
-            //    jsonObject.addProperty("query", "Ессентуки")
-            val bodyRequest = jsonObject.toString()
-                .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
-            myService.getAddrdessesList(
-                contentType = "application/json",
-                accept = "application/json",
-                token = "Token 9e01e829bc289bb130dbf457fce0d371f44d487f",
-                query = bodyRequest
-            ).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    {
-                        Log.e("ERROR", it.toString())
-
-                    },
-                    { error -> error.printStackTrace() }
+        setupFields(editText)
+        adapter.onItemClickListener = object : CityRvAdapter.OnItemClickListener{
+            override fun itemClick(item: CurrentCity) {
+                val result = bundleOf(
+                    "lat" to item.latitude,
+                    "lon" to item.longitude,
+                    "cityName" to item.name,
+                    "cityKladrId" to item.cityKladrId
                 )
+                setFragmentResult("cityFromDadata",result)
+                findNavController().popBackStack()
+            }
+        }
+        binding.fragmentDadataBtnSubmit.setOnClickListener {
         }
     }
 
     @SuppressLint("CheckResult")
-    private fun setupFields(editText: EditText, outTextView: TextView) {
+    private fun setupFields(editText: EditText) {
         Observable.create { emitter: ObservableEmitter<String> ->
             val watcher: TextWatcher = object : TextWatcher {
                 override fun beforeTextChanged(
@@ -127,20 +132,21 @@ class DadataFragment : Fragment() {
             } //удаляем листенер при отписке от observable
             editText.addTextChangedListener(watcher)
         }
+            .subscribeOn(Schedulers.computation())
             .filter { it.length > 3 }
             .debounce(1, TimeUnit.SECONDS)
             .observeOn(Schedulers.io())
             .flatMapSingle { queryString ->
-                Log.e("ERROR",queryString)
+                Log.e("ERROR", queryString)
                 useCase.getCityDto(queryString)
             }
-            .map { suggestList ->
-
+            .map {
+                mapper.mapSuggestionsToCurrentCity(it)
             }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ rvList ->
-
-            },{
+                    adapter.submitList(rvList)
+            }, {
                 it.printStackTrace()
             })
 

@@ -5,6 +5,7 @@ import com.example.weather.data.OpenMeteoRepositoryImpl
 import com.example.weather.data.OpenWeatheRepositoryImpl
 import com.example.weather.data.WeatherRepository
 import com.example.weather.domain.WeatherUseCase
+import com.example.weather.presentation.main.DadataFragment
 import com.example.weather.presentation.main.InputPlaceFragment
 import com.example.weather.presentation.main.MainFragment
 import com.example.weather.presentation.main.Settings2Fragment
@@ -62,8 +63,8 @@ abstract class  WeatherModule {
     @ContributesAndroidInjector
     abstract fun settingFragment():Settings2Fragment
 
-//    @ContributesAndroidInjector
-//    abstract fun mainFragment():MainFragment
+    @ContributesAndroidInjector
+    abstract fun dadataFragment():DadataFragment
 }
 
 @Qualifier

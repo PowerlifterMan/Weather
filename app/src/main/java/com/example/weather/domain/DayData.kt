@@ -11,15 +11,18 @@ const val DEFAULT_LOCATION_NAME = "Москва"
 const val DEFAULT_COUNTRY = "RU"
 const val DEFAULT_LATITUDE = "55.7522"
 const val DEFAULT_LONGITUDE = "37.6156"
+const val DEFAULT_KLADR_ID = "7700000000000"
 
 data class CurrentCity(
     val name: String? = DEFAULT_LOCATION_NAME,
     val longitude: String? = DEFAULT_LONGITUDE,
     val latitude: String? = DEFAULT_LATITUDE,
-    val country: String? = DEFAULT_COUNTRY
+    val country: String? = DEFAULT_COUNTRY,
+    val cityKladrId: String? = DEFAULT_KLADR_ID
 
-    ) : Parcelable {
+) : Parcelable {
     constructor(parcel: Parcel) : this(
+        parcel.readString(),
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
@@ -28,7 +31,7 @@ data class CurrentCity(
     }
 
     override fun describeContents(): Int {
-     return 0
+        return 0
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
@@ -36,6 +39,7 @@ data class CurrentCity(
         dest.writeString(longitude)
         dest.writeString(latitude)
         dest.writeString(country)
+        dest.writeString(cityKladrId)
 
     }
 
@@ -59,4 +63,4 @@ data class RecyclerViewItem(
     val description: String = DEFAULT_DESCRIPTION,
     var pictureUrl: String? = null
 
-    )
+)

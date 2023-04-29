@@ -72,6 +72,18 @@ class MainFragment : Fragment() {
                 viewModel.setListDataSource(sourceList)
             }
         }
+        setFragmentResultListener("cityFromDadata"){ requestKey, bundle ->
+            val latitude = bundle.getString("lat")
+            val longitude = bundle.getString("lon")
+            val cityName = bundle.getString("cityName")
+            val cityKladrId = bundle.getString("cityKladrId")
+            viewModel.setCurrentCity(
+                lat = latitude?.toFloatOrNull() ?: 0f,
+                lon = longitude?.toFloatOrNull() ?: 0f,
+                city = cityName ?: ""
+            )
+
+        }
         setFragmentResultListener("requestCity") { requestKey, bundle ->
             val latitude = bundle.getString("lat")
             val longitude = bundle.getString("lon")

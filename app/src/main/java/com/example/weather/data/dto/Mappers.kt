@@ -6,6 +6,7 @@ import com.example.weather.OpenMeteo.OpenMeteoCurrentWeatherDTO
 import com.example.weather.OpenMeteo.OpenMeteoDTO
 import com.example.weather.data.room.ForecastDbModel
 import com.example.weather.domain.*
+import com.example.weather.retrofit.daData.Suggestions
 import com.example.weather.retrofit.openWeather.DayForecast
 import com.example.weather.retrofit.openWeather.OpenWeatherForecastDTO
 import java.sql.Timestamp
@@ -25,12 +26,26 @@ class Mappers @Inject constructor() {
     val timeDayBegin = (startDayTime + 8 * SECONDS_IN_HOUR)
     val timeDayEnd = startDayTime + 18 * SECONDS_IN_HOUR
 
+    fun mapSuggestionsToCurrentCity(suggestions: Suggestions): List<CurrentCity> {
+        return suggestions.suggestions.map { item ->
+            CurrentCity(
+//                name = "${item.data.cityWithType}  ${item.data.settlement_with_type}",
+//                name = item.data.cityWithType ?: item.data.settlement_with_type,
+                name = item.value,
+                longitude = item.data.longitude,
+                latitude = item.data.latitude,
+                country = item.data.regionWithType,
+                cityKladrId = item.data.cityKladr_id
+            )
+        }
+
+    }
 
     fun mapForecastDbModelListToWeatherData(list: List<ForecastDbModel>): WeatherData {
         var resultList = mutableListOf<ForecastDbModel>()
-        resultList.add(list.find{ it.timeStamp>timeDayBegin} ?:list[0])
+        resultList.add(list.find { it.timeStamp > timeDayBegin } ?: list[0])
         repeat(5) { counter ->
-            val item = list.find{
+            val item = list.find {
                 it.timeStamp > (timeDayBegin + counter * SECONDS_IN_DAY)
             } ?: list[0]
             resultList.add(item)
@@ -108,7 +123,7 @@ class Mappers @Inject constructor() {
                 temperatureFeelsLikeMax = dto.currentWeather.temperature,
                 humidity = 0,
 
-            ),
+                ),
             forecastList = mapDaylyDTOCurrentTemp(dto.daily)
 
         )

@@ -10,10 +10,15 @@ import okhttp3.RequestBody.Companion.toRequestBody
 
 object DaDataRepositoryImpl : DaDataRepository {
     val myService = DadataCommon.retrofitService
-
     override fun getCity(name: String): Single<Suggestions> {
-        val jsonObject = JsonObject().addProperty("query", name)
-        Log.e("ERROR",jsonObject.toString() )
+        val jsonObject = JsonObject()
+        val jsonObjectBoundCity = JsonObject()
+        jsonObjectBoundCity.addProperty("value", "city")
+        val jsonObjectBoundSettlement = JsonObject()
+        jsonObjectBoundSettlement.addProperty("value", "settlement")
+        jsonObject.addProperty("query", "$name")
+        jsonObject.add("from_bound", jsonObjectBoundCity)
+        jsonObject.add("to_bound", jsonObjectBoundSettlement)
         val bodyRequest = jsonObject.toString()
             .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
         val data = myService.getAddrdessesList(
@@ -22,7 +27,6 @@ object DaDataRepositoryImpl : DaDataRepository {
             token = "Token 9e01e829bc289bb130dbf457fce0d371f44d487f",
             query = bodyRequest
         )
-            .subscribeOn(Schedulers.io())
         return data
     }
 }
