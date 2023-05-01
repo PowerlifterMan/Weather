@@ -65,7 +65,8 @@ class NinjasRepositoryImpl @Inject constructor(
                     temperatureFeelsLike = (it.temperatureFeelsLikeMax - it.temperatureFeelsLikeMin) / 2,
                     humidity = it.humidity,
                     weatherCondition = null,
-                    weatherConditionIconId = null
+                    weatherConditionIconId = null,
+                    cityKladr = null
                     )
                 weatherForecastDao.addForecastItem(model)
             }

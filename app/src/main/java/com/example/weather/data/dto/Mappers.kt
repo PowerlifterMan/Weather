@@ -30,8 +30,8 @@ class Mappers @Inject constructor() {
         return suggestions.suggestions.map { item ->
             CurrentCity(
 //                name = "${item.data.cityWithType}  ${item.data.settlement_with_type}",
-//                name = item.data.cityWithType ?: item.data.settlement_with_type,
-                name = item.value,
+                name = item.data.cityWithType ?: item.data.settlement_with_type,
+                fullname = item.value,
                 longitude = item.data.longitude,
                 latitude = item.data.latitude,
                 country = item.data.regionWithType,

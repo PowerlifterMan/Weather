@@ -127,7 +127,8 @@ class OpenMeteoRepositoryImpl @Inject constructor(
                     temperatureFeelsLike = it.temperatureFeelsLikeMax,
                     humidity = it.humidity,
                     weatherCondition = null,
-                    weatherConditionIconId = null
+                    weatherConditionIconId = null,
+                    cityKladr = null
                 )
                 weatherList.add(model)
             }

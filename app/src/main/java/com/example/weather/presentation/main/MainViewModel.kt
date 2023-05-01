@@ -12,6 +12,7 @@ import com.example.weather.domain.RecyclerViewItem
 import com.example.weather.domain.TempOnTime
 import com.example.weather.domain.WeatherUseCase
 import com.example.weather.data.NinjasRepositoryImpl
+import com.example.weather.domain.CurrentCity
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
@@ -45,6 +46,11 @@ class MainViewModel @Inject constructor(
         private set(value) {
             field = value
         }
+    var myCityKladr = MutableLiveData<String>()
+        private set
+    var currentCityLD = MutableLiveData<CurrentCity>()
+        private set
+
     val chartLineData = MutableLiveData<LineData>()
     val chartBarData = MutableLiveData<BarData>()
 
@@ -107,10 +113,14 @@ class MainViewModel @Inject constructor(
         return chartLineData.value
     }
 
-    fun setCurrentCity(lat: Float, lon: Float, city: String) {
+    fun setCurrentCity(lat: Float, lon: Float, city: String, cityKladr: String) {
         myCityName.value = city
         myLatitude.value = lat
         myLongitude.value = lon
+        myCityKladr.value = cityKladr
+        currentCityLD.value = CurrentCity(
+            name = city,
+            longitude = lon.toString())
     }
 
     @SuppressLint("CheckResult")
@@ -128,7 +138,7 @@ class MainViewModel @Inject constructor(
                     tempFeelsLike = data.currentTemp.temperatureFeelsLikeMax,
 
 
-                )
+                    )
                 myCityCurrentWeather.value = tempOnTime
                 rvRow.value = data.forecastList.map { item ->
                     RecyclerViewItem(

@@ -54,7 +54,7 @@ class MainFragment : Fragment() {
 
         sourceList.add(SOURCE_OPEN_WEATHER)
         viewModel = ViewModelProvider(this,viemodelFactory).get(MainViewModel::class.java)
-        viewModel.setCurrentCity(lat = 55.75f, lon = 37.61f, city = "Москва")
+        viewModel.setCurrentCity(lat = 55.75f, lon = 37.61f, city = "Москва", cityKladr = "7700000000000")
         viewModel.setDataSourceType(currentSourceName)
         viewModel.setListDataSource(sourceList)
         setFragmentResultListener("requestDataSource") { requestKey, bundle ->
@@ -80,9 +80,10 @@ class MainFragment : Fragment() {
             viewModel.setCurrentCity(
                 lat = latitude?.toFloatOrNull() ?: 0f,
                 lon = longitude?.toFloatOrNull() ?: 0f,
-                city = cityName ?: ""
+                city = cityName ?: "",
+                cityKladr = cityKladrId ?:""
             )
-
+            viewModel.getForecastDataCombine()
         }
         setFragmentResultListener("requestCity") { requestKey, bundle ->
             val latitude = bundle.getString("lat")
@@ -91,7 +92,8 @@ class MainFragment : Fragment() {
             viewModel.setCurrentCity(
                 lat = latitude?.toFloatOrNull() ?: 0f,
                 lon = longitude?.toFloatOrNull() ?: 0f,
-                city = cityName ?: ""
+                city = cityName ?: "",
+                cityKladr = ""
             )
             viewModel.getForecastDataCombine()
         }

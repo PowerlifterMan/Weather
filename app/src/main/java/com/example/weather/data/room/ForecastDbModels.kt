@@ -13,6 +13,9 @@ class ForecastDbModel(
     @ColumnInfo(name = "idCity")
     val idCity: String,
 
+    @ColumnInfo(name = "cityKladr")
+    val cityKladr: String?,
+
     @ColumnInfo(name = "idSource")
     val idSource: String,
 

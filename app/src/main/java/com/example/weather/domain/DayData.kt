@@ -14,6 +14,7 @@ const val DEFAULT_LONGITUDE = "37.6156"
 const val DEFAULT_KLADR_ID = "7700000000000"
 
 data class CurrentCity(
+    val fullname: String? = DEFAULT_LOCATION_NAME,
     val name: String? = DEFAULT_LOCATION_NAME,
     val longitude: String? = DEFAULT_LONGITUDE,
     val latitude: String? = DEFAULT_LATITUDE,
@@ -22,6 +23,7 @@ data class CurrentCity(
 
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
+        parcel.readString(),
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
@@ -35,6 +37,7 @@ data class CurrentCity(
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeString(fullname)
         dest.writeString(name)
         dest.writeString(longitude)
         dest.writeString(latitude)
