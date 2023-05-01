@@ -73,7 +73,11 @@ class DadataFragment @Inject constructor() : Fragment() {
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         recyclerView.adapter = adapter
         val editText = binding.DadataEditText
+        val listLD = viewModel.recyclerViewList
         setupFields(editText)
+        listLD.observe(viewLifecycleOwner){
+            adapter.submitList(it)
+        }
         adapter.onItemClickListener = object : CityRvAdapter.OnItemClickListener {
             override fun itemClick(item: CurrentCity) {
                 val result = bundleOf(
@@ -92,8 +96,7 @@ class DadataFragment @Inject constructor() : Fragment() {
 
     @SuppressLint("CheckResult")
     private fun setupFields(editText: EditText) {
-        Observable.create { emitter: ObservableEmitter<String> ->
-            val watcher: TextWatcher = object : TextWatcher {
+          val watcher: TextWatcher = object : TextWatcher {
                 override fun beforeTextChanged(
                     charSequence: CharSequence,
                     start: Int,
@@ -107,36 +110,15 @@ class DadataFragment @Inject constructor() : Fragment() {
                     before: Int,
                     count: Int
                 ) = Unit
+//                {
+//                    viewModel.onInputTextChanged(charSequence.toString())
+//                }
 
                 override fun afterTextChanged(editable: Editable) {
-                    if (!emitter.isDisposed) { //если еще не отписались
-                        emitter.onNext(editable.toString()) //отправляем текущее состояние
-                    }
+                    viewModel.onInputTextChanged(editable.toString())
                 }
             }
-            emitter.setCancellable {
-                editText.removeTextChangedListener(
-                    watcher
-                )
-            } //удаляем листенер при отписке от observable
             editText.addTextChangedListener(watcher)
-        }
-            .subscribeOn(Schedulers.io())
-            .filter { it.length > 3 }
-            .debounce(1, TimeUnit.SECONDS)
-            .flatMapSingle { queryString ->
-                Log.e("ERROR2", queryString)
-                viewModel.getCity(queryString)
-            }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ rvList ->
-                adapter.submitList(rvList)
-            }, {
-                it.printStackTrace()
-                Log.e("ERROR2", it.message.toString())
-            })
-
-
     }
 
     @SuppressLint("CheckResult")
