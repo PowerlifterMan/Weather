@@ -11,17 +11,14 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.weather.R
 import com.example.weather.databinding.FragmentSettings2Binding
-import com.example.weather.databinding.FragmentSettingsBinding
+import com.example.weather.presentation.main.MainFragment.Companion.SETTING_FRAGMENT_DATA
 import dagger.android.support.AndroidSupportInjection
 import java.lang.RuntimeException
 import javax.inject.Inject
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
@@ -67,11 +64,11 @@ class Settings2Fragment @Inject constructor() : Fragment() {
                 if (viewModel.checkErrorState()) {
 
                     val result = bundleOf(
-                        "sourceChecked1" to source1checked,
-                        "sourceChecked2" to source2checked,
-                        "sourceChecked3" to source3checked,
+                        CHECK_BOX_SOURCE_NINJAS to checkBoxOption1.isChecked,
+                        CHECK_BOX_SOURCE_OPEN_WEATHER to checkBoxOption2.isChecked,
+                        CHECK_BOX_SOURCE_OPEN_METEO to checkBoxOption3.isChecked,
                     )
-                    setFragmentResult(requestKey = "settingsFragment2Checked", result = result)
+                    setFragmentResult(requestKey = SETTING_FRAGMENT_DATA, result = result)
                     findNavController().popBackStack()
                 }
                 else
@@ -80,18 +77,15 @@ class Settings2Fragment @Inject constructor() : Fragment() {
                 }
             }
             checkBoxOption1.setOnCheckedChangeListener { buttonView, isChecked ->
-                viewModel.setChoice("option1", isChecked)
-                source1checked = isChecked
+                viewModel.onCheckBoxChanged(CHECK_BOX_SOURCE_NINJAS, isChecked)
                 Log.e("SETTING", "SOURCE 1 IS CHECKED = $isChecked")
             }
             checkBoxOption2.setOnCheckedChangeListener { buttonView, isChecked ->
-                viewModel.setChoice("option2", isChecked)
-                source2checked = isChecked
+                viewModel.onCheckBoxChanged(CHECK_BOX_SOURCE_OPEN_WEATHER, isChecked)
                 Log.e("SETTING", "SOURCE 2 IS CHECKED = $isChecked")
             }
             checkBoxOption3.setOnCheckedChangeListener { buttonView, isChecked ->
-                viewModel.setChoice("option3", isChecked)
-                source3checked = isChecked
+                viewModel.onCheckBoxChanged(CHECK_BOX_SOURCE_OPEN_METEO, isChecked)
                 Log.e("SETTING", "SOURCE 3 CHECKED = $isChecked")
             }
 
@@ -101,14 +95,11 @@ class Settings2Fragment @Inject constructor() : Fragment() {
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment Settings2Fragment.
-         */
+        private const val ARG_PARAM1 = "param1"
+        private const val ARG_PARAM2 = "param2"
+        const val CHECK_BOX_SOURCE_NINJAS = "NINJAS_SOURCE"
+        const val CHECK_BOX_SOURCE_OPEN_WEATHER = "OPEN_WEATHER_SOURCE"
+        const val CHECK_BOX_SOURCE_OPEN_METEO = "OPEN_METEO_SOURCE"
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =

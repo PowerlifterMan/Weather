@@ -1,7 +1,6 @@
 package com.example.weather.presentation.main
 
 import android.annotation.SuppressLint
-import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
@@ -18,13 +17,14 @@ import com.example.weather.R
 import com.example.weather.databinding.FragmentMainBinding
 import com.example.weather.domain.CurrentCity
 import com.example.weather.domain.RecyclerViewItem
+import com.example.weather.presentation.main.Settings2Fragment.Companion.CHECK_BOX_SOURCE_NINJAS
+import com.example.weather.presentation.main.Settings2Fragment.Companion.CHECK_BOX_SOURCE_OPEN_WEATHER
+import com.example.weather.presentation.main.Settings2Fragment.Companion.CHECK_BOX_SOURCE_OPEN_METEO
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineDataSet
-import dagger.android.AndroidInjection
 import dagger.android.support.AndroidSupportInjection
-import dagger.android.support.DaggerFragment
 import java.lang.RuntimeException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -62,21 +62,21 @@ class MainFragment : Fragment() {
             viewModel.setDataSourceType(currentSourceName)
             viewModel.getForecastData(currentSourceName)
         }
-        setFragmentResultListener("settingsFragment2Checked") { requestKey, bundle ->
+        setFragmentResultListener(SETTING_FRAGMENT_DATA) { requestKey, bundle ->
             sourceList.clear()
-            if (bundle.getBoolean("sourceChecked1")) sourceList.add(SOURCE_NINJAS)
-            if (bundle.getBoolean("sourceChecked2")) sourceList.add(SOURCE_OPEN_WEATHER)
-            if (bundle.getBoolean("sourceChecked3")) sourceList.add(SOURCE_OPEN_METEO)
+            if (bundle.getBoolean(CHECK_BOX_SOURCE_NINJAS)) sourceList.add(SOURCE_NINJAS)
+            if (bundle.getBoolean(CHECK_BOX_SOURCE_OPEN_WEATHER)) sourceList.add(SOURCE_OPEN_WEATHER)
+            if (bundle.getBoolean(CHECK_BOX_SOURCE_OPEN_METEO)) sourceList.add(SOURCE_OPEN_METEO)
             Log.e("SETTING", sourceList.toString())
             if (sourceList.isNotEmpty()) {
                 viewModel.setListDataSource(sourceList)
             }
         }
-        setFragmentResultListener("cityFromDadata"){ requestKey, bundle ->
-            val latitude = bundle.getString("lat")
-            val longitude = bundle.getString("lon")
-            val cityName = bundle.getString("cityName")
-            val cityKladrId = bundle.getString("cityKladrId")
+        setFragmentResultListener(DADATA_FRAGMENT_DATA){ requestKey, bundle ->
+            val latitude = bundle.getString(LATITUDE_KEY)
+            val longitude = bundle.getString(LONGITUDE_KEY)
+            val cityName = bundle.getString(CITY_NAME_KEY)
+            val cityKladrId = bundle.getString(CITY_KLADR_ID_KEY)
             viewModel.setCurrentCity(
                 lat = latitude?.toFloatOrNull() ?: 0f,
                 lon = longitude?.toFloatOrNull() ?: 0f,
@@ -85,10 +85,10 @@ class MainFragment : Fragment() {
             )
             viewModel.getForecastDataCombine()
         }
-        setFragmentResultListener("requestCity") { requestKey, bundle ->
-            val latitude = bundle.getString("lat")
-            val longitude = bundle.getString("lon")
-            val cityName = bundle.getString("cityName")
+        setFragmentResultListener(INPUT_PLACE_FRAGMENT_DATA) { requestKey, bundle ->
+            val latitude = bundle.getString(LATITUDE_KEY)
+            val longitude = bundle.getString(LONGITUDE_KEY)
+            val cityName = bundle.getString(CITY_NAME_KEY)
             viewModel.setCurrentCity(
                 lat = latitude?.toFloatOrNull() ?: 0f,
                 lon = longitude?.toFloatOrNull() ?: 0f,
@@ -97,11 +97,6 @@ class MainFragment : Fragment() {
             )
             viewModel.getForecastDataCombine()
         }
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
     }
 
     @SuppressLint("SetTextI18n")
@@ -210,6 +205,13 @@ class MainFragment : Fragment() {
     companion object {
         fun newInstance() = MainFragment()
         const val BAR_DATA_SET_NAME1 = "AVERAGE TEMP"
+        const val SETTING_FRAGMENT_DATA = "data_from_settings_fragment"
+        const val DADATA_FRAGMENT_DATA = "data_from_dadata_fragment"
+        const val INPUT_PLACE_FRAGMENT_DATA = "data_from_input_place_fragment"
+        const val LONGITUDE_KEY = "lon"
+        const val LATITUDE_KEY = "lat"
+        const val CITY_NAME_KEY = "city"
+        const val CITY_KLADR_ID_KEY = "cityKladrId"
         const val OPEN_WEATHER_API_KEY = "5d1db59ebde74404687cd4a218b50859"
     }
 }

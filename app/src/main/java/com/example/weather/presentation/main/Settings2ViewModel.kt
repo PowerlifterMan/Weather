@@ -1,15 +1,15 @@
 package com.example.weather.presentation.main
 
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.android.material.internal.ContextUtils.getActivity
+import com.example.weather.presentation.main.Settings2Fragment.Companion.CHECK_BOX_SOURCE_NINJAS
+import com.example.weather.presentation.main.Settings2Fragment.Companion.CHECK_BOX_SOURCE_OPEN_WEATHER
+import com.example.weather.presentation.main.Settings2Fragment.Companion.CHECK_BOX_SOURCE_OPEN_METEO
 import javax.inject.Inject
 
 
 class Settings2ViewModel @Inject constructor() : ViewModel() {
-    private val source1checked = MutableLiveData<Boolean>()
     private val _isErrorState = MutableLiveData<Boolean>()
     private val useSource1 = MutableLiveData<Boolean>()
     private val useSource2 = MutableLiveData<Boolean>()
@@ -24,17 +24,18 @@ class Settings2ViewModel @Inject constructor() : ViewModel() {
     val isErrorState: LiveData<Boolean>
         get() = _isErrorState
 
-    fun setChoice(fieldName: String, state: Boolean) {
+    fun onCheckBoxChanged(fieldName: String, state: Boolean) {
+
         when (fieldName) {
-            "option1" -> {
+            CHECK_BOX_SOURCE_NINJAS -> {
                 useSource1.value = state
             }
 
-            "option2" -> {
+            CHECK_BOX_SOURCE_OPEN_WEATHER -> {
                 useSource2.value = state
             }
 
-            "option3" -> {
+            CHECK_BOX_SOURCE_OPEN_METEO -> {
                 useSource3.value = state
             }
         }

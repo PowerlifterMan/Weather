@@ -18,6 +18,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather.databinding.FragmentDadataBinding
 import com.example.weather.domain.CurrentCity
+import com.example.weather.presentation.main.MainFragment.Companion.CITY_KLADR_ID_KEY
+import com.example.weather.presentation.main.MainFragment.Companion.CITY_NAME_KEY
+import com.example.weather.presentation.main.MainFragment.Companion.DADATA_FRAGMENT_DATA
+import com.example.weather.presentation.main.MainFragment.Companion.LATITUDE_KEY
+import com.example.weather.presentation.main.MainFragment.Companion.LONGITUDE_KEY
 import com.example.weather.retrofit.daData.CityRvAdapter
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -85,12 +90,12 @@ class DadataFragment @Inject constructor() : Fragment() {
         adapter.onItemClickListener = object : CityRvAdapter.OnItemClickListener {
             override fun itemClick(item: CurrentCity) {
                 val result = bundleOf(
-                    "lat" to item.latitude,
-                    "lon" to item.longitude,
-                    "cityName" to item.name,
-                    "cityKladrId" to item.cityKladrId
+                    LATITUDE_KEY to item.latitude,
+                    LONGITUDE_KEY to item.longitude,
+                    CITY_NAME_KEY to item.name,
+                    CITY_KLADR_ID_KEY to item.cityKladrId
                 )
-                setFragmentResult("cityFromDadata", result)
+                setFragmentResult(DADATA_FRAGMENT_DATA, result)
                 findNavController().popBackStack()
             }
         }

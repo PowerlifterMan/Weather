@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".presentation.main.DadataFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/vBarrier8dp"
         android:layout_width="wrap_content"
@@ -51,22 +49,22 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="8dp"
-        android:layout_weight="6"
         app:layout_constraintEnd_toEndOf="@+id/DadataEditText"
         app:layout_constraintStart_toStartOf="@+id/DadataEditText"
-        app:layout_constraintTop_toBottomOf="@+id/DadataEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/DadataEditText"
+        app:layout_constraintBottom_toTopOf="@id/fragment_dadata_btnSubmit"/>
 
     <Button
         android:id="@+id/fragment_dadata_btnSubmit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="80dp"
-        android:layout_weight="1"
-        android:gravity="center"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="20dp"
         android:text="@string/search_caption"
         app:layout_constraintEnd_toEndOf="@+id/dadataFragmentRv"
         app:layout_constraintStart_toStartOf="@+id/dadataFragmentRv"
-        app:layout_constraintTop_toBottomOf="@+id/dadataFragmentRv" />
+        app:layout_constraintTop_toBottomOf="@+id/dadataFragmentRv"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

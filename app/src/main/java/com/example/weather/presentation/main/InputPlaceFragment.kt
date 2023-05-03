@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.core.os.bundleOf
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.ViewModelProvider
@@ -15,6 +14,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather.databinding.FragmentInputPlaceBinding
 import com.example.weather.domain.CurrentCity
+import com.example.weather.presentation.main.MainFragment.Companion.CITY_NAME_KEY
+import com.example.weather.presentation.main.MainFragment.Companion.INPUT_PLACE_FRAGMENT_DATA
+import com.example.weather.presentation.main.MainFragment.Companion.LATITUDE_KEY
+import com.example.weather.presentation.main.MainFragment.Companion.LONGITUDE_KEY
 import com.example.weather.retrofit.daData.CityRvAdapter
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
@@ -42,7 +45,7 @@ class InputPlaceFragment : Fragment()  {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         binding = FragmentInputPlaceBinding.inflate(inflater)
         return binding.root
@@ -64,11 +67,11 @@ class InputPlaceFragment : Fragment()  {
         cityAdapter.onItemClickListener = object : CityRvAdapter.OnItemClickListener {
             override fun itemClick(item: CurrentCity) {
                 val result = bundleOf(
-                    "lat" to item.latitude,
-                    "lon" to item.longitude,
-                    "cityName" to item.name
+                    LATITUDE_KEY to item.latitude,
+                    LONGITUDE_KEY to item.longitude,
+                    CITY_NAME_KEY to item.name
                 )
-                setFragmentResult("requestCity", result)
+                setFragmentResult(INPUT_PLACE_FRAGMENT_DATA, result)
                 findNavController().popBackStack()
 //                Toast.makeText(requireActivity(), "PRESSED", Toast.LENGTH_SHORT).show()
             }
@@ -78,7 +81,7 @@ class InputPlaceFragment : Fragment()  {
         }
         btnGoRequest.setOnClickListener {
             viewModel.textForSearch.value = stringForSearh.text.toString().trim()
-            viewModel.requestCity()
+            viewModel.onGoButtonClicked()
 
         }
     }

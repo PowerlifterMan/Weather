@@ -33,7 +33,7 @@ class InputPlaceViewModel @Inject constructor(
         return listForRv
     }
 
-    fun requestCity() {
+    fun onGoButtonClicked() {
         val cityNameForSearch =
             if (textForSearch.value != null) textForSearch.value.toString() else "Москва"
         useCase.getCityDto(cityNameForSearch)
