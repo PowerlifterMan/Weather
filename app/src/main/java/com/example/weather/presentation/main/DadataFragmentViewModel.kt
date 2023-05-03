@@ -3,6 +3,7 @@ package com.example.weather.presentation.main
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.weather.data.dto.Mappers
@@ -26,7 +27,7 @@ class DadataFragmentViewModel @Inject constructor(): ViewModel() {
     private val mapper = Mappers()
     private val disposables = CompositeDisposable()
     private lateinit var inpuEmitter: ObservableEmitter<String>
-    val recyclerViewList = MutableLiveData<List<CurrentCity>>()
+    private val recyclerViewList = MutableLiveData<List<CurrentCity>>()
     init {
         val disposable = Observable.create { emitter: ObservableEmitter<String> ->
         inpuEmitter = emitter
@@ -39,14 +40,16 @@ class DadataFragmentViewModel @Inject constructor(): ViewModel() {
                 getCity(queryString)
             }
             .observeOn(Schedulers.io())
-            .subscribe({ rvList ->
-                recyclerViewList.value = rvList
+            .subscribe({ currentCityList ->
+                recyclerViewList.postValue(currentCityList)
             }, {
                 it.printStackTrace()
                 Log.e("ERROR2", it.message.toString())
             })
         disposables.add(disposable)
     }
+
+    fun getCityList():LiveData<List<CurrentCity>> = recyclerViewList
     fun getCity(query: String):Single<List<CurrentCity>> {
         return useCase.getCityDto(query)
             .map {

@@ -24,6 +24,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.ObservableEmitter
 import io.reactivex.rxjava3.schedulers.Schedulers
+import java.io.FileInputStream
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -57,7 +58,9 @@ class DadataFragment @Inject constructor() : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this,viemodelFactory).get(DadataFragmentViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(DadataFragmentViewModel::class.java)
+
+//        viewModel = ViewModelProvider(this,viemodelFactory).get(DadataFragmentViewModel::class.java)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
@@ -73,10 +76,11 @@ class DadataFragment @Inject constructor() : Fragment() {
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         recyclerView.adapter = adapter
         val editText = binding.DadataEditText
-        val listLD = viewModel.recyclerViewList
+        val listLD = viewModel.getCityList()
         setupFields(editText)
         listLD.observe(viewLifecycleOwner){
             adapter.submitList(it)
+
         }
         adapter.onItemClickListener = object : CityRvAdapter.OnItemClickListener {
             override fun itemClick(item: CurrentCity) {

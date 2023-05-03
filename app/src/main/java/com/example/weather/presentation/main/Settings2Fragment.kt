@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.ViewModelProvider
@@ -48,7 +49,7 @@ class Settings2Fragment @Inject constructor() : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this,viemodelFactory).get(Settings2ViewModel::class.java)
+        viewModel = ViewModelProvider(this, viemodelFactory).get(Settings2ViewModel::class.java)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
@@ -58,28 +59,38 @@ class Settings2Fragment @Inject constructor() : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         _binding = FragmentSettings2Binding.inflate(inflater, container, false)
         with(binding) {
             setting2BtnOK.setOnClickListener {
-                val result = bundleOf(
-                    "sourceChecked1" to source1checked,
-                    "sourceChecked2" to source2checked,
-                    "sourceChecked3" to source3checked  ,
-                )
-                setFragmentResult(requestKey = "settingsFragment2Checked", result = result)
-                findNavController().popBackStack()
+                if (viewModel.checkErrorState()) {
+
+                    val result = bundleOf(
+                        "sourceChecked1" to source1checked,
+                        "sourceChecked2" to source2checked,
+                        "sourceChecked3" to source3checked,
+                    )
+                    setFragmentResult(requestKey = "settingsFragment2Checked", result = result)
+                    findNavController().popBackStack()
+                }
+                else
+                {
+                    Toast.makeText(requireContext(), "CHEK", Toast.LENGTH_SHORT).show()
+                }
             }
             checkBoxOption1.setOnCheckedChangeListener { buttonView, isChecked ->
+                viewModel.setChoice("option1", isChecked)
                 source1checked = isChecked
                 Log.e("SETTING", "SOURCE 1 IS CHECKED = $isChecked")
             }
             checkBoxOption2.setOnCheckedChangeListener { buttonView, isChecked ->
+                viewModel.setChoice("option2", isChecked)
                 source2checked = isChecked
                 Log.e("SETTING", "SOURCE 2 IS CHECKED = $isChecked")
             }
             checkBoxOption3.setOnCheckedChangeListener { buttonView, isChecked ->
+                viewModel.setChoice("option3", isChecked)
                 source3checked = isChecked
                 Log.e("SETTING", "SOURCE 3 CHECKED = $isChecked")
             }
