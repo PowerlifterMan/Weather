@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather.R
 import com.example.weather.domain.CurrentCity
-import com.example.weather.domain.RecyclerViewItem
 
 class CityRvAdapter :
     ListAdapter<CurrentCity, CityRvAdapter.CityViewHolder>(CityDiffCallback()) {

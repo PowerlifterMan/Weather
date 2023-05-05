@@ -16,10 +16,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weather.R
 import com.example.weather.databinding.FragmentMainBinding
 import com.example.weather.domain.CurrentCity
-import com.example.weather.domain.RecyclerViewItem
 import com.example.weather.presentation.main.Settings2Fragment.Companion.CHECK_BOX_SOURCE_NINJAS
 import com.example.weather.presentation.main.Settings2Fragment.Companion.CHECK_BOX_SOURCE_OPEN_WEATHER
 import com.example.weather.presentation.main.Settings2Fragment.Companion.CHECK_BOX_SOURCE_OPEN_METEO
+import com.example.weather.presentation.main.recyclerViews.ForecastAdapter
+import com.example.weather.presentation.main.recyclerViews.ForecastAdapter.Companion.ITEM_VIEW_TYPE_ROW
+import com.example.weather.presentation.main.recyclerViews.ForecastAdapter.Companion.ITEM_VIEW_TYPE_TITLE
+import com.example.weather.presentation.main.recyclerViews.ForecastAdapter.Companion.MAX_ITEM_POOL_SIZE
+import com.example.weather.presentation.main.recyclerViews.RecyclerViewItem
+import com.example.weather.presentation.main.recyclerViews.RecyclerViewRow
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
@@ -119,21 +124,23 @@ class MainFragment : Fragment() {
             cardView.setBackgroundResource(R.drawable.low_cloud_cover)
             tvLocation.setOnClickListener {
                 myCity = getNewCity()
-
             }
             btnChangeSettings.setOnClickListener {
                 changeSettings()
             }
             forecastRV.layoutManager =
                 LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
+            forecastRV.recycledViewPool.setMaxRecycledViews(ITEM_VIEW_TYPE_TITLE, MAX_ITEM_POOL_SIZE)
+            forecastRV.recycledViewPool.setMaxRecycledViews(ITEM_VIEW_TYPE_ROW, MAX_ITEM_POOL_SIZE)
             forecastRV.adapter = adapter
-
-
         }
         adapter.onItemClickListener = object : ForecastAdapter.OnItemClickListener {
-            override fun itemClick(item: RecyclerViewItem) {
+            override fun itemClick(item: RecyclerViewRow) {
+                super.itemClick(item)
                 changeCurrentDayInfo(item)
             }
+
+
         }
         forecastList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
@@ -178,7 +185,7 @@ class MainFragment : Fragment() {
         return myCity
     }
 
-    private fun changeCurrentDayInfo(item: RecyclerViewItem) {
+    private fun changeCurrentDayInfo(item: RecyclerViewRow) {
         Toast.makeText(requireActivity(), "PRESSED", Toast.LENGTH_SHORT).show()
         binding.tvCurrentLocation.text = "CLICKED"
     }
@@ -188,6 +195,7 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
+
         return binding.root
     }
 

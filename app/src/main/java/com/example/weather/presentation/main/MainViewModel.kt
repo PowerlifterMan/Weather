@@ -8,11 +8,12 @@ import androidx.lifecycle.ViewModel
 import com.example.weather.data.OpenMeteoRepositoryImpl
 import com.example.weather.data.dto.Mappers
 import com.example.weather.data.OpenWeatheRepositoryImpl
-import com.example.weather.domain.RecyclerViewItem
 import com.example.weather.domain.TempOnTime
 import com.example.weather.domain.WeatherUseCase
 import com.example.weather.data.NinjasRepositoryImpl
 import com.example.weather.domain.CurrentCity
+import com.example.weather.presentation.main.recyclerViews.RecyclerViewItem
+import com.example.weather.presentation.main.recyclerViews.RecyclerViewRow
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
@@ -58,7 +59,7 @@ class MainViewModel @Inject constructor(
 
     private val myLatitude = MutableLiveData<Float>()
     private val myCityCurrentWeather = MutableLiveData<TempOnTime>()
-    val rvRow = MutableLiveData<List<RecyclerViewItem>>()
+    val rvRow = MutableLiveData<List<RecyclerViewRow>>()
 
     val mapper = Mappers()
 
@@ -87,20 +88,21 @@ class MainViewModel @Inject constructor(
         return myCityCurrentWeather
     }
 
-    fun getForecast(): LiveData<List<RecyclerViewItem>> {
+    fun getForecast(): LiveData<List<RecyclerViewRow>> {
         return rvRow
     }
 
     fun setLineChartData() {
-        val chartLabels = rvRow.value?.map { it ->
-            it.dayNumber
+        val chartLabels = rvRow.value?.filter { it -> it is RecyclerViewItem }?. map { item ->
+            (item as RecyclerViewItem).dayNumber
         }
-        val lineEntryList = rvRow.value?.mapIndexed { index, item ->
-            Entry(item.temperature.toFloat(), index)
+        val lineEntryList = rvRow.value?.filter { it -> it is RecyclerViewItem }?.mapIndexed { index, item ->
+            Entry((item as RecyclerViewItem).temperature.toFloat(), index)
         }
-        val barEntryList = rvRow.value?.mapIndexed { index, item ->
-            BarEntry(item.temperature.toFloat(), index)
-        }
+        val barEntryList =
+            rvRow.value?.filter { it -> it is RecyclerViewItem }?.mapIndexed { index, item ->
+                BarEntry((item as RecyclerViewItem).temperature.toFloat(), index)
+            }
         val barDataSet = BarDataSet(barEntryList, "WEATHER")
         val lineDataSet = LineDataSet(lineEntryList, "BLUE LINE")
 
@@ -120,7 +122,8 @@ class MainViewModel @Inject constructor(
         myCityKladr.value = cityKladr
         currentCityLD.value = CurrentCity(
             name = city,
-            longitude = lon.toString())
+            longitude = lon.toString()
+        )
     }
 
     @SuppressLint("CheckResult")
@@ -136,10 +139,9 @@ class MainViewModel @Inject constructor(
                     timestamp = data.currentTemp.timeStamp,
                     temp = data.currentTemp.temperatureMax,
                     tempFeelsLike = data.currentTemp.temperatureFeelsLikeMax,
-
-
-                    )
+                )
                 myCityCurrentWeather.value = tempOnTime
+                val spisok =  mapper.mapWeatherDataToRecyclerViewItem(data)
                 rvRow.value = data.forecastList.map { item ->
                     RecyclerViewItem(
                         dayNumber = sdf.format(item.timeStamp.toLong() * 1000),
@@ -149,7 +151,6 @@ class MainViewModel @Inject constructor(
                     )
                 }
                 setLineChartData()
-
             },
                 { error ->
                     error.printStackTrace()

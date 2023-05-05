@@ -20,8 +20,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+//        val toolbar = fi
+        setSupportActionBar(findViewById(R.id.toolbar2))
 
-//        if (savedInstanceState == null) {
+
+        //        if (savedInstanceState == null) {
 //            supportFragmentManager.beginTransaction()
 //                .replace(R.id.main_container, MainFragment())
 //                .commitNow()
@@ -35,8 +38,10 @@ class MainActivity : AppCompatActivity() {
                 android.Manifest.permission.INTERNET
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.INTERNET),
-                INTERNET_REQUEST_CODE)
+            ActivityCompat.requestPermissions(
+                this, arrayOf(android.Manifest.permission.INTERNET),
+                INTERNET_REQUEST_CODE
+            )
         }
 
         return allPermissioGranted

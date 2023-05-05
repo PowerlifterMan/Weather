@@ -6,6 +6,7 @@ import com.example.weather.OpenMeteo.OpenMeteoCurrentWeatherDTO
 import com.example.weather.OpenMeteo.OpenMeteoDTO
 import com.example.weather.data.room.ForecastDbModel
 import com.example.weather.domain.*
+import com.example.weather.presentation.main.recyclerViews.RecyclerViewRow
 import com.example.weather.retrofit.daData.Suggestions
 import com.example.weather.retrofit.openWeather.DayForecast
 import com.example.weather.retrofit.openWeather.OpenWeatherForecastDTO
@@ -25,7 +26,18 @@ class Mappers @Inject constructor() {
     }
     val timeDayBegin = (startDayTime + 8 * SECONDS_IN_HOUR)
     val timeDayEnd = startDayTime + 18 * SECONDS_IN_HOUR
-
+    val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+    val dateString = simpleDateFormat.format(9897546853323L)
+    fun mapWeatherDataToRecyclerViewItem(data: WeatherData): List<RecyclerViewRow>{
+        val returnedList = mutableListOf<RecyclerViewRow>()
+        val list = data.forecastList.sortedBy { it.timeStamp }
+        val stamp = Timestamp(list[0].timeStamp)
+        val date = Date(stamp.time)
+        list.forEachIndexed { index, currentTemp ->
+            if (index == 0)
+        }
+        return returnedList
+    }
     fun mapSuggestionsToCurrentCity(suggestions: Suggestions): List<CurrentCity> {
         return suggestions.suggestions.map { item ->
             CurrentCity(
@@ -191,11 +203,12 @@ class Mappers @Inject constructor() {
 
     )
 
+
     companion object {
         const val DEFAULT_NAME = "noname"
         const val DEFAULT_FLOAT_VALUE = -1f
         const val DEFAULT_INT_VALUE = -1
-        const val SECONDS_IN_DAY = 86400f
-        const val SECONDS_IN_HOUR = 3600f
+        const val SECONDS_IN_DAY = 86400L
+        const val SECONDS_IN_HOUR = 3600L
     }
 }

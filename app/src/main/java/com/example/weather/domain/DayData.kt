@@ -59,11 +59,3 @@ data class CurrentCity(
 }
 
 
-data class RecyclerViewItem(
-    var dayNumber: String = "",
-    val temperature: String = DEFAULT_TEMPERATURE.toString(),
-    val temperatureFeelsLike: String = DEFAULT_TEMPERATURE.toString(),
-    val description: String = DEFAULT_DESCRIPTION,
-    var pictureUrl: String? = null
-
-)
