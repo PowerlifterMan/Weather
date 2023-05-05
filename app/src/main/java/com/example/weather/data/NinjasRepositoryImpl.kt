@@ -22,7 +22,7 @@ class NinjasRepositoryImpl @Inject constructor(
     private val weatherForecastDao =
         appDataBase.weatherForecastDao()
 
-    override fun getWeather(lat: Float, lon: Float,cityName: String): Single<WeatherData> {
+    override fun getWeather(lat: Float, lon: Float,cityName: String, cityKladr: String): Single<WeatherData> {
         return if (needToUpdate()) {
             getWeatherFromRemote(lat = lat, lon = lon)
                 .andThen(

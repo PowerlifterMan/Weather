@@ -21,11 +21,13 @@ class OpenWeatheRepositoryImpl @Inject constructor(
     lateinit var currentCity: String
     val service = OpenWeatherCommon.retrofitService
     val mapper = Mappers()
+    var newCityKladr = ""
     private val weatherForecastDao =
         appDataBase.weatherForecastDao()
 
-    override fun getWeather(lat: Float, lon: Float, cityName: String): Single<WeatherData> {
+    override fun getWeather(lat: Float, lon: Float, cityName: String, cityKladr: String): Single<WeatherData> {
         currentCity = cityName
+        newCityKladr = cityKladr
         return if (needToUpdate()) {
             Completable.fromCallable {
 //                weatherForecastDao.clearData(sourceId = currentSourceName, cityId = cityName)
@@ -126,7 +128,7 @@ class OpenWeatheRepositoryImpl @Inject constructor(
                     humidity = it.humidity,
                     weatherCondition = it.condition,
                     weatherConditionIconId = it.conditionIconId,
-                    cityKladr = null
+                    cityKladr = newCityKladr
                 )
                 weatherList.add(model)
             }

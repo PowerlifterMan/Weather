@@ -21,14 +21,21 @@ class OpenMeteoRepositoryImpl @Inject constructor(
     val mapper = Mappers()
     private val weatherForecastDao =
         appDataBase.weatherForecastDao()
+    var newCityKladr = ""
     private lateinit var currentCityName: String
     private var lonOpenMeteo: Float? = null
     private var latOpenMeteo: Float? = null
 
-    override fun getWeather(lat: Float, lon: Float, cityName: String): Single<WeatherData> {
+    override fun getWeather(
+        lat: Float,
+        lon: Float,
+        cityName: String,
+        cityKladr: String
+    ): Single<WeatherData> {
         currentCityName = cityName
         latOpenMeteo = lat
         lonOpenMeteo = lon
+        newCityKladr = cityKladr
         return if (needToUpdate()) {
 //            weatherForecastDao.clearData(sourceId = currentSourceName, cityId = cityName)
 //            weatherForecastDao.updateDataSet(sourceId = currentSourceName)
@@ -93,7 +100,7 @@ class OpenMeteoRepositoryImpl @Inject constructor(
                     cityLatitude = latOpenMeteo
 
                 )
-                     Log.e("ERROR", "$currentCityName WeatherData is EMPTY")
+                Log.e("ERROR", "$currentCityName WeatherData is EMPTY")
 
             }
             weatherData
@@ -128,7 +135,7 @@ class OpenMeteoRepositoryImpl @Inject constructor(
                     humidity = it.humidity,
                     weatherCondition = null,
                     weatherConditionIconId = null,
-                    cityKladr = null
+                    cityKladr = newCityKladr
                 )
                 weatherList.add(model)
             }

@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/forecastTitleCard"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
+    android:layout_height="40dp"
     android:layout_margin="8dp"
     android:scrollbarSize="8dp"
+    app:cardBackgroundColor="#A3B3B5"
     app:cardCornerRadius="16dp"
     app:cardMaxElevation="8dp">
 
@@ -16,6 +17,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        tools:text="TextView"
-        android:textSize="24sp" />
+        android:textSize="24sp"
+        tools:text="TextView" />
 </androidx.cardview.widget.CardView>

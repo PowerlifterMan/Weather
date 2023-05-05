@@ -132,7 +132,8 @@ class MainViewModel @Inject constructor(
             lat = myLatitude.value ?: 0f,
             lon = myLongitude.value ?: 0f,
             sourceName = sourceName,
-            city = myCityName.value ?: ""
+            city = myCityName.value ?: "",
+            cityKladr = myCityKladr.value ?:""
         ).observeOn(AndroidSchedulers.mainThread())
             .subscribe({ data ->
                 val tempOnTime = TempOnTime(
@@ -166,9 +167,11 @@ class MainViewModel @Inject constructor(
             lat = myLatitude.value ?: 0f,
             lon = myLongitude.value ?: 0f,
             sourceNameList = listOfDataSource.value ?: listOf(SOURCE_OPEN_WEATHER),
-            city = myCityName.value ?: ""
+            city = myCityName.value ?: "",
+            cityKladr = myCityKladr.value ?:""
         ).observeOn(AndroidSchedulers.mainThread())
             .subscribe({ data ->
+                val spisok =  mapper.mapWeatherDataToRecyclerViewItem(data)
                 val tempOnTime = TempOnTime(
                     timestamp = data.currentTemp.timeStamp,
                     temp = data.currentTemp.temperatureMax,
@@ -185,6 +188,7 @@ class MainViewModel @Inject constructor(
 
                     )
                 }
+                rvRow.value = spisok
 
             },
                 { error ->

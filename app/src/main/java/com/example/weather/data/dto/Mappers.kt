@@ -6,6 +6,8 @@ import com.example.weather.OpenMeteo.OpenMeteoCurrentWeatherDTO
 import com.example.weather.OpenMeteo.OpenMeteoDTO
 import com.example.weather.data.room.ForecastDbModel
 import com.example.weather.domain.*
+import com.example.weather.presentation.main.recyclerViews.RecyclerViewItem
+import com.example.weather.presentation.main.recyclerViews.RecyclerViewItemTitle
 import com.example.weather.presentation.main.recyclerViews.RecyclerViewRow
 import com.example.weather.retrofit.daData.Suggestions
 import com.example.weather.retrofit.openWeather.DayForecast
@@ -26,15 +28,29 @@ class Mappers @Inject constructor() {
     }
     val timeDayBegin = (startDayTime + 8 * SECONDS_IN_HOUR)
     val timeDayEnd = startDayTime + 18 * SECONDS_IN_HOUR
-    val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+    val simpleDateFormat = SimpleDateFormat("dd MMM yyyy")
     val dateString = simpleDateFormat.format(9897546853323L)
     fun mapWeatherDataToRecyclerViewItem(data: WeatherData): List<RecyclerViewRow>{
         val returnedList = mutableListOf<RecyclerViewRow>()
         val list = data.forecastList.sortedBy { it.timeStamp }
-        val stamp = Timestamp(list[0].timeStamp)
-        val date = Date(stamp.time)
+        val calendar = Calendar.getInstance()
         list.forEachIndexed { index, currentTemp ->
-            if (index == 0)
+            val date = Date(currentTemp.timeStamp*1000)
+               calendar.time = date
+               val day = calendar.get(Calendar.DAY_OF_MONTH)
+                val month = calendar.get(Calendar.MONTH)
+            if (index >= 0){
+                val itemTitle = RecyclerViewItemTitle(simpleDateFormat.format(currentTemp.timeStamp*1000))
+                returnedList.add(itemTitle)
+                val itemRow = RecyclerViewItem(
+                    dayNumber = "",
+                    temperature = currentTemp.temperatureMax.toString(),
+                    temperatureFeelsLike = currentTemp.temperatureFeelsLikeMax.toString(),
+                    description = currentTemp.condition.toString(),
+                    pictureUrl = currentTemp.conditionIconId
+                )
+                returnedList.add(itemRow)
+            }
         }
         return returnedList
     }

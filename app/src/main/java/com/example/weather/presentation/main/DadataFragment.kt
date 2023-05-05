@@ -123,8 +123,7 @@ class DadataFragment @Inject constructor() : Fragment() {
 //                    viewModel.onInputTextChanged(charSequence.toString())
 //                }
 
-                override fun afterTextChanged(editable: Editable) {
-                    viewModel.onInputTextChanged(editable.toString())
+                override fun afterTextChanged(editable: Editable) { viewModel.onInputTextChanged(editable.toString())
                 }
             }
             editText.addTextChangedListener(watcher)

@@ -91,7 +91,9 @@ class ForecastAdapter :
             }
 
             is ForecastViewHolderTitle -> {
-
+                if (item is RecyclerViewItemTitle) {
+                    holder.tvTitle.text = item.title
+                }
                 holder.view.setOnClickListener {
                     onItemClickListener?.itemClick(item)
                 }

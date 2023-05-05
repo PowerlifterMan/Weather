@@ -25,7 +25,8 @@ class WeatherUseCase(
         lat: Float = DEFAULT_LATITUDE,
         lon: Float = DEFAULT_LONGITUDE,
         sourceName: String = DEFAULT_SOURCE_NAME,
-        city: String
+        city: String,
+        cityKladr: String
     ): Single<WeatherData> {
         val currentRepo: WeatherRepository = when (sourceName) {
             SOURCE_OPEN_METEO -> {
@@ -42,14 +43,15 @@ class WeatherUseCase(
 
             else -> openWeatherRepo
         }
-        return currentRepo.getWeather(lat = lat, lon = lon, cityName = city)
+        return currentRepo.getWeather(lat = lat, lon = lon, cityName = city, cityKladr = cityKladr)
     }
 
     fun getForecast(
         lat: Float = DEFAULT_LATITUDE,
         lon: Float = DEFAULT_LONGITUDE,
         sourceNameList: List<String> = listOf(),
-        city: String
+        city: String,
+        cityKladr: String
     ): Single<WeatherData> {
         val d = LinkedList<String>()
         val sources = mutableListOf<Single<WeatherData>>()
@@ -71,7 +73,7 @@ class WeatherUseCase(
                     else -> openWeatherRepo
                 }
                 sources.add(
-                    currentRepo.getWeather(lat = lat, lon = lon, cityName = city)
+                    currentRepo.getWeather(lat = lat, lon = lon, cityName = city, cityKladr = cityKladr)
                 )
             }
 
