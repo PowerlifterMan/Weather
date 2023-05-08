@@ -2,12 +2,12 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:layout_margin="8dp"
+    android:layout_height="@dimen/list_item_hieght"
+    android:layout_margin="@dimen/default_margin"
     android:background="#31505C"
     android:backgroundTint="#A6DAED"
-    app:cardCornerRadius="8dp"
-    app:cardMaxElevation="8dp">
+    app:cardCornerRadius="@dimen/card_corner_radius"
+    app:cardMaxElevation="@dimen/card_max_elevation">
 
     <TextView
         android:id="@+id/tvCityName"

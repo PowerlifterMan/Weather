@@ -73,7 +73,12 @@ class WeatherUseCase(
                     else -> openWeatherRepo
                 }
                 sources.add(
-                    currentRepo.getWeather(lat = lat, lon = lon, cityName = city, cityKladr = cityKladr)
+                    currentRepo.getWeather(
+                        lat = lat,
+                        lon = lon,
+                        cityName = city,
+                        cityKladr = cityKladr
+                    )
                 )
             }
 

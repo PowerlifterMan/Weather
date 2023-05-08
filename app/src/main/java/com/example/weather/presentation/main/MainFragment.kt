@@ -6,10 +6,17 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.setFragmentResultListener
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -58,8 +65,13 @@ class MainFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         sourceList.add(SOURCE_OPEN_WEATHER)
-        viewModel = ViewModelProvider(this,viemodelFactory).get(MainViewModel::class.java)
-        viewModel.setCurrentCity(lat = 55.75f, lon = 37.61f, city = "Москва", cityKladr = "7700000000000")
+        viewModel = ViewModelProvider(this, viemodelFactory).get(MainViewModel::class.java)
+        viewModel.setCurrentCity(
+            lat = 55.75f,
+            lon = 37.61f,
+            city = "Москва",
+            cityKladr = "7700000000000"
+        )
         viewModel.setDataSourceType(currentSourceName)
         viewModel.setListDataSource(sourceList)
         setFragmentResultListener("requestDataSource") { requestKey, bundle ->
@@ -77,7 +89,7 @@ class MainFragment : Fragment() {
                 viewModel.setListDataSource(sourceList)
             }
         }
-        setFragmentResultListener(DADATA_FRAGMENT_DATA){ requestKey, bundle ->
+        setFragmentResultListener(DADATA_FRAGMENT_DATA) { requestKey, bundle ->
             val latitude = bundle.getString(LATITUDE_KEY)
             val longitude = bundle.getString(LONGITUDE_KEY)
             val cityName = bundle.getString(CITY_NAME_KEY)
@@ -86,7 +98,7 @@ class MainFragment : Fragment() {
                 lat = latitude?.toFloatOrNull() ?: 0f,
                 lon = longitude?.toFloatOrNull() ?: 0f,
                 city = cityName ?: "",
-                cityKladr = cityKladrId ?:""
+                cityKladr = cityKladrId ?: ""
             )
             viewModel.getForecastDataCombine()
         }
@@ -108,6 +120,7 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         lineDataset.color = resources.getColor(R.color.grey_blue)
+        setupMenu()
 //        val chartData = LineData(barChartLabels,lineDataset )
         val forecastList = viewModel.getForecast()
 
@@ -118,9 +131,20 @@ class MainFragment : Fragment() {
         viewModel.getForecastDataCombine()
         val lineDataLD = viewModel.chartLineData
         val barDataLD = viewModel.chartBarData
-
+        (requireActivity() as AppCompatActivity).apply {
+            setSupportActionBar(binding.frMainToolbar)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+//            onCreateOptionsMenu()
+        }
         binding.fragMainBarChart.data = viewModel.chartBarData.value
         with(binding) {
+            frMainToolbar.apply {
+                title = city.value
+                inflateMenu(R.menu.fr_main_toolbar_menu)
+                menu.apply {
+
+                }
+            }
             cardView.setBackgroundResource(R.drawable.low_cloud_cover)
             tvLocation.setOnClickListener {
                 myCity = getNewCity()
@@ -130,7 +154,10 @@ class MainFragment : Fragment() {
             }
             forecastRV.layoutManager =
                 LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
-            forecastRV.recycledViewPool.setMaxRecycledViews(ITEM_VIEW_TYPE_TITLE, MAX_ITEM_POOL_SIZE)
+            forecastRV.recycledViewPool.setMaxRecycledViews(
+                ITEM_VIEW_TYPE_TITLE,
+                MAX_ITEM_POOL_SIZE
+            )
             forecastRV.recycledViewPool.setMaxRecycledViews(ITEM_VIEW_TYPE_ROW, MAX_ITEM_POOL_SIZE)
             forecastRV.adapter = adapter
         }
@@ -155,22 +182,37 @@ class MainFragment : Fragment() {
         lineDataLD.observe(viewLifecycleOwner) { it ->
 //            binding.fragMainBarChart.data = it
         }
-        barDataLD.observe(viewLifecycleOwner){
+        barDataLD.observe(viewLifecycleOwner) {
             binding.fragMainBarChart.data = it
             binding.fragMainBarChart.invalidate()
 
         }
-//        dataSourceTypeLD.observe(viewLifecycleOwner){
-//            viewModel.getForecastData(currentSourceName)
-//        }
 
         currentWeather.observe(viewLifecycleOwner) {
             binding.tvCurrentLocation.text = currentSourceName
-            binding.tvCurrentTemp.text = "${(Math.round(it.temp*10) / 10).toString()} °C"
+            binding.tvCurrentTemp.text = "${(Math.round(it.temp * 10) / 10).toString()} °C"
             binding.tvCaption.text =
                 "ощущается как ${(Math.round(it.tempFeelsLike * 10) / 10).toString()} °С"
         }
     }
+
+    private fun setupMenu() {
+        (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
+            override fun onPrepareMenu(menu: Menu) {
+                // Handle for example visibility of menu items
+            }
+
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.fr_main_toolbar_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                // Validate and handle the selected menu item
+                return true
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
 
     private fun changeSettings() {
         /* старое**
@@ -199,7 +241,6 @@ class MainFragment : Fragment() {
         return binding.root
     }
 
-
     private fun getDateTime(s: Long): String? {
         try {
             val sdf = SimpleDateFormat("yyyy/MM/dd")
@@ -208,6 +249,7 @@ class MainFragment : Fragment() {
         } catch (e: Exception) {
             return e.toString()
         }
+
     }
 
     companion object {

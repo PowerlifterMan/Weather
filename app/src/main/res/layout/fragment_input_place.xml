@@ -16,7 +16,7 @@
         android:id="@+id/placeTextInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="32dp"
+        android:layout_margin="@dimen/default_marginX4"
         android:ems="10"
         android:hint="@string/enter_address_hint"
         android:inputType="text"

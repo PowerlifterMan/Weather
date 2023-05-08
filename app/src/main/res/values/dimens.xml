@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="default_margin">8dp</dimen>
+    <dimen name="default_marginX2">16dp</dimen>
+    <dimen name="default_marginX3">24dp</dimen>
+    <dimen name="default_marginX4">32dp</dimen>
+    <dimen name="list_item_hieght">50dp</dimen>
+    <dimen name="card_corner_radius">4dp</dimen>
+    <dimen name="card_max_elevation">8dp</dimen>
+</resources>

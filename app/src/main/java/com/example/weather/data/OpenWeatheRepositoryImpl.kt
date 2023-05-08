@@ -102,7 +102,7 @@ class OpenWeatheRepositoryImpl @Inject constructor(
     }
 
     private fun saveWeatherToLocal(weatherData: WeatherData): Completable {
-        val df = DecimalFormat("##.00")
+        val df = DecimalFormat("##.0")
         val latitude2 = weatherData.cityLatitude
         val longitude2 = weatherData.cityLongitude
         val weatherList = mutableListOf<ForecastDbModel>()

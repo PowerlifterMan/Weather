@@ -29,21 +29,34 @@ class Mappers @Inject constructor() {
     val timeDayBegin = (startDayTime + 8 * SECONDS_IN_HOUR)
     val timeDayEnd = startDayTime + 18 * SECONDS_IN_HOUR
     val simpleDateFormat = SimpleDateFormat("dd MMM yyyy")
+    val simpleDateFormatHour = SimpleDateFormat("HH:mm")
     val dateString = simpleDateFormat.format(9897546853323L)
-    fun mapWeatherDataToRecyclerViewItem(data: WeatherData): List<RecyclerViewRow>{
+    fun mapWeatherDataToRecyclerViewItem(data: WeatherData): List<RecyclerViewRow> {
         val returnedList = mutableListOf<RecyclerViewRow>()
         val list = data.forecastList.sortedBy { it.timeStamp }
         val calendar = Calendar.getInstance()
+        var oldTimeStamp = 0L
+        var date = Date()
+        var day = 1
+        var month = 1
         list.forEachIndexed { index, currentTemp ->
-            val date = Date(currentTemp.timeStamp*1000)
-               calendar.time = date
-               val day = calendar.get(Calendar.DAY_OF_MONTH)
-                val month = calendar.get(Calendar.MONTH)
-            if (index >= 0){
-                val itemTitle = RecyclerViewItemTitle(simpleDateFormat.format(currentTemp.timeStamp*1000))
+            calendar.time = Date(currentTemp.timeStamp * 1000)
+            if (index == 0) {
+                val itemTitle =
+                    RecyclerViewItemTitle(simpleDateFormat.format(currentTemp.timeStamp * 1000))
                 returnedList.add(itemTitle)
+                day = calendar.get(Calendar.DAY_OF_MONTH)
+                month = calendar.get(Calendar.MONTH)
+            } else {
+                if (calendar.get(Calendar.DAY_OF_MONTH) != day) {
+                    val itemTitle =
+                        RecyclerViewItemTitle(simpleDateFormat.format(currentTemp.timeStamp * 1000))
+                    returnedList.add(itemTitle)
+                    day = calendar.get(Calendar.DAY_OF_MONTH)
+                    month = calendar.get(Calendar.MONTH)
+                }
                 val itemRow = RecyclerViewItem(
-                    dayNumber = "",
+                    dayNumber = simpleDateFormatHour.format(currentTemp.timeStamp*1000) ,
                     temperature = currentTemp.temperatureMax.toString(),
                     temperatureFeelsLike = currentTemp.temperatureFeelsLikeMax.toString(),
                     description = currentTemp.condition.toString(),
@@ -54,6 +67,7 @@ class Mappers @Inject constructor() {
         }
         return returnedList
     }
+
     fun mapSuggestionsToCurrentCity(suggestions: Suggestions): List<CurrentCity> {
         return suggestions.suggestions.map { item ->
             CurrentCity(
@@ -71,7 +85,7 @@ class Mappers @Inject constructor() {
 
     fun mapForecastDbModelListToWeatherData(list: List<ForecastDbModel>): WeatherData {
         var resultList = mutableListOf<ForecastDbModel>()
-        resultList.add(list.find { it.timeStamp > timeDayBegin } ?: list[0])
+//        resultList.add(list.find { it.timeStamp > timeDayBegin } ?: list[0])
         repeat(5) { counter ->
             val item = list.find {
                 it.timeStamp > (timeDayBegin + counter * SECONDS_IN_DAY)
@@ -80,11 +94,12 @@ class Mappers @Inject constructor() {
         }
 
         return WeatherData(
-            cityName = "",
+            cityName = list[0].idCity,
             cityLatitude = list[0].latitude,
             cityLongitude = list[0].longitude,
             currentTemp = mapDbModelToCurrentTemp(list[0]),
-            forecastList = resultList.map { item -> mapDbModelToCurrentTemp(item) })
+            forecastList = list.map { item -> mapDbModelToCurrentTemp(item) })
+//            forecastList = resultList.map { item -> mapDbModelToCurrentTemp(item) })
 
     }
 

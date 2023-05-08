@@ -7,6 +7,18 @@
     android:layout_height="match_parent"
     tools:context=".presentation.main.MainFragment">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/fr_main_toolbar"
+        app:menu="@menu/fr_main_toolbar_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/tvLocation"
         android:layout_width="wrap_content"
@@ -17,7 +29,7 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/fr_main_toolbar" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
@@ -43,14 +55,18 @@
             android:layout_gravity="center|top"
             android:layout_margin="8dp"
             android:text="LOCATION"
-            android:textSize="24dp" />
+            android:textSize="24dp"
+
+            tools:visibility="gone"
+
+            />
 
         <TextView
             android:id="@+id/tvCurrentTemp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="28dp"
+            android:layout_gravity="top|center"
+            android:layout_margin="@dimen/default_margin"
             android:text="TEMP"
             android:textSize="24dp" />
 
@@ -60,7 +76,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
-            android:layout_margin="28dp"
+            android:layout_margin="@dimen/default_margin"
             android:text="0писание погоды"
             android:textSize="24dp" />
     </androidx.cardview.widget.CardView>
