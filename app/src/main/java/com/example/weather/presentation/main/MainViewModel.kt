@@ -14,6 +14,8 @@ import com.example.weather.data.NinjasRepositoryImpl
 import com.example.weather.domain.CurrentCity
 import com.example.weather.presentation.main.recyclerViews.RecyclerViewItem
 import com.example.weather.presentation.main.recyclerViews.RecyclerViewRow
+import com.example.weather.retrofit.daData.DaDataRepositoryImpl
+import com.example.weather.retrofit.daData.DaDataUseCase
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
@@ -21,8 +23,14 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.ObservableEmitter
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -36,9 +44,12 @@ class MainViewModel @Inject constructor(
     val sdf = SimpleDateFormat("MM/dd-hh")
     var dataSourceType = MutableLiveData<String>()
         private set
-
+    private val disposables = CompositeDisposable()
+    private val cityRepo = DaDataRepositoryImpl
+    private val getCityUseCase = DaDataUseCase(cityRepo)
     private var listOfDataSource = MutableLiveData<List<String>>()
         private set
+    private val cityListLD = MutableLiveData<List<CurrentCity>>()
 
     //val currentResponce = openWeatherUseCase.getForecastOpenWeather()
     val c: Int = 2
@@ -58,6 +69,7 @@ class MainViewModel @Inject constructor(
     private val myLongitude = MutableLiveData<Float>()
 
     private val myLatitude = MutableLiveData<Float>()
+    private lateinit var inpuEmitter: ObservableEmitter<String>
     private val myCityCurrentWeather = MutableLiveData<TempOnTime>()
     val rvRow = MutableLiveData<List<RecyclerViewRow>>()
 
@@ -66,8 +78,32 @@ class MainViewModel @Inject constructor(
     fun getCity(): LiveData<String> {
         return myCityName
     }
+    init {
+        val disposable = Observable.create { emitter: ObservableEmitter<String> ->
+            inpuEmitter = emitter
+        }
+            .subscribeOn(Schedulers.io())
+            .filter { it.length > 3 }
+            .debounce(1, TimeUnit.SECONDS)
+            .flatMapSingle { queryString ->
+                Log.e("ERROR2", queryString)
+                getCityFromDadata(queryString)
+            }
+            .observeOn(Schedulers.io())
+            .subscribe({ currentCityList ->
+                cityListLD.postValue(currentCityList)
+            }, {
+                it.printStackTrace()
+                Log.e("ERROR2", it.message.toString())
+            })
+        disposables.add(disposable)
+
+    }
+
+   fun onSearchTextChanged(newText: String){
 
 
+   }
     fun setDataSourceType(sourceName: String) {
         dataSourceType.value = sourceName
     }
@@ -90,6 +126,14 @@ class MainViewModel @Inject constructor(
 
     fun getForecast(): LiveData<List<RecyclerViewRow>> {
         return rvRow
+    }
+
+    fun getCityFromDadata(query: String): Single<List<CurrentCity>> {
+        return getCityUseCase.getCityDto(query)
+            .map {
+                mapper.mapSuggestionsToCurrentCity(it)
+            }
+
     }
 
     fun setLineChartData() {
@@ -213,4 +257,8 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        disposables.dispose()
+    }
 }

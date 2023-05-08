@@ -1,22 +1,23 @@
 package com.example.weather.presentation.main
 
 import android.annotation.SuppressLint
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,26 +25,24 @@ import com.example.weather.R
 import com.example.weather.databinding.FragmentMainBinding
 import com.example.weather.domain.CurrentCity
 import com.example.weather.presentation.main.Settings2Fragment.Companion.CHECK_BOX_SOURCE_NINJAS
-import com.example.weather.presentation.main.Settings2Fragment.Companion.CHECK_BOX_SOURCE_OPEN_WEATHER
 import com.example.weather.presentation.main.Settings2Fragment.Companion.CHECK_BOX_SOURCE_OPEN_METEO
+import com.example.weather.presentation.main.Settings2Fragment.Companion.CHECK_BOX_SOURCE_OPEN_WEATHER
 import com.example.weather.presentation.main.recyclerViews.ForecastAdapter
 import com.example.weather.presentation.main.recyclerViews.ForecastAdapter.Companion.ITEM_VIEW_TYPE_ROW
 import com.example.weather.presentation.main.recyclerViews.ForecastAdapter.Companion.ITEM_VIEW_TYPE_TITLE
 import com.example.weather.presentation.main.recyclerViews.ForecastAdapter.Companion.MAX_ITEM_POOL_SIZE
-import com.example.weather.presentation.main.recyclerViews.RecyclerViewItem
 import com.example.weather.presentation.main.recyclerViews.RecyclerViewRow
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineDataSet
 import dagger.android.support.AndroidSupportInjection
-import java.lang.RuntimeException
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
 
-class MainFragment : Fragment() {
+class MainFragment : Fragment(), SearchView.OnQueryTextListener {
     private lateinit var viewModel: MainViewModel
     private val sourceList = mutableListOf<String>()
     private var _binding: FragmentMainBinding? = null
@@ -207,10 +206,19 @@ class MainFragment : Fragment() {
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                // Validate and handle the selected menu item
+                when (menuItem.actionView) {
+                    is SearchView -> {
+                        (menuItem as SearchView).apply {
+                            queryHint = "Введите наименование города"
+                            isIconified = false
+                            setOnQueryTextListener(this@MainFragment)
+                        }
+                    }
+                }
                 return true
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
     }
 
 
@@ -250,6 +258,16 @@ class MainFragment : Fragment() {
             return e.toString()
         }
 
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        Toast.makeText(requireContext(), "Query Inserted", Toast.LENGTH_SHORT).show();
+        return true
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+
+      return true
     }
 
     companion object {
