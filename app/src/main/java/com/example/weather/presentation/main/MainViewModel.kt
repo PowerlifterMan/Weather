@@ -78,6 +78,7 @@ class MainViewModel @Inject constructor(
     fun getCity(): LiveData<String> {
         return myCityName
     }
+
     init {
         val disposable = Observable.create { emitter: ObservableEmitter<String> ->
             inpuEmitter = emitter
@@ -100,10 +101,11 @@ class MainViewModel @Inject constructor(
 
     }
 
-   fun onSearchTextChanged(newText: String){
+    fun onSearchTextChanged(newText: String) {
+        Log.e("TEXTCHANGE", newText)
 
+    }
 
-   }
     fun setDataSourceType(sourceName: String) {
         dataSourceType.value = sourceName
     }
@@ -137,12 +139,13 @@ class MainViewModel @Inject constructor(
     }
 
     fun setLineChartData() {
-        val chartLabels = rvRow.value?.filter { it -> it is RecyclerViewItem }?. map { item ->
+        val chartLabels = rvRow.value?.filter { it -> it is RecyclerViewItem }?.map { item ->
             (item as RecyclerViewItem).dayNumber
         }
-        val lineEntryList = rvRow.value?.filter { it -> it is RecyclerViewItem }?.mapIndexed { index, item ->
-            Entry((item as RecyclerViewItem).temperature.toFloat(), index)
-        }
+        val lineEntryList =
+            rvRow.value?.filter { it -> it is RecyclerViewItem }?.mapIndexed { index, item ->
+                Entry((item as RecyclerViewItem).temperature.toFloat(), index)
+            }
         val barEntryList =
             rvRow.value?.filter { it -> it is RecyclerViewItem }?.mapIndexed { index, item ->
                 BarEntry((item as RecyclerViewItem).temperature.toFloat(), index)
@@ -177,7 +180,7 @@ class MainViewModel @Inject constructor(
             lon = myLongitude.value ?: 0f,
             sourceName = sourceName,
             city = myCityName.value ?: "",
-            cityKladr = myCityKladr.value ?:""
+            cityKladr = myCityKladr.value ?: ""
         ).observeOn(AndroidSchedulers.mainThread())
             .subscribe({ data ->
                 val tempOnTime = TempOnTime(
@@ -186,7 +189,7 @@ class MainViewModel @Inject constructor(
                     tempFeelsLike = data.currentTemp.temperatureFeelsLikeMax,
                 )
                 myCityCurrentWeather.value = tempOnTime
-                val spisok =  mapper.mapWeatherDataToRecyclerViewItem(data)
+                val spisok = mapper.mapWeatherDataToRecyclerViewItem(data)
                 rvRow.value = data.forecastList.map { item ->
                     RecyclerViewItem(
                         dayNumber = sdf.format(item.timeStamp.toLong() * 1000),
@@ -212,10 +215,10 @@ class MainViewModel @Inject constructor(
             lon = myLongitude.value ?: 0f,
             sourceNameList = listOfDataSource.value ?: listOf(SOURCE_OPEN_WEATHER),
             city = myCityName.value ?: "",
-            cityKladr = myCityKladr.value ?:""
+            cityKladr = myCityKladr.value ?: ""
         ).observeOn(AndroidSchedulers.mainThread())
             .subscribe({ data ->
-                val spisok =  mapper.mapWeatherDataToRecyclerViewItem(data)
+                val spisok = mapper.mapWeatherDataToRecyclerViewItem(data)
                 val tempOnTime = TempOnTime(
                     timestamp = data.currentTemp.timeStamp,
                     temp = data.currentTemp.temperatureMax,

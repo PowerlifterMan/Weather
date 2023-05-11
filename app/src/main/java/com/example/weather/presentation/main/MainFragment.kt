@@ -16,7 +16,6 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,6 +34,7 @@ import com.example.weather.presentation.main.recyclerViews.RecyclerViewRow
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import dagger.android.support.AndroidSupportInjection
 import java.text.SimpleDateFormat
@@ -42,7 +42,9 @@ import java.util.*
 import javax.inject.Inject
 
 
-class MainFragment : Fragment(), SearchView.OnQueryTextListener {
+class MainFragment : Fragment() {
+    private val menuHost: MenuHost
+        get() = requireActivity()
     private lateinit var viewModel: MainViewModel
     private val sourceList = mutableListOf<String>()
     private var _binding: FragmentMainBinding? = null
@@ -62,7 +64,6 @@ class MainFragment : Fragment(), SearchView.OnQueryTextListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
-
         sourceList.add(SOURCE_OPEN_WEATHER)
         viewModel = ViewModelProvider(this, viemodelFactory).get(MainViewModel::class.java)
         viewModel.setCurrentCity(
@@ -118,9 +119,54 @@ class MainFragment : Fragment(), SearchView.OnQueryTextListener {
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        menuHost.addMenuProvider(object : MenuProvider { // Добавляем MenuProvider
+            override fun onPrepareMenu(menu: Menu) // Вызывается перед отрисовкой меню
+            {
+            }
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                // Надуваем fragment_menu и мержим с прошлым menu
+                menuInflater.inflate(R.menu.fr_main_toolbar_menu, menu)
+//                val searchView  =
+                val searchItem = menu.findItem(R.id.app_bar_search)
+                // getting search view of our item.
+                // getting search view of our item.
+                val searchView = searchItem.actionView as SearchView
+                 searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+                     override fun onQueryTextSubmit(query: String?): Boolean {
+                         return false
+                     }
+
+                     override fun onQueryTextChange(newText: String?): Boolean {
+                         Log.e("ERROR2", newText ?:"")
+                         return false
+                     }
+                 })
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                Log.e("ERROR2", "MENU ITEM TAP")
+                when (menuItem.itemId) {
+                    R.id.app_bar_search -> {
+                        Log.e("ERROR2", "MENU ITEM TAP")
+                    }
+                }
+                // Пользователь кликнул на элемент меню
+                // return true — не нужно передавать нажатие другому провайдеру
+                // return false — передаем нажатие следующему провайдеру
+                return false
+            }
+
+            override fun onMenuClosed(menu: Menu) // Меню закрыто
+            {
+                Log.e("ERROR2", "MENU ITEM TAP")
+
+            }
+        }, viewLifecycleOwner)
+
+
+
         lineDataset.color = resources.getColor(R.color.grey_blue)
-        setupMenu()
-//        val chartData = LineData(barChartLabels,lineDataset )
+//    val chartData = LineData(barChartLabels,lineDataset )
         val forecastList = viewModel.getForecast()
 
         val city = viewModel.myCityName
@@ -130,19 +176,16 @@ class MainFragment : Fragment(), SearchView.OnQueryTextListener {
         viewModel.getForecastDataCombine()
         val lineDataLD = viewModel.chartLineData
         val barDataLD = viewModel.chartBarData
-        (requireActivity() as AppCompatActivity).apply {
-            setSupportActionBar(binding.frMainToolbar)
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-//            onCreateOptionsMenu()
-        }
+//    menuHost.apply
+//    { setSupportActionBar(binding.frMainToolbar)
+//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+////            onCreateOptionsMenu()
+//    }
         binding.fragMainBarChart.data = viewModel.chartBarData.value
-        with(binding) {
+        with(binding)
+        {
             frMainToolbar.apply {
                 title = city.value
-                inflateMenu(R.menu.fr_main_toolbar_menu)
-                menu.apply {
-
-                }
             }
             cardView.setBackgroundResource(R.drawable.low_cloud_cover)
             tvLocation.setOnClickListener {
@@ -160,65 +203,45 @@ class MainFragment : Fragment(), SearchView.OnQueryTextListener {
             forecastRV.recycledViewPool.setMaxRecycledViews(ITEM_VIEW_TYPE_ROW, MAX_ITEM_POOL_SIZE)
             forecastRV.adapter = adapter
         }
-        adapter.onItemClickListener = object : ForecastAdapter.OnItemClickListener {
-            override fun itemClick(item: RecyclerViewRow) {
-                super.itemClick(item)
-                changeCurrentDayInfo(item)
+        adapter.onItemClickListener =
+            object : ForecastAdapter.OnItemClickListener {
+                override fun itemClick(item: RecyclerViewRow) {
+                    super.itemClick(item)
+                    changeCurrentDayInfo(item)
+                }
+
+
             }
-
-
-        }
-        forecastList.observe(viewLifecycleOwner) {
+        forecastList.observe(viewLifecycleOwner)
+        {
             adapter.submitList(it)
             binding.forecastRV.invalidate()
             viewModel.setLineChartData()
         }
 
-        city.observe(viewLifecycleOwner) {
+        city.observe(viewLifecycleOwner)
+        {
             binding.tvLocation.text = it
         }
 
-        lineDataLD.observe(viewLifecycleOwner) { it ->
+        lineDataLD.observe(viewLifecycleOwner)
+        { it ->
 //            binding.fragMainBarChart.data = it
         }
-        barDataLD.observe(viewLifecycleOwner) {
+        barDataLD.observe(viewLifecycleOwner)
+        {
             binding.fragMainBarChart.data = it
             binding.fragMainBarChart.invalidate()
 
         }
 
-        currentWeather.observe(viewLifecycleOwner) {
+        currentWeather.observe(viewLifecycleOwner)
+        {
             binding.tvCurrentLocation.text = currentSourceName
             binding.tvCurrentTemp.text = "${(Math.round(it.temp * 10) / 10).toString()} °C"
             binding.tvCaption.text =
                 "ощущается как ${(Math.round(it.tempFeelsLike * 10) / 10).toString()} °С"
         }
-    }
-
-    private fun setupMenu() {
-        (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
-            override fun onPrepareMenu(menu: Menu) {
-                // Handle for example visibility of menu items
-            }
-
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.fr_main_toolbar_menu, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                when (menuItem.actionView) {
-                    is SearchView -> {
-                        (menuItem as SearchView).apply {
-                            queryHint = "Введите наименование города"
-                            isIconified = false
-                            setOnQueryTextListener(this@MainFragment)
-                        }
-                    }
-                }
-                return true
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
-
     }
 
 
@@ -233,6 +256,25 @@ class MainFragment : Fragment(), SearchView.OnQueryTextListener {
         findNavController().navigate(R.id.action_mainFragment_to_dadataFragment)
 //        findNavController().navigate(R.id.action_mainFragment_to_inputPlaceFragment)
         return myCity
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        menu.clear()
+        inflater.inflate(R.menu.fr_main_toolbar_menu, menu)
+        val item = menu.findItem(R.id.app_bar_search)
+        val searchView = SearchView(requireContext())
+        item.actionView = searchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                viewModel.onSearchTextChanged(newText)
+                return true
+            }
+        })
     }
 
     private fun changeCurrentDayInfo(item: RecyclerViewRow) {
@@ -258,16 +300,6 @@ class MainFragment : Fragment(), SearchView.OnQueryTextListener {
             return e.toString()
         }
 
-    }
-
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        Toast.makeText(requireContext(), "Query Inserted", Toast.LENGTH_SHORT).show();
-        return true
-    }
-
-    override fun onQueryTextChange(newText: String?): Boolean {
-
-      return true
     }
 
     companion object {
