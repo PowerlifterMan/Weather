@@ -189,7 +189,6 @@ class MainViewModel @Inject constructor(
                     tempFeelsLike = data.currentTemp.temperatureFeelsLikeMax,
                 )
                 myCityCurrentWeather.value = tempOnTime
-                val spisok = mapper.mapWeatherDataToRecyclerViewItem(data)
                 rvRow.value = data.forecastList.map { item ->
                     RecyclerViewItem(
                         dayNumber = sdf.format(item.timeStamp.toLong() * 1000),
@@ -241,9 +240,7 @@ class MainViewModel @Inject constructor(
                 { error ->
                     error.printStackTrace()
                     Log.e("ERROR", error.message.toString())
-
                 })
-
     }
 
     private fun onError(error: Throwable) {

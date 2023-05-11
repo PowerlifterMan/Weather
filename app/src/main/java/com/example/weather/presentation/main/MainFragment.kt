@@ -16,6 +16,7 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -65,6 +66,8 @@ class MainFragment : Fragment() {
         AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
         sourceList.add(SOURCE_OPEN_WEATHER)
+        Log.e("MENU", "onCreate  $savedInstanceState")
+
         viewModel = ViewModelProvider(this, viemodelFactory).get(MainViewModel::class.java)
         viewModel.setCurrentCity(
             lat = 55.75f,
@@ -119,51 +122,9 @@ class MainFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        menuHost.addMenuProvider(object : MenuProvider { // Добавляем MenuProvider
-            override fun onPrepareMenu(menu: Menu) // Вызывается перед отрисовкой меню
-            {
-            }
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                // Надуваем fragment_menu и мержим с прошлым menu
-                menuInflater.inflate(R.menu.fr_main_toolbar_menu, menu)
-//                val searchView  =
-                val searchItem = menu.findItem(R.id.app_bar_search)
-                // getting search view of our item.
-                // getting search view of our item.
-                val searchView = searchItem.actionView as SearchView
-                 searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
-                     override fun onQueryTextSubmit(query: String?): Boolean {
-                         return false
-                     }
+        Log.e("MENU", "onViewCreated  $savedInstanceState")
 
-                     override fun onQueryTextChange(newText: String?): Boolean {
-                         Log.e("ERROR2", newText ?:"")
-                         return false
-                     }
-                 })
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                Log.e("ERROR2", "MENU ITEM TAP")
-                when (menuItem.itemId) {
-                    R.id.app_bar_search -> {
-                        Log.e("ERROR2", "MENU ITEM TAP")
-                    }
-                }
-                // Пользователь кликнул на элемент меню
-                // return true — не нужно передавать нажатие другому провайдеру
-                // return false — передаем нажатие следующему провайдеру
-                return false
-            }
-
-            override fun onMenuClosed(menu: Menu) // Меню закрыто
-            {
-                Log.e("ERROR2", "MENU ITEM TAP")
-
-            }
-        }, viewLifecycleOwner)
-
-
+        setupMenu()
 
         lineDataset.color = resources.getColor(R.color.grey_blue)
 //    val chartData = LineData(barChartLabels,lineDataset )
@@ -186,6 +147,7 @@ class MainFragment : Fragment() {
         {
             frMainToolbar.apply {
                 title = city.value
+                inflateMenu(R.menu.fr_main_toolbar_menu)
             }
             cardView.setBackgroundResource(R.drawable.low_cloud_cover)
             tvLocation.setOnClickListener {
@@ -222,6 +184,7 @@ class MainFragment : Fragment() {
         city.observe(viewLifecycleOwner)
         {
             binding.tvLocation.text = it
+            binding.frMainToolbar.title = it
         }
 
         lineDataLD.observe(viewLifecycleOwner)
@@ -244,6 +207,66 @@ class MainFragment : Fragment() {
         }
     }
 
+    private fun setupMenu() {
+        Log.e("MENU", "fun setupMenu")
+
+        menuHost.addMenuProvider(object : MenuProvider {
+            // Добавляем MenuProvider
+
+            override fun onPrepareMenu(menu: Menu) // Вызывается перед отрисовкой меню
+            {
+                Log.e("MENU", "onPrepareMenu  $menu")
+            }
+
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                // Надуваем fragment_menu и мержим с прошлым menu
+                menuInflater.inflate(R.menu.fr_main_toolbar_menu, menu)
+                val searchItem = menu.findItem(R.id.app_bar_search)
+                Log.e("MENU", "ssearchItem    $searchItem")
+                // getting search view of our item.
+                // getting search view of our item.
+                val searchView = searchItem.actionView as SearchView
+                Log.e("MENU", "searchView    $searchView")
+                searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                    override fun onQueryTextSubmit(query: String?): Boolean {
+                        viewModel.onSearchTextChanged(query ?: "")
+                        Log.e("MENU", "setOnQueryTextListener   onQueryTextSubmit")
+                        return true
+                    }
+
+                    override fun onQueryTextChange(newText: String?): Boolean {
+                        Log.e("MENU", newText ?: "setOnQueryTextListener   onQueryTextChange")
+                        viewModel.onSearchTextChanged(newText ?: "")
+                        return true
+                    }
+                })
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                Log.e("MENU", "MENU ITEM TAP")
+                when (menuItem.itemId) {
+                    R.id.app_bar_search -> {
+                        Log.e("MENU", "MENU onMenuItemSelected $menuItem")
+                    }
+
+                    R.id.menu_settings -> {
+                        Log.e("MENU", "MENU onMenuItemSelected  $menuItem")
+                    }
+                }
+                // Пользователь кликнул на элемент меню
+                // return true — не нужно передавать нажатие другому провайдеру
+                // return false — передаем нажатие следующему провайдеру
+                return true
+            }
+
+            override fun onMenuClosed(menu: Menu) // Меню закрыто
+            {
+                Log.e("MENU", "MENU onMenuClosed")
+
+            }
+        }, viewLifecycleOwner, Lifecycle.State.CREATED)
+    }
+
 
     private fun changeSettings() {
         /* старое**
@@ -258,24 +281,24 @@ class MainFragment : Fragment() {
         return myCity
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        menu.clear()
-        inflater.inflate(R.menu.fr_main_toolbar_menu, menu)
-        val item = menu.findItem(R.id.app_bar_search)
-        val searchView = SearchView(requireContext())
-        item.actionView = searchView
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String): Boolean {
-                viewModel.onSearchTextChanged(newText)
-                return true
-            }
-        })
-    }
+//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+//        super.onCreateOptionsMenu(menu, inflater)
+//        menu.clear()
+//        inflater.inflate(R.menu.fr_main_toolbar_menu, menu)
+//        val item = menu.findItem(R.id.app_bar_search)
+//        val searchView = SearchView(requireContext())
+//        item.actionView = searchView
+//        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+//            override fun onQueryTextSubmit(query: String): Boolean {
+//                return true
+//            }
+//
+//            override fun onQueryTextChange(newText: String): Boolean {
+//                viewModel.onSearchTextChanged(newText)
+//                return true
+//            }
+//        })
+//    }
 
     private fun changeCurrentDayInfo(item: RecyclerViewRow) {
         Toast.makeText(requireActivity(), "PRESSED", Toast.LENGTH_SHORT).show()
