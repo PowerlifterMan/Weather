@@ -30,6 +30,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/fr_main_toolbar" />
 
+    <androidx.recyclerview.widget.RecyclerView
+
+        android:id="@+id/rvCitySelection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fr_main_toolbar"
+        android:visibility="gone"/>
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
@@ -89,7 +99,9 @@
         app:layout_constraintBottom_toTopOf="@+id/guideline45"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/guideline20" />
+        app:layout_constraintTop_toTopOf="@id/guideline20" >
+
+    </com.github.mikephil.charting.charts.BarChart>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline20"

@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Lifecycle
@@ -21,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.weather.MainActivity
 import com.example.weather.R
 import com.example.weather.databinding.FragmentMainBinding
 import com.example.weather.domain.CurrentCity
@@ -142,6 +144,7 @@ class MainFragment : Fragment() {
 //        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 ////            onCreateOptionsMenu()
 //    }
+
         binding.fragMainBarChart.data = viewModel.chartBarData.value
         with(binding)
         {
@@ -149,6 +152,7 @@ class MainFragment : Fragment() {
                 title = city.value
                 inflateMenu(R.menu.fr_main_toolbar_menu)
             }
+
             cardView.setBackgroundResource(R.drawable.low_cloud_cover)
             tvLocation.setOnClickListener {
                 myCity = getNewCity()
@@ -209,7 +213,7 @@ class MainFragment : Fragment() {
 
     private fun setupMenu() {
         Log.e("MENU", "fun setupMenu")
-
+        (menuHost as MainActivity).setSupportActionBar(binding.frMainToolbar)
         menuHost.addMenuProvider(object : MenuProvider {
             // Добавляем MenuProvider
 
@@ -230,12 +234,16 @@ class MainFragment : Fragment() {
                 searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String?): Boolean {
                         viewModel.onSearchTextChanged(query ?: "")
-                        Log.e("MENU", "setOnQueryTextListener   onQueryTextSubmit")
+                        Log.e("MENU", "setOnQueryTextListener   onQueryTextSubmit $query ")
                         return true
                     }
 
                     override fun onQueryTextChange(newText: String?): Boolean {
-                        Log.e("MENU", newText ?: "setOnQueryTextListener   onQueryTextChange")
+                        Log.e(
+                            "MENU",
+                            newText ?: "setOnQueryTextListener   onQueryTextChange $newText"
+                        )
+                        binding.rvCitySelection.isVisible = newText != null && newText.length>3
                         viewModel.onSearchTextChanged(newText ?: "")
                         return true
                     }
