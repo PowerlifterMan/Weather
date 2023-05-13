@@ -5,12 +5,9 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.weather.data.OpenMeteoRepositoryImpl
 import com.example.weather.data.dto.Mappers
-import com.example.weather.data.OpenWeatheRepositoryImpl
 import com.example.weather.domain.TempOnTime
 import com.example.weather.domain.WeatherUseCase
-import com.example.weather.data.NinjasRepositoryImpl
 import com.example.weather.domain.CurrentCity
 import com.example.weather.presentation.main.recyclerViews.RecyclerViewItem
 import com.example.weather.presentation.main.recyclerViews.RecyclerViewRow
@@ -165,7 +162,7 @@ class MainViewModel @Inject constructor(
         return chartLineData.value
     }
 
-    fun setCurrentCity(lat: Float, lon: Float, city: String, cityKladr: String) {
+    fun currentCityIsChanged(lat: Float, lon: Float, city: String, cityKladr: String) {
         myCityName.value = city
         myLatitude.value = lat
         myLongitude.value = lon

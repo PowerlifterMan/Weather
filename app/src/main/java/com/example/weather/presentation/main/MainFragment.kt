@@ -11,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
@@ -38,7 +37,6 @@ import com.example.weather.retrofit.daData.CityRvAdapter
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import dagger.android.support.AndroidSupportInjection
 import java.text.SimpleDateFormat
@@ -73,7 +71,7 @@ class MainFragment : Fragment() {
         Log.e("MENU", "onCreate  $savedInstanceState")
 
         viewModel = ViewModelProvider(this, viemodelFactory).get(MainViewModel::class.java)
-        viewModel.setCurrentCity(
+        viewModel.currentCityIsChanged(
             lat = 55.75f,
             lon = 37.61f,
             city = "Москва",
@@ -101,7 +99,7 @@ class MainFragment : Fragment() {
             val longitude = bundle.getString(LONGITUDE_KEY)
             val cityName = bundle.getString(CITY_NAME_KEY)
             val cityKladrId = bundle.getString(CITY_KLADR_ID_KEY)
-            viewModel.setCurrentCity(
+            viewModel.currentCityIsChanged(
                 lat = latitude?.toFloatOrNull() ?: 0f,
                 lon = longitude?.toFloatOrNull() ?: 0f,
                 city = cityName ?: "",
@@ -113,7 +111,7 @@ class MainFragment : Fragment() {
             val latitude = bundle.getString(LATITUDE_KEY)
             val longitude = bundle.getString(LONGITUDE_KEY)
             val cityName = bundle.getString(CITY_NAME_KEY)
-            viewModel.setCurrentCity(
+            viewModel.currentCityIsChanged(
                 lat = latitude?.toFloatOrNull() ?: 0f,
                 lon = longitude?.toFloatOrNull() ?: 0f,
                 city = cityName ?: "",
@@ -137,6 +135,12 @@ class MainFragment : Fragment() {
         cityRecyclerView.apply {
             adapter = cityListAdapter
             layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        }
+        cityListAdapter.onItemClickListener = object : CityRvAdapter.OnItemClickListener{
+            override fun itemClick(item: CurrentCity) {
+//                viewModel.
+                binding.rvCitySelection.visibility = View.GONE
+            }
         }
         val city = viewModel.myCityName
         val currentWeather = viewModel.getCurrentWeather()
