@@ -49,7 +49,8 @@ class MainViewModel @Inject constructor(
     private val getCityUseCase = DaDataUseCase(cityRepo)
     private var listOfDataSource = MutableLiveData<List<String>>()
         private set
-    private val cityListLD = MutableLiveData<List<CurrentCity>>()
+    var cityListLD = MutableLiveData<List<CurrentCity>>()
+        private set
 
     //val currentResponce = openWeatherUseCase.getForecastOpenWeather()
     val c: Int = 2
@@ -93,6 +94,7 @@ class MainViewModel @Inject constructor(
             .observeOn(Schedulers.io())
             .subscribe({ currentCityList ->
                 cityListLD.postValue(currentCityList)
+                Log.e("MENU", currentCityList.toString())
             }, {
                 it.printStackTrace()
                 Log.e("ERROR2", it.message.toString())
@@ -102,7 +104,8 @@ class MainViewModel @Inject constructor(
     }
 
     fun onSearchTextChanged(newText: String) {
-        Log.e("TEXTCHANGE", newText)
+        Log.e("MENU", "onSearchTextChanged $newText")
+        inpuEmitter.onNext(newText)
 
     }
 

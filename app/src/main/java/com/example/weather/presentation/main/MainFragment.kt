@@ -34,6 +34,7 @@ import com.example.weather.presentation.main.recyclerViews.ForecastAdapter.Compa
 import com.example.weather.presentation.main.recyclerViews.ForecastAdapter.Companion.ITEM_VIEW_TYPE_TITLE
 import com.example.weather.presentation.main.recyclerViews.ForecastAdapter.Companion.MAX_ITEM_POOL_SIZE
 import com.example.weather.presentation.main.recyclerViews.RecyclerViewRow
+import com.example.weather.retrofit.daData.CityRvAdapter
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
@@ -60,6 +61,7 @@ class MainFragment : Fragment() {
     private var barChartDataSet = BarDataSet(barChartEntries, BAR_DATA_SET_NAME1)
     val adapter = ForecastAdapter()
     var myCity = CurrentCity()
+    private val cityListAdapter by lazy { CityRvAdapter() }
 
     @Inject
     lateinit var viemodelFactory: ViewModelFactory
@@ -131,7 +133,11 @@ class MainFragment : Fragment() {
         lineDataset.color = resources.getColor(R.color.grey_blue)
 //    val chartData = LineData(barChartLabels,lineDataset )
         val forecastList = viewModel.getForecast()
-
+        val cityRecyclerView = binding.rvCitySelection
+        cityRecyclerView.apply {
+            adapter = cityListAdapter
+            layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        }
         val city = viewModel.myCityName
         val currentWeather = viewModel.getCurrentWeather()
         val dataSourceTypeLD = viewModel.dataSourceType
@@ -150,7 +156,7 @@ class MainFragment : Fragment() {
         {
             frMainToolbar.apply {
                 title = city.value
-                inflateMenu(R.menu.fr_main_toolbar_menu)
+//                inflateMenu(R.menu.fr_main_toolbar_menu)
             }
 
             cardView.setBackgroundResource(R.drawable.low_cloud_cover)
@@ -184,7 +190,9 @@ class MainFragment : Fragment() {
             binding.forecastRV.invalidate()
             viewModel.setLineChartData()
         }
-
+        viewModel.cityListLD.observe(viewLifecycleOwner) {
+            cityListAdapter.submitList(it)
+        }
         city.observe(viewLifecycleOwner)
         {
             binding.tvLocation.text = it
@@ -243,8 +251,11 @@ class MainFragment : Fragment() {
                             "MENU",
                             newText ?: "setOnQueryTextListener   onQueryTextChange $newText"
                         )
-                        binding.rvCitySelection.isVisible = newText != null && newText.length>3
-                        viewModel.onSearchTextChanged(newText ?: "")
+                        if (newText != null && newText.length > 3) {
+                            binding.rvCitySelection.isVisible = true
+                            viewModel.onSearchTextChanged(newText)
+
+                        }
                         return true
                     }
                 })
