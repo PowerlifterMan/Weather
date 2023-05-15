@@ -50,8 +50,6 @@ class MainViewModel @Inject constructor(
         private set
 
     //val currentResponce = openWeatherUseCase.getForecastOpenWeather()
-    val c: Int = 2
-
     var myCityName = MutableLiveData<String>()
         private set(value) {
             field = value
@@ -67,19 +65,15 @@ class MainViewModel @Inject constructor(
     private val myLongitude = MutableLiveData<Float>()
 
     private val myLatitude = MutableLiveData<Float>()
-    private lateinit var inpuEmitter: ObservableEmitter<String>
+    private lateinit var inputEmitter: ObservableEmitter<String>
     private val myCityCurrentWeather = MutableLiveData<TempOnTime>()
     val rvRow = MutableLiveData<List<RecyclerViewRow>>()
 
     val mapper = Mappers()
 
-    fun getCity(): LiveData<String> {
-        return myCityName
-    }
-
     init {
         val disposable = Observable.create { emitter: ObservableEmitter<String> ->
-            inpuEmitter = emitter
+            inputEmitter = emitter
         }
             .subscribeOn(Schedulers.io())
             .filter { it.length > 3 }
@@ -102,20 +96,18 @@ class MainViewModel @Inject constructor(
 
     fun onSearchTextChanged(newText: String) {
         Log.e("MENU", "onSearchTextChanged $newText")
-        inpuEmitter.onNext(newText)
+        inputEmitter.onNext(newText)
 
     }
 
-    fun setDataSourceType(sourceName: String) {
-        dataSourceType.value = sourceName
+    fun dataSourceIsChanged(sourceName: String) {
+//        dataSourceType.value = sourceName
+        listOfDataSource.value = listOf(sourceName)
+        getForecastDataCombine()
     }
 
-    fun setListDataSource(list: List<String>) {
+    fun listDataSourceIsChanged(list: List<String>) {
         listOfDataSource.value = list
-    }
-
-    fun getListDataSource(): LiveData<List<String>> {
-        return listOfDataSource
     }
 
     fun getDataSourceType(): LiveData<String> {
@@ -171,6 +163,7 @@ class MainViewModel @Inject constructor(
             name = city,
             longitude = lon.toString()
         )
+        getForecastDataCombine()
     }
 
     @SuppressLint("CheckResult")
@@ -207,6 +200,10 @@ class MainViewModel @Inject constructor(
 
     }
 
+    fun cityIsChahged() {
+        getForecastDataCombine()
+    }
+
     @SuppressLint("CheckResult")
     fun getForecastDataCombine() {
         weatherUseCase.getForecast(
@@ -241,10 +238,6 @@ class MainViewModel @Inject constructor(
                     error.printStackTrace()
                     Log.e("ERROR", error.message.toString())
                 })
-    }
-
-    private fun onError(error: Throwable) {
-        Log.e("MyApp", error.message.toString())
     }
 
     private fun getDateTime(s: Long): String? {

@@ -25,6 +25,8 @@ import com.example.weather.MainActivity
 import com.example.weather.R
 import com.example.weather.databinding.FragmentMainBinding
 import com.example.weather.domain.CurrentCity
+import com.example.weather.domain.DEFAULT_KLADR_ID
+import com.example.weather.domain.DEFAULT_LOCATION_NAME
 import com.example.weather.presentation.main.Settings2Fragment.Companion.CHECK_BOX_SOURCE_NINJAS
 import com.example.weather.presentation.main.Settings2Fragment.Companion.CHECK_BOX_SOURCE_OPEN_METEO
 import com.example.weather.presentation.main.Settings2Fragment.Companion.CHECK_BOX_SOURCE_OPEN_WEATHER
@@ -39,7 +41,6 @@ import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineDataSet
 import dagger.android.support.AndroidSupportInjection
-import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -57,6 +58,7 @@ class MainFragment : Fragment() {
     private val lineDataset = LineDataSet(lineEntry, "firstLine")
     private var barChartEntries = mutableListOf<BarEntry>()
     private var barChartDataSet = BarDataSet(barChartEntries, BAR_DATA_SET_NAME1)
+    private lateinit var searchView: SearchView
     val adapter = ForecastAdapter()
     var myCity = CurrentCity()
     private val cityListAdapter by lazy { CityRvAdapter() }
@@ -67,67 +69,24 @@ class MainFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
-        sourceList.add(SOURCE_OPEN_WEATHER)
+        setFragmentsResultListener()
         Log.e("MENU", "onCreate  $savedInstanceState")
-
         viewModel = ViewModelProvider(this, viemodelFactory).get(MainViewModel::class.java)
+        sourceList.add(SOURCE_OPEN_WEATHER)
+        viewModel.listDataSourceIsChanged(sourceList)
         viewModel.currentCityIsChanged(
             lat = 55.75f,
             lon = 37.61f,
-            city = "Москва",
-            cityKladr = "7700000000000"
+            city = DEFAULT_LOCATION_NAME,
+            cityKladr = DEFAULT_KLADR_ID
         )
-        viewModel.setDataSourceType(currentSourceName)
-        viewModel.setListDataSource(sourceList)
-        setFragmentResultListener("requestDataSource") { requestKey, bundle ->
-            currentSourceName = bundle.getString("source") ?: SOURCE_OPEN_WEATHER
-            viewModel.setDataSourceType(currentSourceName)
-            viewModel.getForecastData(currentSourceName)
-        }
-        setFragmentResultListener(SETTING_FRAGMENT_DATA) { requestKey, bundle ->
-            sourceList.clear()
-            if (bundle.getBoolean(CHECK_BOX_SOURCE_NINJAS)) sourceList.add(SOURCE_NINJAS)
-            if (bundle.getBoolean(CHECK_BOX_SOURCE_OPEN_WEATHER)) sourceList.add(SOURCE_OPEN_WEATHER)
-            if (bundle.getBoolean(CHECK_BOX_SOURCE_OPEN_METEO)) sourceList.add(SOURCE_OPEN_METEO)
-            Log.e("SETTING", sourceList.toString())
-            if (sourceList.isNotEmpty()) {
-                viewModel.setListDataSource(sourceList)
-            }
-        }
-        setFragmentResultListener(DADATA_FRAGMENT_DATA) { requestKey, bundle ->
-            val latitude = bundle.getString(LATITUDE_KEY)
-            val longitude = bundle.getString(LONGITUDE_KEY)
-            val cityName = bundle.getString(CITY_NAME_KEY)
-            val cityKladrId = bundle.getString(CITY_KLADR_ID_KEY)
-            viewModel.currentCityIsChanged(
-                lat = latitude?.toFloatOrNull() ?: 0f,
-                lon = longitude?.toFloatOrNull() ?: 0f,
-                city = cityName ?: "",
-                cityKladr = cityKladrId ?: ""
-            )
-            viewModel.getForecastDataCombine()
-        }
-        setFragmentResultListener(INPUT_PLACE_FRAGMENT_DATA) { requestKey, bundle ->
-            val latitude = bundle.getString(LATITUDE_KEY)
-            val longitude = bundle.getString(LONGITUDE_KEY)
-            val cityName = bundle.getString(CITY_NAME_KEY)
-            viewModel.currentCityIsChanged(
-                lat = latitude?.toFloatOrNull() ?: 0f,
-                lon = longitude?.toFloatOrNull() ?: 0f,
-                city = cityName ?: "",
-                cityKladr = ""
-            )
-            viewModel.getForecastDataCombine()
-        }
     }
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.e("MENU", "onViewCreated  $savedInstanceState")
-
         setupMenu()
-
         lineDataset.color = resources.getColor(R.color.grey_blue)
 //    val chartData = LineData(barChartLabels,lineDataset )
         val forecastList = viewModel.getForecast()
@@ -136,39 +95,38 @@ class MainFragment : Fragment() {
             adapter = cityListAdapter
             layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         }
-        cityListAdapter.onItemClickListener = object : CityRvAdapter.OnItemClickListener{
+        cityListAdapter.onItemClickListener = object : CityRvAdapter.OnItemClickListener {
             override fun itemClick(item: CurrentCity) {
-//                viewModel.
+                viewModel.currentCityIsChanged(
+                    lat = item.latitude?.toFloatOrNull() ?: 0f,
+                    lon = item.longitude?.toFloatOrNull() ?: 0f,
+                    city = item.name ?: "",
+                    cityKladr = item.cityKladrId ?: ""
+                )
                 binding.rvCitySelection.visibility = View.GONE
+                if (searchView != null) {
+                    searchView.onActionViewCollapsed()
+                }
             }
         }
-        val city = viewModel.myCityName
+        val cityName = viewModel.myCityName
         val currentWeather = viewModel.getCurrentWeather()
-        val dataSourceTypeLD = viewModel.dataSourceType
-//        viewModel.getForecastData(currentSourceName)
         viewModel.getForecastDataCombine()
+
         val lineDataLD = viewModel.chartLineData
         val barDataLD = viewModel.chartBarData
-//    menuHost.apply
-//    { setSupportActionBar(binding.frMainToolbar)
-//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-////            onCreateOptionsMenu()
-//    }
 
         binding.fragMainBarChart.data = viewModel.chartBarData.value
         with(binding)
         {
-            frMainToolbar.apply {
-                title = city.value
-//                inflateMenu(R.menu.fr_main_toolbar_menu)
-            }
+            frMainToolbar.title = cityName.value
 
             cardView.setBackgroundResource(R.drawable.low_cloud_cover)
             tvLocation.setOnClickListener {
                 myCity = getNewCity()
             }
             btnChangeSettings.setOnClickListener {
-                changeSettings()
+                changeSourceSettings()
             }
             forecastRV.layoutManager =
                 LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
@@ -185,8 +143,6 @@ class MainFragment : Fragment() {
                     super.itemClick(item)
                     changeCurrentDayInfo(item)
                 }
-
-
             }
         forecastList.observe(viewLifecycleOwner)
         {
@@ -197,21 +153,18 @@ class MainFragment : Fragment() {
         viewModel.cityListLD.observe(viewLifecycleOwner) {
             cityListAdapter.submitList(it)
         }
-        city.observe(viewLifecycleOwner)
+        cityName.observe(viewLifecycleOwner)
         {
             binding.tvLocation.text = it
             binding.frMainToolbar.title = it
         }
-
         lineDataLD.observe(viewLifecycleOwner)
-        { it ->
-//            binding.fragMainBarChart.data = it
+        {
         }
         barDataLD.observe(viewLifecycleOwner)
         {
             binding.fragMainBarChart.data = it
             binding.fragMainBarChart.invalidate()
-
         }
 
         currentWeather.observe(viewLifecycleOwner)
@@ -228,7 +181,6 @@ class MainFragment : Fragment() {
         (menuHost as MainActivity).setSupportActionBar(binding.frMainToolbar)
         menuHost.addMenuProvider(object : MenuProvider {
             // Добавляем MenuProvider
-
             override fun onPrepareMenu(menu: Menu) // Вызывается перед отрисовкой меню
             {
                 Log.e("MENU", "onPrepareMenu  $menu")
@@ -239,9 +191,10 @@ class MainFragment : Fragment() {
                 menuInflater.inflate(R.menu.fr_main_toolbar_menu, menu)
                 val searchItem = menu.findItem(R.id.app_bar_search)
                 Log.e("MENU", "ssearchItem    $searchItem")
-                // getting search view of our item.
-                // getting search view of our item.
-                val searchView = searchItem.actionView as SearchView
+                binding.frMainToolbar.title = DEFAULT_LOCATION_NAME
+                        // getting search view of our item.
+                        // getting search view of our item.
+                    searchView = searchItem.actionView as SearchView
                 Log.e("MENU", "searchView    $searchView")
                 searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String?): Boolean {
@@ -274,6 +227,8 @@ class MainFragment : Fragment() {
 
                     R.id.menu_settings -> {
                         Log.e("MENU", "MENU onMenuItemSelected  $menuItem")
+                        Toast.makeText(requireContext(), "menu_settings", Toast.LENGTH_SHORT).show()
+                        changeSourceSettings()
                     }
                 }
                 // Пользователь кликнул на элемент меню
@@ -290,11 +245,7 @@ class MainFragment : Fragment() {
         }, viewLifecycleOwner, Lifecycle.State.CREATED)
     }
 
-
-    private fun changeSettings() {
-        /* старое**
-        findNavController().navigate(R.id.action_mainFragment_to_settingsFragment)
-        */
+    private fun changeSourceSettings() {
         findNavController().navigate(R.id.action_mainFragment_to_settings2Fragment)
     }
 
@@ -303,25 +254,6 @@ class MainFragment : Fragment() {
 //        findNavController().navigate(R.id.action_mainFragment_to_inputPlaceFragment)
         return myCity
     }
-
-//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-//        super.onCreateOptionsMenu(menu, inflater)
-//        menu.clear()
-//        inflater.inflate(R.menu.fr_main_toolbar_menu, menu)
-//        val item = menu.findItem(R.id.app_bar_search)
-//        val searchView = SearchView(requireContext())
-//        item.actionView = searchView
-//        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-//            override fun onQueryTextSubmit(query: String): Boolean {
-//                return true
-//            }
-//
-//            override fun onQueryTextChange(newText: String): Boolean {
-//                viewModel.onSearchTextChanged(newText)
-//                return true
-//            }
-//        })
-//    }
 
     private fun changeCurrentDayInfo(item: RecyclerViewRow) {
         Toast.makeText(requireActivity(), "PRESSED", Toast.LENGTH_SHORT).show()
@@ -333,19 +265,48 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 
-    private fun getDateTime(s: Long): String? {
-        try {
-            val sdf = SimpleDateFormat("yyyy/MM/dd")
-            val netDate = Date(s * 1000)
-            return sdf.format(netDate)
-        } catch (e: Exception) {
-            return e.toString()
+    private fun setFragmentsResultListener() {
+        setFragmentResultListener("requestDataSource") { requestKey, bundle ->
+            currentSourceName = bundle.getString("source") ?: SOURCE_OPEN_WEATHER
+            viewModel.dataSourceIsChanged(currentSourceName)
+//            viewModel.getForecastData(currentSourceName)
         }
-
+        setFragmentResultListener(SETTING_FRAGMENT_DATA) { requestKey, bundle ->
+            sourceList.clear()
+            if (bundle.getBoolean(CHECK_BOX_SOURCE_NINJAS)) sourceList.add(SOURCE_NINJAS)
+            if (bundle.getBoolean(CHECK_BOX_SOURCE_OPEN_WEATHER)) sourceList.add(SOURCE_OPEN_WEATHER)
+            if (bundle.getBoolean(CHECK_BOX_SOURCE_OPEN_METEO)) sourceList.add(SOURCE_OPEN_METEO)
+            Log.e("SETTING", sourceList.toString())
+            if (sourceList.isNotEmpty()) {
+                viewModel.listDataSourceIsChanged(sourceList)
+            }
+        }
+        setFragmentResultListener(DADATA_FRAGMENT_DATA) { requestKey, bundle ->
+            val latitude = bundle.getString(LATITUDE_KEY)
+            val longitude = bundle.getString(LONGITUDE_KEY)
+            val cityName = bundle.getString(CITY_NAME_KEY)
+            val cityKladrId = bundle.getString(CITY_KLADR_ID_KEY)
+            viewModel.currentCityIsChanged(
+                lat = latitude?.toFloatOrNull() ?: 0f,
+                lon = longitude?.toFloatOrNull() ?: 0f,
+                city = cityName ?: "",
+                cityKladr = cityKladrId ?: ""
+            )
+        }
+        setFragmentResultListener(INPUT_PLACE_FRAGMENT_DATA) { requestKey, bundle ->
+            val latitude = bundle.getString(LATITUDE_KEY)
+            val longitude = bundle.getString(LONGITUDE_KEY)
+            val cityName = bundle.getString(CITY_NAME_KEY)
+            viewModel.currentCityIsChanged(
+                lat = latitude?.toFloatOrNull() ?: 0f,
+                lon = longitude?.toFloatOrNull() ?: 0f,
+                city = cityName ?: "",
+                cityKladr = ""
+            )
+        }
     }
 
     companion object {
