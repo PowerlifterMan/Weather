@@ -110,10 +110,6 @@ class MainViewModel @Inject constructor(
         listOfDataSource.value = list
     }
 
-    fun getDataSourceType(): LiveData<String> {
-        return dataSourceType
-    }
-
     fun getCurrentWeather(): LiveData<TempOnTime> {
         return myCityCurrentWeather
     }
@@ -167,44 +163,6 @@ class MainViewModel @Inject constructor(
     }
 
     @SuppressLint("CheckResult")
-    fun getForecastData(sourceName: String) {
-        weatherUseCase.getForecast(
-            lat = myLatitude.value ?: 0f,
-            lon = myLongitude.value ?: 0f,
-            sourceName = sourceName,
-            city = myCityName.value ?: "",
-            cityKladr = myCityKladr.value ?: ""
-        ).observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ data ->
-                val tempOnTime = TempOnTime(
-                    timestamp = data.currentTemp.timeStamp,
-                    temp = data.currentTemp.temperatureMax,
-                    tempFeelsLike = data.currentTemp.temperatureFeelsLikeMax,
-                )
-                myCityCurrentWeather.value = tempOnTime
-                rvRow.value = data.forecastList.map { item ->
-                    RecyclerViewItem(
-                        dayNumber = sdf.format(item.timeStamp.toLong() * 1000),
-                        temperature = item.temperatureMax.toString(),
-                        description = item.condition.toString(),
-                        pictureUrl = item.conditionIconId
-                    )
-                }
-                setLineChartData()
-            },
-                { error ->
-                    error.printStackTrace()
-                    Log.e("ERROR", error.message.toString())
-
-                })
-
-    }
-
-    fun cityIsChahged() {
-        getForecastDataCombine()
-    }
-
-    @SuppressLint("CheckResult")
     fun getForecastDataCombine() {
         weatherUseCase.getForecast(
             lat = myLatitude.value ?: 0f,
@@ -223,7 +181,7 @@ class MainViewModel @Inject constructor(
                 myCityCurrentWeather.value = tempOnTime
                 rvRow.value = data.forecastList.map { item ->
                     RecyclerViewItem(
-                        dayNumber = sdf.format(item.timeStamp.toLong() * 1000),
+                        dayNumber = sdf.format(item.timeStamp * 1000),
                         temperature = item.temperatureMax.toString(),
                         temperatureFeelsLike = item.temperatureFeelsLikeMax.toString(),
                         description = item.condition.toString(),
@@ -232,7 +190,6 @@ class MainViewModel @Inject constructor(
                     )
                 }
                 rvRow.value = spisok
-
             },
                 { error ->
                     error.printStackTrace()

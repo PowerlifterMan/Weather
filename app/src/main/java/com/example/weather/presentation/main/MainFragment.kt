@@ -34,6 +34,8 @@ import com.example.weather.presentation.main.recyclerViews.ForecastAdapter
 import com.example.weather.presentation.main.recyclerViews.ForecastAdapter.Companion.ITEM_VIEW_TYPE_ROW
 import com.example.weather.presentation.main.recyclerViews.ForecastAdapter.Companion.ITEM_VIEW_TYPE_TITLE
 import com.example.weather.presentation.main.recyclerViews.ForecastAdapter.Companion.MAX_ITEM_POOL_SIZE
+import com.example.weather.presentation.main.recyclerViews.RecyclerViewItem
+import com.example.weather.presentation.main.recyclerViews.RecyclerViewItemTitle
 import com.example.weather.presentation.main.recyclerViews.RecyclerViewRow
 import com.example.weather.retrofit.daData.CityRvAdapter
 import com.github.mikephil.charting.data.BarDataSet
@@ -46,9 +48,12 @@ import javax.inject.Inject
 
 
 class MainFragment : Fragment() {
+    private val TAG = this::class.simpleName
+
     private val menuHost: MenuHost
         get() = requireActivity()
     private lateinit var viewModel: MainViewModel
+    private val cityName by lazy { viewModel.myCityName }
     private val sourceList = mutableListOf<String>()
     private var _binding: FragmentMainBinding? = null
     private var currentSourceName: String = SOURCE_OPEN_WEATHER
@@ -69,8 +74,8 @@ class MainFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
-        setFragmentsResultListener()
-        Log.e("MENU", "onCreate  $savedInstanceState")
+        setFragmentResultListeners()
+        Log.e(TAG, "onCreate  $savedInstanceState")
         viewModel = ViewModelProvider(this, viemodelFactory).get(MainViewModel::class.java)
         sourceList.add(SOURCE_OPEN_WEATHER)
         viewModel.listDataSourceIsChanged(sourceList)
@@ -85,7 +90,8 @@ class MainFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.e("MENU", "onViewCreated  $savedInstanceState")
+        Log.e(TAG, "onViewCreated  $savedInstanceState")
+        //   val cityName = viewModel.myCityName
         setupMenu()
         lineDataset.color = resources.getColor(R.color.grey_blue)
 //    val chartData = LineData(barChartLabels,lineDataset )
@@ -104,18 +110,13 @@ class MainFragment : Fragment() {
                     cityKladr = item.cityKladrId ?: ""
                 )
                 binding.rvCitySelection.visibility = View.GONE
-                if (searchView != null) {
-                    searchView.onActionViewCollapsed()
-                }
+                searchView.onActionViewCollapsed()
             }
         }
-        val cityName = viewModel.myCityName
         val currentWeather = viewModel.getCurrentWeather()
         viewModel.getForecastDataCombine()
-
         val lineDataLD = viewModel.chartLineData
         val barDataLD = viewModel.chartBarData
-
         binding.fragMainBarChart.data = viewModel.chartBarData.value
         with(binding)
         {
@@ -191,10 +192,10 @@ class MainFragment : Fragment() {
                 menuInflater.inflate(R.menu.fr_main_toolbar_menu, menu)
                 val searchItem = menu.findItem(R.id.app_bar_search)
                 Log.e("MENU", "ssearchItem    $searchItem")
-                binding.frMainToolbar.title = DEFAULT_LOCATION_NAME
-                        // getting search view of our item.
-                        // getting search view of our item.
-                    searchView = searchItem.actionView as SearchView
+                binding.frMainToolbar.title = cityName.value
+                // getting search view of our item.
+                // getting search view of our item.
+                searchView = searchItem.actionView as SearchView
                 Log.e("MENU", "searchView    $searchView")
                 searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String?): Boolean {
@@ -256,19 +257,27 @@ class MainFragment : Fragment() {
     }
 
     private fun changeCurrentDayInfo(item: RecyclerViewRow) {
-        Toast.makeText(requireActivity(), "PRESSED", Toast.LENGTH_SHORT).show()
-        binding.tvCurrentLocation.text = "CLICKED"
+        when (item) {
+            is RecyclerViewItemTitle -> {
+
+            }
+
+            is RecyclerViewItem -> {
+                Toast.makeText(requireActivity(), "PRESSED", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        Log.e(TAG, "onCreateView  $savedInstanceState")
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    private fun setFragmentsResultListener() {
+    private fun setFragmentResultListeners() {
         setFragmentResultListener("requestDataSource") { requestKey, bundle ->
             currentSourceName = bundle.getString("source") ?: SOURCE_OPEN_WEATHER
             viewModel.dataSourceIsChanged(currentSourceName)

@@ -30,9 +30,6 @@ class Settings2Fragment @Inject constructor() : Fragment() {
 
     private var param1: String? = null
     private var param2: String? = null
-    private var source1checked = false
-    private var source2checked = false
-    private var source3checked = false
     private lateinit var viewModel: Settings2ViewModel
 
     @Inject
@@ -62,7 +59,6 @@ class Settings2Fragment @Inject constructor() : Fragment() {
         with(binding) {
             setting2BtnOK.setOnClickListener {
                 if (viewModel.checkErrorState()) {
-
                     val result = bundleOf(
                         CHECK_BOX_SOURCE_NINJAS to checkBoxOption1.isChecked,
                         CHECK_BOX_SOURCE_OPEN_WEATHER to checkBoxOption2.isChecked,
