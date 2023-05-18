@@ -65,23 +65,6 @@ class OpenMeteoRepositoryImpl @Inject constructor(
         return data
     }
 
-
-    private fun getWeatherFromLocal(lat: Float, lon: Float): Single<WeatherData> {
-        val weatherList = weatherForecastDao.getWeatherList(
-            currentSourceName, lat = lat, lon = lon
-        )
-        var weatherData: WeatherData? = null
-        if (weatherList.size > 0) {
-            weatherData =
-                mapper.mapForecastDbModelListToWeatherData(weatherList)
-        } else {
-            weatherData = WeatherData(cityName = "", cityLongitude = lon, cityLatitude = lat)
-        }
-        return Single.fromCallable {
-            weatherData
-        }
-    }
-
     private fun getWeatherFromLocal(cityName: String): Single<WeatherData> {
         return Single.fromCallable {
             val weatherList = weatherForecastDao.getWeatherList(
