@@ -27,7 +27,7 @@ import javax.inject.Inject
  */
 class Settings2Fragment @Inject constructor() : Fragment() {
     // TODO: Rename and change types of parameters
-
+    private val TAG = this.tag
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var viewModel: Settings2ViewModel
@@ -65,6 +65,8 @@ class Settings2Fragment @Inject constructor() : Fragment() {
                         CHECK_BOX_SOURCE_OPEN_METEO to checkBoxOption3.isChecked,
                     )
                     setFragmentResult(requestKey = SETTING_FRAGMENT_DATA, result = result)
+                    Log.e("MainFragment","$TAG is end")
+
                     findNavController().popBackStack()
                 }
                 else

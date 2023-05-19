@@ -75,6 +75,7 @@ class WeatherUseCase(
 
         }
         return Single.zip(sources) { dataArray ->
+
             var resultWeatherData = dataArray[0] as WeatherData
             if (dataArray.size > 1) {
                 dataArray.forEachIndexed() { index, value ->

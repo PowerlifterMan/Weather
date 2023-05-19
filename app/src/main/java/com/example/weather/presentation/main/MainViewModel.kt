@@ -108,6 +108,7 @@ class MainViewModel @Inject constructor(
 
     fun listDataSourceIsChanged(list: List<String>) {
         listOfDataSource.value = list
+//        getForecastDataCombine()
     }
 
     fun getCurrentWeather(): LiveData<TempOnTime> {
@@ -172,12 +173,14 @@ class MainViewModel @Inject constructor(
             cityKladr = myCityKladr.value ?: ""
         ).observeOn(AndroidSchedulers.mainThread())
             .subscribe({ data ->
+                Log.e("MainFragment","getForecastDataCombine")
                 val spisok = mapper.mapWeatherDataToRecyclerViewItem(data)
                 val tempOnTime = TempOnTime(
                     timestamp = data.currentTemp.timeStamp,
                     temp = data.currentTemp.temperatureMax,
                     tempFeelsLike = data.currentTemp.temperatureFeelsLikeMax
                 )
+                Log.e("MainFragment","getForecastDataCombine темп ${tempOnTime.toString()}")
                 myCityCurrentWeather.value = tempOnTime
                 rvRow.value = data.forecastList.map { item ->
                     RecyclerViewItem(

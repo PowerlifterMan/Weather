@@ -47,8 +47,8 @@ private const val ARG_PARAM2 = "param2"
 class DadataFragment @Inject constructor() : Fragment() {
 //    private var outTextView: TextView? = null
 //    private var editText: EditText? = null
-
     // TODO: Rename and change types of parameters
+    private  val TAG = this.tag
     private var param1: String? = null
     private var param2: String? = null
     private var _binding: FragmentDadataBinding? = null
@@ -96,6 +96,7 @@ class DadataFragment @Inject constructor() : Fragment() {
                     CITY_KLADR_ID_KEY to item.cityKladrId
                 )
                 setFragmentResult(DADATA_FRAGMENT_DATA, result)
+                Log.e("MainFragment","$TAG is end")
                 findNavController().popBackStack()
             }
         }

@@ -54,7 +54,7 @@ class MainFragment : Fragment() {
         get() = requireActivity()
     private lateinit var viewModel: MainViewModel
     private val cityName by lazy { viewModel.myCityName }
-    private val sourceList = mutableListOf<String>()
+//    private val sourceList = mutableListOf<String>()
     private var _binding: FragmentMainBinding? = null
     private var currentSourceName: String = SOURCE_OPEN_WEATHER
     private val binding: FragmentMainBinding
@@ -75,10 +75,10 @@ class MainFragment : Fragment() {
         AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
         setFragmentResultListeners()
-        Log.e(TAG, "onCreate  $savedInstanceState")
+        Log.e(TAG, "$TAG onCreate ")
         viewModel = ViewModelProvider(this, viemodelFactory).get(MainViewModel::class.java)
-        sourceList.add(SOURCE_OPEN_WEATHER)
-        viewModel.listDataSourceIsChanged(sourceList)
+//        sourceList.add(SOURCE_OPEN_WEATHER)
+        viewModel.listDataSourceIsChanged(listOf(SOURCE_OPEN_WEATHER))
         viewModel.currentCityIsChanged(
             lat = 55.75f,
             lon = 37.61f,
@@ -90,11 +90,9 @@ class MainFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.e(TAG, "onViewCreated  $savedInstanceState")
-        //   val cityName = viewModel.myCityName
+        Log.e(TAG, "$TAG  onViewCreated  ")
         setupMenu()
         lineDataset.color = resources.getColor(R.color.grey_blue)
-//    val chartData = LineData(barChartLabels,lineDataset )
         val forecastList = viewModel.getForecast()
         val cityRecyclerView = binding.rvCitySelection
         cityRecyclerView.apply {
@@ -178,7 +176,7 @@ class MainFragment : Fragment() {
     }
 
     private fun setupMenu() {
-        Log.e("MENU", "fun setupMenu")
+        Log.e(TAG, "$TAG fun setupMenu")
         (menuHost as MainActivity).setSupportActionBar(binding.frMainToolbar)
         menuHost.addMenuProvider(object : MenuProvider {
             // Добавляем MenuProvider
@@ -212,7 +210,6 @@ class MainFragment : Fragment() {
                         if (newText != null && newText.length > 3) {
                             binding.rvCitySelection.isVisible = true
                             viewModel.onSearchTextChanged(newText)
-
                         }
                         return true
                     }
@@ -225,19 +222,14 @@ class MainFragment : Fragment() {
                     R.id.app_bar_search -> {
                         Log.e("MENU", "MENU onMenuItemSelected $menuItem")
                     }
-
                     R.id.menu_settings -> {
                         Log.e("MENU", "MENU onMenuItemSelected  $menuItem")
                         Toast.makeText(requireContext(), "menu_settings", Toast.LENGTH_SHORT).show()
                         changeSourceSettings()
                     }
                 }
-                // Пользователь кликнул на элемент меню
-                // return true — не нужно передавать нажатие другому провайдеру
-                // return false — передаем нажатие следующему провайдеру
                 return true
             }
-
             override fun onMenuClosed(menu: Menu) // Меню закрыто
             {
                 Log.e("MENU", "MENU onMenuClosed")
@@ -272,7 +264,7 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        Log.e(TAG, "onCreateView  $savedInstanceState")
+        Log.e(TAG, "$TAG onCreateView ")
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -284,13 +276,15 @@ class MainFragment : Fragment() {
 //            viewModel.getForecastData(currentSourceName)
         }
         setFragmentResultListener(SETTING_FRAGMENT_DATA) { requestKey, bundle ->
-            sourceList.clear()
+            val sourceList = mutableListOf<String>()
             if (bundle.getBoolean(CHECK_BOX_SOURCE_NINJAS)) sourceList.add(SOURCE_NINJAS)
             if (bundle.getBoolean(CHECK_BOX_SOURCE_OPEN_WEATHER)) sourceList.add(SOURCE_OPEN_WEATHER)
             if (bundle.getBoolean(CHECK_BOX_SOURCE_OPEN_METEO)) sourceList.add(SOURCE_OPEN_METEO)
-            Log.e("SETTING", sourceList.toString())
+            Log.e(TAG, "$TAG sourceList " + sourceList.toString())
             if (sourceList.isNotEmpty()) {
                 viewModel.listDataSourceIsChanged(sourceList)
+                viewModel.getForecastDataCombine()
+
             }
         }
         setFragmentResultListener(DADATA_FRAGMENT_DATA) { requestKey, bundle ->

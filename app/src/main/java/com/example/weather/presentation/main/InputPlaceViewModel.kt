@@ -9,6 +9,7 @@ import com.example.weather.data.dto.Mappers
 import com.example.weather.domain.CurrentCity
 import com.example.weather.domain.WeatherUseCase
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import javax.inject.Inject
 
 class InputPlaceViewModel @Inject constructor(
@@ -17,7 +18,7 @@ class InputPlaceViewModel @Inject constructor(
 ) : ViewModel() {
 //    private val useCase = WeatherUseCase()
     val mapper = Mappers()
-
+    private val disposeBag = CompositeDisposable()
     val cityList = MutableLiveData<List<GeocodingDTO>>()
     val message: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
@@ -36,7 +37,7 @@ class InputPlaceViewModel @Inject constructor(
     fun onGoButtonClicked() {
         val cityNameForSearch =
             if (textForSearch.value != null) textForSearch.value.toString() else "Москва"
-        useCase.getCityDto(cityNameForSearch)
+        val disposable = useCase.getCityDto(cityNameForSearch)
 //            .observeOn(Schedulers.computation())
 //            .map (mapper::mapSuggestionsToCityListItem)
             .observeOn(AndroidSchedulers.mainThread())
@@ -55,10 +56,12 @@ class InputPlaceViewModel @Inject constructor(
                 it.printStackTrace()
                 Log.d(" ERROR1", it.message.toString())
             })
+        disposeBag.add(disposable)
     }
 
     override fun onCleared() {
         super.onCleared()
+        disposeBag.clear()
     }
 }
 
