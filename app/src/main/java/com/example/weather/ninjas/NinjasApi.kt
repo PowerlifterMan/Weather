@@ -13,6 +13,6 @@ interface NinjasApi {
         @Header("X-Api-Key") apiKey: String,
         @Query("lat") latitude: String,
         @Query("lon") longitude : String,
-    ): Single<NinjasDTO>
+    ): NinjasDTO
 
 }

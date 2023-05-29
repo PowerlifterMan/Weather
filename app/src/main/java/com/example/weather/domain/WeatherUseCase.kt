@@ -1,5 +1,6 @@
 package com.example.weather.domain
 
+import androidx.lifecycle.LiveData
 import com.example.weather.data.GeocodingDTO
 import com.example.weather.data.WeatherRepository
 import com.example.weather.presentation.main.DEFAULT_SOURCE_NAME
@@ -13,39 +14,14 @@ class WeatherUseCase(
     private val openMeteoRepo: WeatherRepository,
     private val openWeatherRepo: WeatherRepository,
 ) {
-    fun getForecast(
-        lat: Float = DEFAULT_LATITUDE,
-        lon: Float = DEFAULT_LONGITUDE,
-        sourceName: String = DEFAULT_SOURCE_NAME,
-        city: String,
-        cityKladr: String
-    ): Single<WeatherData> {
-        val currentRepo: WeatherRepository = when (sourceName) {
-            SOURCE_OPEN_METEO -> {
-                openMeteoRepo
-            }
-
-            SOURCE_OPEN_WEATHER -> {
-                openWeatherRepo
-            }
-
-            SOURCE_NINJAS -> {
-                openMeteoRepo
-            }
-
-            else -> openWeatherRepo
-        }
-        return currentRepo.getWeather(lat = lat, lon = lon, cityName = city, cityKladr = cityKladr)
-    }
-
-    fun getForecast(
+    suspend fun getForecast(
         lat: Float = DEFAULT_LATITUDE,
         lon: Float = DEFAULT_LONGITUDE,
         sourceNameList: List<String> = listOf(),
         city: String,
         cityKladr: String
-    ): Single<WeatherData> {
-        val sources = mutableListOf<Single<WeatherData>>()
+    ): WeatherData {
+        val sources = mutableListOf<WeatherData>()
         if (sourceNameList.isNotEmpty()) {
             sourceNameList.forEach { sourceName ->
                 val currentRepo: WeatherRepository = when (sourceName) {
@@ -72,27 +48,21 @@ class WeatherUseCase(
                     )
                 )
             }
-
         }
-        return Single.zip(sources) { dataArray ->
-
-            var resultWeatherData = dataArray[0] as WeatherData
-            if (dataArray.size > 1) {
-                dataArray.forEachIndexed() { index, value ->
-                    resultWeatherData =
-                        combineWeatherData(
-                            summaryData = resultWeatherData,
-                            data = value as WeatherData
-                        )
-                }
-
+        var resultWeatherData = sources[0] as WeatherData
+        if (sources.size > 1) {
+            sources.forEachIndexed { index, value ->
+                resultWeatherData =
+                    combineWeatherData(
+                        summaryData = resultWeatherData,
+                        data = value as WeatherData
+                    )
             }
-            resultWeatherData
         }
-
+        return resultWeatherData
     }
 
-    fun getCityDto(city: String): Single<List<GeocodingDTO>> {
+    suspend fun getCityDto(city: String): List<GeocodingDTO> {
         return openWeatherRepo.getCityByName(city)
     }
 

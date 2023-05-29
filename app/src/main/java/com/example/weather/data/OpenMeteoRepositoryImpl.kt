@@ -1,7 +1,10 @@
 package com.example.weather.data
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import com.example.weather.OpenMeteo.OpenMeteoCommon
+import com.example.weather.OpenMeteo.OpenMeteoDTO
 import com.example.weather.data.dto.Mappers
 import com.example.weather.data.room.AppDataBase
 import com.example.weather.data.room.ForecastDbModel
@@ -17,10 +20,9 @@ class OpenMeteoRepositoryImpl @Inject constructor(
     appDataBase: AppDataBase
 ) : WeatherRepository {
     val currentSourceName = SOURCE_OPEN_METEO
+    private val dao = appDataBase.weatherForecastDao()
     val service = OpenMeteoCommon.retrofitService
     val mapper = Mappers()
-    private val weatherForecastDao =
-        appDataBase.weatherForecastDao()
     var newCityKladr = ""
     private lateinit var currentCityName: String
     private var lonOpenMeteo: Float? = null
@@ -31,109 +33,107 @@ class OpenMeteoRepositoryImpl @Inject constructor(
         lon: Float,
         cityName: String,
         cityKladr: String
-    ): Single<WeatherData> {
+    ): WeatherData {
         currentCityName = cityName
         latOpenMeteo = lat
         lonOpenMeteo = lon
         newCityKladr = cityKladr
-        return if (needToUpdate()) {
-//            weatherForecastDao.clearData(sourceId = currentSourceName, cityId = cityName)
-//            weatherForecastDao.updateDataSet(sourceId = currentSourceName)
-            getWeatherFromRemote(lat = lat, lon = lon)
-                .andThen(getWeatherFromLocal(cityName = cityName))
-        } else getWeatherFromLocal(cityName = cityName)
-            .filter { it.forecastList.isEmpty() }.toSingle()
+        if (needToUpdate()) getWeatherFromRemote(lat = lat, lon = lon)
+
+        return getWeatherFromLocal(cityName = cityName)
     }
 
-    private fun getWeatherFromRemote(lat: Float, lon: Float): Completable {
-        val data = service.getOpenMeteoForecast(
+
+    private fun getWeatherFromRemote(lat: Float, lon: Float): WeatherData {
+        val openMeteDto = service.getOpenMeteoForecast(
             latitude = lat,
             longitude = lon,
-//            hourly = "temperature_2m",
             daily = "temperature_2m_max,apparent_temperature_max",
             timezone = "Europe/Moscow",
             current_weather = true,
             timeformat = "unixtime"
         )
-            .subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.computation())
-            .map(mapper::mapOpenMeteoToWeatherData)
-            .flatMapCompletable {
-                saveWeatherToLocal(it)
-            }
-
-        return data
+        val weatherData = mapper.mapOpenMeteoToWeatherData(openMeteDto)
+        saveWeatherToLocal(weatherData)
+        return weatherData
     }
 
-    private fun getWeatherFromLocal(cityName: String): Single<WeatherData> {
-        return Single.fromCallable {
-            val weatherList = weatherForecastDao.getWeatherList(
-                cityName = cityName.trim(),
-                sourceId = currentSourceName.trim()
-            )
-            Log.e("ERROR", "$cityName данные запрошены")
-            var weatherData: WeatherData? = null
-            if (weatherList.size > 0) {
-                weatherData =
-                    mapper.mapForecastDbModelListToWeatherData(weatherList)
-            } else {
-                weatherData = WeatherData(
-                    cityName = cityName,
-                    cityLongitude = lonOpenMeteo,
-                    cityLatitude = latOpenMeteo
 
-                )
-                Log.e("ERROR", "$currentCityName WeatherData is EMPTY")
+    private fun getWeatherFromLocal(cityName: String): WeatherData {
+        val weatherList = dao.getWeatherList(
+            cityName = cityName.trim(),
+            sourceId = currentSourceName.trim()
+        )
 
-            }
-            weatherData
-        }
+
+        TODO()
+
+        /*  return Single.fromCallable {
+              val weatherList = weatherForecastDao.getWeatherList(
+                  cityName = cityName.trim(),
+                  sourceId = currentSourceName.trim()
+              )
+              Log.e("ERROR", "$cityName данные запрошены")
+              var weatherData: WeatherData? = null
+              if (weatherList.size > 0) {
+                  weatherData =
+                      mapper.mapForecastDbModelListToWeatherData(weatherList)
+              } else {
+                  weatherData = WeatherData(
+                      cityName = cityName,
+                      cityLongitude = lonOpenMeteo,
+                      cityLatitude = latOpenMeteo
+
+                  )
+                  Log.e("ERROR", "$currentCityName WeatherData is EMPTY")
+
+              }
+              weatherData
+          }
+
+         */
+
     }
 
-    private fun saveWeatherToLocal(weatherData: WeatherData): Completable {
+    private fun saveWeatherToLocal(weatherData: WeatherData) {
         val df = DecimalFormat("##.00")
         val latitude2 = weatherData.cityLatitude
         val longitude2 = weatherData.cityLongitude
         val weatherList = mutableListOf<ForecastDbModel>()
         if (weatherData.forecastList.isNotEmpty()) {
-            weatherForecastDao.clearData(
+            dao.clearData(
                 sourceId = currentSourceName,
-//                cityId = currentCityName
             )
             Log.e("ERROR", "OpenMeteo затерли $currentSourceName ")
-
         }
-
-        return Completable.fromCallable {
-            weatherData.forecastList.forEach {
-                val model = ForecastDbModel(
-                    id = 0,
-                    idCity = currentCityName,
-                    idSource = currentSourceName,
-                    latitude = latitude2,
-                    longitude = longitude2,
-                    timeStamp = it.timeStamp,
-                    temperature = it.temperatureMax,
-                    temperatureFeelsLike = it.temperatureFeelsLikeMax,
-                    humidity = it.humidity,
-                    weatherCondition = null,
-                    weatherConditionIconId = null,
-                    cityKladr = newCityKladr
-                )
-                weatherList.add(model)
-            }
-            weatherForecastDao.addForecastList(weatherList)
-            Log.e("ERROR", "OpenMeteo recording $currentCityName List is complete")
-            weatherForecastDao.updateDB(weatherList)
-            Log.e("ERROR", "OpenMeteo Update $currentCityName List is complete")
+        weatherData.forecastList.forEach {
+            val model = ForecastDbModel(
+                id = 0,
+                idCity = currentCityName,
+                idSource = currentSourceName,
+                latitude = latitude2,
+                longitude = longitude2,
+                timeStamp = it.timeStamp,
+                temperature = it.temperatureMax,
+                temperatureFeelsLike = it.temperatureFeelsLikeMax,
+                humidity = it.humidity,
+                weatherCondition = null,
+                weatherConditionIconId = null,
+                cityKladr = newCityKladr
+            )
+            weatherList.add(model)
         }
+        dao.addForecastList(weatherList)
+        Log.e("ERROR", "OpenMeteo recording $currentCityName List is complete")
+        dao.updateDB(weatherList)
+        Log.e("ERROR", "OpenMeteo Update $currentCityName List is complete")
     }
 
     private fun needToUpdate(): Boolean {
         return true
     }
 
-    override fun getCityByName(cityName: String): Single<List<GeocodingDTO>> {
+    override fun getCityByName(cityName: String): List<GeocodingDTO> {
         TODO("Not yet implemented")
     }
 }

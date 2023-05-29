@@ -1,5 +1,6 @@
 package com.example.weather.data
 
+import androidx.lifecycle.LiveData
 import com.example.weather.retrofit.OpenWeatherDto
 import com.example.weather.retrofit.openWeather.OpenWeatherForecastDTO
 import io.reactivex.rxjava3.core.Single
@@ -14,7 +15,7 @@ interface OpenWeatherApi {
         @Query("units") units: String?,
         @Query("lang") lang: String?,
         @Query("appid") appId: String?,
-    ): Single<OpenWeatherDto>
+    ): OpenWeatherDto
 
     @GET("data/2.5/forecast")
     fun getForecastByCoorddinates(
@@ -24,7 +25,7 @@ interface OpenWeatherApi {
         @Query("lang") lang: String?,
         @Query("appid") appId: String?,
         @Query("cnt") nDays: Int
-    ): Single<OpenWeatherForecastDTO>
+    ): OpenWeatherForecastDTO
 
     @GET("data/2.5/forecast")
     fun getForecastByCoorddinates(
@@ -33,12 +34,12 @@ interface OpenWeatherApi {
         @Query("units") units: String?,
         @Query("lang") lang: String?,
         @Query("appid") appId: String?
-    ): Single<OpenWeatherForecastDTO>
+    ): OpenWeatherForecastDTO
 
     @GET("geo/1.0/direct")
     fun getCoordByName(
         @Query("q") cityName: String?,
         @Query("appid") appId: String?
-    ):Single<List<GeocodingDTO>>
+    ):List<GeocodingDTO>
 
 }

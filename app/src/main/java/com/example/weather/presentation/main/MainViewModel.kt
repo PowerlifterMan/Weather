@@ -25,6 +25,10 @@ import io.reactivex.rxjava3.core.ObservableEmitter
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -34,7 +38,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val weatherUseCase: WeatherUseCase
 ) : ViewModel() {
-
+    private val scope = CoroutineScope(Dispatchers.IO)
     //    private val ninjasUseCase = NinjasUseCase(ninjasRepository)
 
     //    private val openWeatherUseCase = WeatherUseCase(openWeatherRepository)
@@ -164,6 +168,54 @@ class MainViewModel @Inject constructor(
     }
 
     @SuppressLint("CheckResult")
+    suspend fun getForecastDataCombineCor(){
+        scope.launch {
+            weatherUseCase.getForecast(
+                lat = myLatitude.value ?: 0f,
+                lon = myLongitude.value ?: 0f,
+                sourceNameList = listOfDataSource.value ?: listOf(SOURCE_OPEN_WEATHER),
+                city = myCityName.value ?: "",
+                cityKladr = myCityKladr.value ?: ""
+            )
+        }
+    }
+ /*       weatherUseCase.getForecast(
+            lat = myLatitude.value ?: 0f,
+            lon = myLongitude.value ?: 0f,
+            sourceNameList = listOfDataSource.value ?: listOf(SOURCE_OPEN_WEATHER),
+            city = myCityName.value ?: "",
+            cityKladr = myCityKladr.value ?: ""
+        ).observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ data ->
+                Log.e("MainFragment","getForecastDataCombine")
+                val spisok = mapper.mapWeatherDataToRecyclerViewItem(data)
+                val tempOnTime = TempOnTime(
+                    timestamp = data.currentTemp.timeStamp,
+                    temp = data.currentTemp.temperatureMax,
+                    tempFeelsLike = data.currentTemp.temperatureFeelsLikeMax
+                )
+                Log.e("MainFragment","getForecastDataCombine темп ${tempOnTime.toString()}")
+                myCityCurrentWeather.value = tempOnTime
+                rvRow.value = data.forecastList.map { item ->
+                    RecyclerViewItem(
+                        dayNumber = sdf.format(item.timeStamp * 1000),
+                        temperature = item.temperatureMax.toString(),
+                        temperatureFeelsLike = item.temperatureFeelsLikeMax.toString(),
+                        description = item.condition.toString(),
+                        pictureUrl = item.conditionIconId
+
+                    )
+                }
+                rvRow.value = spisok
+            },
+                { error ->
+                    error.printStackTrace()
+                    Log.e("ERROR", error.message.toString())
+                })
+
+
+    }*/
+    @SuppressLint("CheckResult")
     fun getForecastDataCombine() {
         weatherUseCase.getForecast(
             lat = myLatitude.value ?: 0f,
@@ -200,18 +252,9 @@ class MainViewModel @Inject constructor(
                 })
     }
 
-    private fun getDateTime(s: Long): String? {
-        try {
-            val sdf = SimpleDateFormat("yyyy/MM/dd")
-            val netDate = Date(s * 1000)
-            return sdf.format(netDate)
-        } catch (e: Exception) {
-            return e.toString()
-        }
-    }
-
     override fun onCleared() {
         super.onCleared()
         disposables.dispose()
+        scope.cancel()
     }
 }

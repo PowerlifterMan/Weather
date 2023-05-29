@@ -7,7 +7,7 @@ import androidx.room.*
 interface WeatherForecastDao {
     //    @Query("SELECT * FROM forecast WHERE idSource=:sourceId")
     @Query("SELECT * FROM forecast WHERE idSource=:sourceId AND latitude = :lat AND longitude = :lon")
-    fun getWeatherList(
+    suspend fun getWeatherList(
         sourceId: String,
         lat: Float,
         lon: Float,
@@ -16,7 +16,7 @@ interface WeatherForecastDao {
 //    @Query("SELECT * FROM forecast WHERE idCity LIKE :cityName  ORDER BY timeStamp")
     @Query("SELECT * FROM forecast WHERE idCity LIKE :cityName AND idSource LIKE :sourceId ORDER BY timeStamp")
 //    @Query("SELECT * FROM forecast WHERE idCity=:cityName AND idSource=:sourceId")
-    fun getWeatherList(
+    suspend fun getWeatherList(
         cityName: String,
         sourceId: String
     ): List<ForecastDbModel>
@@ -24,30 +24,30 @@ interface WeatherForecastDao {
     @Query("SELECT * FROM forecast WHERE idCity LIKE :cityName  ORDER BY timeStamp")
 //    @Query("SELECT * FROM forecast WHERE idCity = :cityName AND idSource = :sourceId ORDER BY timeStamp")
 //    @Query("SELECT * FROM forecast WHERE idCity=:cityName AND idSource=:sourceId")
-    fun getWeatherList(
+    suspend fun getWeatherList(
         cityName: String,
     ): List<ForecastDbModel>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addForecastItem(forecastDbModel: ForecastDbModel)
+    suspend fun addForecastItem(forecastDbModel: ForecastDbModel)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addForecastList(forecastDbModelList: List<ForecastDbModel>)
+    suspend fun addForecastList(forecastDbModelList: List<ForecastDbModel>)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun updateDB(forecastDbModel: ForecastDbModel)
+    suspend fun updateDB(forecastDbModel: ForecastDbModel)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun updateDB(forecastDbModel: List<ForecastDbModel>)
+    suspend fun updateDB(forecastDbModel: List<ForecastDbModel>)
 
 //    @Query("DELETE FROM forecast WHERE idSource = :sourceId")
     @Query("DELETE FROM forecast WHERE idSource = :sourceId AND idCity = :cityId")
-    fun clearData(
+    suspend fun clearData(
         sourceId: String,
         cityId: String
     )
     @Query("DELETE FROM forecast WHERE idSource = :sourceId ")
-    fun clearData(
+    suspend fun clearData(
         sourceId: String,
     )
 
@@ -55,13 +55,6 @@ interface WeatherForecastDao {
 
 
     @Query("UPDATE forecast SET idSource = :sourceId")
-    fun updateDataSet(sourceId: String): Int
+    suspend fun updateDataSet(sourceId: String): Int
 
-}
-
-
-@Dao
-interface ForecastSourceDao {
-    @Query("SELECT * FROM source")
-    fun getSourceList()
 }

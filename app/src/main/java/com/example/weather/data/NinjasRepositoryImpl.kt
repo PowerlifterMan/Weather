@@ -22,16 +22,20 @@ class NinjasRepositoryImpl @Inject constructor(
     private val weatherForecastDao =
         appDataBase.weatherForecastDao()
 
-    override fun getWeather(lat: Float, lon: Float,cityName: String, cityKladr: String): Single<WeatherData> {
-        return if (needToUpdate()) {
+    override suspend fun getWeather(
+        lat: Float,
+        lon: Float,
+        cityName: String,
+        cityKladr: String
+    ): WeatherData {
+        if (needToUpdate()) {
             getWeatherFromRemote(lat = lat, lon = lon)
-                .andThen(
-                    getWeatherFromLocal(lat = lat,lon = lon)
-                )
-        } else getWeatherFromLocal(lat = lat, lon = lon)
+        }
+        return getWeatherFromLocal(lat = lat, lon = lon)
+
     }
 
-    private fun getWeatherFromLocal(lat: Float, lon: Float): Single<WeatherData> {
+    private suspend fun getWeatherFromLocal(lat: Float, lon: Float): WeatherData {
         val weatherList = weatherForecastDao.getWeatherList(currentSourceName, lat = lat, lon = lon)
         var weatherData: WeatherData? = null
         if (weatherList.isNotEmpty()) {
@@ -43,55 +47,53 @@ class NinjasRepositoryImpl @Inject constructor(
                 cityLongitude = lon,
             )
         }
-        return Single.fromCallable {
-            weatherData
-        }
+        return weatherData
+
     }
 
-    private fun saveWeatherToLocal(weatherData: WeatherData): Completable {
+    private suspend fun saveWeatherToLocal(weatherData: WeatherData) {
         val latitude = weatherData.cityLatitude
         val longitude = weatherData.cityLongitude
         val cityName = weatherData.cityName
-        return Completable.fromCallable {
-            weatherData.forecastList.forEach {
-                val model = ForecastDbModel(
-                    id = 0,
-                    idCity = cityName,
-                    idSource = currentSourceName,
-                    latitude = latitude,
-                    longitude = longitude,
-                    timeStamp = it.timeStamp,
-                    temperature = (it.temperatureMax + it.temperatureMin) / 2,
-                    temperatureFeelsLike = (it.temperatureFeelsLikeMax - it.temperatureFeelsLikeMin) / 2,
-                    humidity = it.humidity,
-                    weatherCondition = null,
-                    weatherConditionIconId = null,
-                    cityKladr = null
-                    )
-                weatherForecastDao.addForecastItem(model)
-            }
-
+        val listForSave = weatherData.forecastList.map { it ->
+            ForecastDbModel(
+                id = 0,
+                idCity = cityName,
+                idSource = currentSourceName,
+                latitude = latitude,
+                longitude = longitude,
+                timeStamp = it.timeStamp,
+                temperature = (it.temperatureMax + it.temperatureMin) / 2,
+                temperatureFeelsLike = (it.temperatureFeelsLikeMax - it.temperatureFeelsLikeMin) / 2,
+                humidity = it.humidity,
+                weatherCondition = null,
+                weatherConditionIconId = null,
+                cityKladr = null
+            )
         }
-
+        weatherForecastDao.addForecastList(listForSave)
     }
 
     private fun needToUpdate(): Boolean {
         return true
     }
 
-    private fun getWeatherFromRemote(lat: Float, lon: Float): Completable {
-        return service.getCurrentWeather(
+    private suspend fun getWeatherFromRemote(lat: Float, lon: Float) {
+        val remoteWeather = service.getCurrentWeather(
             apiKey = "WqthQnLS3J9U8msOMh/iFw==7ZsAWxaBsOpJ9aaf",
             longitude = lon.toString(),
             latitude = lat.toString()
         )
-            .subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.computation())
-            .map { mapper.mapNinjasDtoToWeatherData(it) }
-            .flatMapCompletable { saveWeatherToLocal(it) }
+        val data = mapper.mapNinjasDtoToWeatherData(remoteWeather)
+        saveWeatherToLocal(data)
+        /*
+    .subscribeOn(Schedulers.io())
+    .observeOn(Schedulers.computation())
+    .map { mapper.mapNinjasDtoToWeatherData(it) }
+    .flatMapCompletable { saveWeatherToLocal(it) } */
     }
 
-    override fun getCityByName(cityName: String): Single<List<GeocodingDTO>> {
+    override suspend fun getCityByName(cityName: String): List<GeocodingDTO> {
         TODO("Not yet implemented")
     }
 }

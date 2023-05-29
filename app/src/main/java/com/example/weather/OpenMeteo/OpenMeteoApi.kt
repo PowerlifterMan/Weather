@@ -1,5 +1,6 @@
 package com.example.weather.OpenMeteo
 
+import androidx.lifecycle.LiveData
 import io.reactivex.rxjava3.core.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -14,5 +15,5 @@ interface OpenMeteoApi {
         @Query("timeformat") timeformat: String? =null,
         @Query("current_weather") current_weather: Boolean? = null,
         @Query("timezone") timezone: String?
-    ): Single<OpenMeteoDTO>
+    ): OpenMeteoDTO
 }
