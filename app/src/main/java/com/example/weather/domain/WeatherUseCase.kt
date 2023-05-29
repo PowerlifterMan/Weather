@@ -98,7 +98,6 @@ class WeatherUseCase(
         averageCurrentTemp: CurrentTemp,
         currentTemp: CurrentTemp
     ): CurrentTemp {
-//        val tempMin = currentTemp.temperatureMin
         return CurrentTemp(
             timeStamp = currentTemp.timeStamp,
             temperatureMin = (averageCurrentTemp.temperatureMin + currentTemp.temperatureMin) / 2,

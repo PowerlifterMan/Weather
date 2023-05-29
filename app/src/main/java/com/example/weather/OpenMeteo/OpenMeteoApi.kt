@@ -7,7 +7,7 @@ import retrofit2.http.Query
 
 interface OpenMeteoApi {
     @GET("v1/forecast")
-    fun getOpenMeteoForecast(
+    suspend fun getOpenMeteoForecast(
         @Query("latitude") latitude: Float?,
         @Query("longitude") longitude: Float?,
         @Query("daily") daily: String? = null,

@@ -9,7 +9,7 @@ import retrofit2.http.Query
 interface NinjasApi {
 //    @POST("suggest/address")
     @GET("v1/weather")
-    fun getCurrentWeather(
+    suspend fun getCurrentWeather(
         @Header("X-Api-Key") apiKey: String,
         @Query("lat") latitude: String,
         @Query("lon") longitude : String,

@@ -55,8 +55,8 @@ class MainFragment : Fragment() {
     private lateinit var viewModel: MainViewModel
     private val cityName by lazy { viewModel.myCityName }
 //    private val sourceList = mutableListOf<String>()
-    private var _binding: FragmentMainBinding? = null
     private var currentSourceName: String = SOURCE_OPEN_WEATHER
+    private var _binding: FragmentMainBinding? = null
     private val binding: FragmentMainBinding
         get() = _binding ?: throw RuntimeException("FragmentMainBinding? == null")
     private val lineEntry = mutableListOf<Entry>(Entry(20f, 0), Entry(31f, 1), Entry(34f, 2))

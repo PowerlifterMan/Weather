@@ -28,7 +28,7 @@ class OpenMeteoRepositoryImpl @Inject constructor(
     private var lonOpenMeteo: Float? = null
     private var latOpenMeteo: Float? = null
 
-    override fun getWeather(
+    override suspend fun getWeather(
         lat: Float,
         lon: Float,
         cityName: String,
@@ -44,7 +44,7 @@ class OpenMeteoRepositoryImpl @Inject constructor(
     }
 
 
-    private fun getWeatherFromRemote(lat: Float, lon: Float): WeatherData {
+    private suspend fun getWeatherFromRemote(lat: Float, lon: Float): WeatherData {
         val openMeteDto = service.getOpenMeteoForecast(
             latitude = lat,
             longitude = lon,
@@ -59,14 +59,21 @@ class OpenMeteoRepositoryImpl @Inject constructor(
     }
 
 
-    private fun getWeatherFromLocal(cityName: String): WeatherData {
+    private suspend fun getWeatherFromLocal(cityName: String): WeatherData {
         val weatherList = dao.getWeatherList(
             cityName = cityName.trim(),
             sourceId = currentSourceName.trim()
         )
+        return if (!weatherList.isNullOrEmpty()) {
+            mapper.mapForecastDbModelListToWeatherData(weatherList)
+        } else {
+            WeatherData(
+                cityName = cityName,
+                cityLongitude = lonOpenMeteo,
+                cityLatitude = latOpenMeteo
+            )
+        }
 
-
-        TODO()
 
         /*  return Single.fromCallable {
               val weatherList = weatherForecastDao.getWeatherList(
@@ -95,7 +102,7 @@ class OpenMeteoRepositoryImpl @Inject constructor(
 
     }
 
-    private fun saveWeatherToLocal(weatherData: WeatherData) {
+    private suspend fun saveWeatherToLocal(weatherData: WeatherData) {
         val df = DecimalFormat("##.00")
         val latitude2 = weatherData.cityLatitude
         val longitude2 = weatherData.cityLongitude
@@ -133,7 +140,7 @@ class OpenMeteoRepositoryImpl @Inject constructor(
         return true
     }
 
-    override fun getCityByName(cityName: String): List<GeocodingDTO> {
+    override suspend fun getCityByName(cityName: String): List<GeocodingDTO> {
         TODO("Not yet implemented")
     }
 }

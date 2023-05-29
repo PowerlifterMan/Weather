@@ -28,7 +28,7 @@ interface OpenWeatherApi {
     ): OpenWeatherForecastDTO
 
     @GET("data/2.5/forecast")
-    fun getForecastByCoorddinates(
+    suspend fun getForecastByCoorddinates(
         @Query("lat") latitude: String?,
         @Query("lon") longitude: String?,
         @Query("units") units: String?,

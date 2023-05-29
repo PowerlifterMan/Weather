@@ -53,7 +53,6 @@ class InputPlaceFragment : Fragment()  {
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this,viemodelFactory).get(InputPlaceViewModel::class.java)
         val listOfCity = viewModel.getListForRv()
