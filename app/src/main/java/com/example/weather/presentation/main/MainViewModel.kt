@@ -37,7 +37,8 @@ class MainViewModel @Inject constructor(
     private val disposableBag = CompositeDisposable()
     private val cityRepo = DaDataRepositoryImpl
     private val getCityUseCase = DaDataUseCase(cityRepo)
-//    private var dadataJob = Job()
+
+    //    private var dadataJob = Job()
     private var listOfDataSource = MutableLiveData<List<String>>()
         private set
     var cityListLD = MutableLiveData<List<CurrentCity>>()
@@ -86,11 +87,8 @@ class MainViewModel @Inject constructor(
 
     fun onSearchTextChanged(newText: String) {
         val dadataJob = scope.launch {
-            getCityFromDadata(newText)
-                .collect {
-                    cityListLD.postValue(it)
-                }
-
+            val list = getCityFromDadata(newText)
+            cityListLD.postValue(list)
         }
 
     }
@@ -116,13 +114,9 @@ class MainViewModel @Inject constructor(
         return rvRow
     }
 
-    suspend fun getCityFromDadata(query: String): Flow<List<CurrentCity>> {
-        return flow {
-            val suggestions = getCityUseCase.getCityDto(query)
-            val citiesList = mapper.mapSuggestionsToCurrentCity(suggestions)
-            emit(citiesList)
-        }
-
+    suspend fun getCityFromDadata(query: String): List<CurrentCity> {
+        val suggestions = getCityUseCase.getCityDto(query)
+        return mapper.mapSuggestionsToCurrentCity(suggestions)
     }
 
     fun setLineChartData() {

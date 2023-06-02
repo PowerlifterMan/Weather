@@ -26,7 +26,7 @@ interface DataBaseModule {
                 AppDataBase::class.java,
                 "weather_forecast"
             )
-                .allowMainThreadQueries()
+//                .allowMainThreadQueries()
                 .fallbackToDestructiveMigration()
             return builder.build()
         }

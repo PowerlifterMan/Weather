@@ -10,7 +10,7 @@ import retrofit2.http.POST
 interface DadataRetrofitServices {
 //    @POST("suggest/address")
     @POST("suggest/address")
-    fun getAddrdessesList(
+    suspend fun getAddrdessesList(
         @Header("Content-Type") contentType: String,
         @Header("Accept") accept: String,
         @Header("Authorization") token: String,

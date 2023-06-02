@@ -28,8 +28,6 @@ object DaDataRetrofitClient {
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .client(client)
-                ////  не забыть  okhttp client
-                //        .client("")
                 .build()
         }
         return retrofit!!
