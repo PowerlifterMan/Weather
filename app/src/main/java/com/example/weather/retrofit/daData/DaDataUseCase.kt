@@ -4,7 +4,7 @@ import io.reactivex.rxjava3.core.Single
 
 class DaDataUseCase(private val daDataRepository: DaDataRepository) {
 
-    fun getCityDto(name: String): Single<Suggestions>
+    suspend fun getCityDto(name: String): Suggestions
     {
         return daDataRepository.getCity(name)
     }

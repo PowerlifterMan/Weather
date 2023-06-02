@@ -15,6 +15,6 @@ interface DadataRetrofitServices {
         @Header("Accept") accept: String,
         @Header("Authorization") token: String,
         @Body query: RequestBody
-    ): Single<Suggestions>
+    ): Suggestions
 
 }

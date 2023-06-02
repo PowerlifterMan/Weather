@@ -1,7 +1,6 @@
 package com.example.weather.presentation.main
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,18 +18,15 @@ import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.ObservableEmitter
-import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -41,14 +37,13 @@ class MainViewModel @Inject constructor(
     private val disposableBag = CompositeDisposable()
     private val cityRepo = DaDataRepositoryImpl
     private val getCityUseCase = DaDataUseCase(cityRepo)
+//    private var dadataJob = Job()
     private var listOfDataSource = MutableLiveData<List<String>>()
         private set
     var cityListLD = MutableLiveData<List<CurrentCity>>()
         private set
     var myCityName = MutableLiveData<String>()
-        private set(value) {
-            field = value
-        }
+        private set
     var myCityKladr = MutableLiveData<String>()
         private set
     var currentCityLD = MutableLiveData<CurrentCity>()
@@ -67,31 +62,36 @@ class MainViewModel @Inject constructor(
     val mapper = Mappers()
 
     init {
-        val disposable = Observable.create { emitter: ObservableEmitter<String> ->
-            inputEmitter = emitter
-        }
-            .subscribeOn(Schedulers.io())
-            .filter { it.length > 3 }
-            .debounce(1, TimeUnit.SECONDS)
-            .flatMapSingle { queryString ->
-                Log.e("ERROR2", queryString)
-                getCityFromDadata(queryString)
-            }
-            .observeOn(Schedulers.io())
-            .subscribe({ currentCityList ->
-                cityListLD.postValue(currentCityList)
-                Log.e("MENU", currentCityList.toString())
-            }, {
-                it.printStackTrace()
-                Log.e("ERROR2", it.message.toString())
-            })
-        disposableBag.add(disposable)
-
+//        val disposable = Observable.create { emitter: ObservableEmitter<String> ->
+//            inputEmitter = emitter
+//        }
+//            .subscribeOn(Schedulers.io())
+//            .filter { it.length > 3 }
+//            .debounce(1, TimeUnit.SECONDS)
+//            .flatMapSingle { queryString ->
+//                Log.e("ERROR2", queryString)
+//                getCityFromDadata(queryString)
+//            }
+//            .observeOn(Schedulers.io())
+//            .subscribe({ currentCityList ->
+//                cityListLD.postValue(currentCityList)
+//                Log.e("MENU", currentCityList.toString())
+//            }, {
+//                it.printStackTrace()
+//                Log.e("ERROR2", it.message.toString())
+//            })
+//        disposableBag.add(disposable)
+////        val job =
     }
 
     fun onSearchTextChanged(newText: String) {
-        Log.e("MENU", "onSearchTextChanged $newText")
-        inputEmitter.onNext(newText)
+        val dadataJob = scope.launch {
+            getCityFromDadata(newText)
+                .collect {
+                    cityListLD.postValue(it)
+                }
+
+        }
 
     }
 
@@ -116,11 +116,12 @@ class MainViewModel @Inject constructor(
         return rvRow
     }
 
-    fun getCityFromDadata(query: String): Single<List<CurrentCity>> {
-        return getCityUseCase.getCityDto(query)
-            .map {
-                mapper.mapSuggestionsToCurrentCity(it)
-            }
+    suspend fun getCityFromDadata(query: String): Flow<List<CurrentCity>> {
+        return flow {
+            val suggestions = getCityUseCase.getCityDto(query)
+            val citiesList = mapper.mapSuggestionsToCurrentCity(suggestions)
+            emit(citiesList)
+        }
 
     }
 
@@ -163,7 +164,7 @@ class MainViewModel @Inject constructor(
     }
 
     @SuppressLint("CheckResult")
-     fun getForecastDataCombine() {
+    fun getForecastDataCombine() {
         scope.launch {
             val weatherData = weatherUseCase.getForecast(
                 lat = myLatitude.value ?: 0f,

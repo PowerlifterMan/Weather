@@ -10,7 +10,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 
 object DaDataRepositoryImpl : DaDataRepository {
     val myService = DadataCommon.retrofitService
-    override fun getCity(name: String): Single<Suggestions> {
+    override suspend fun getCity(name: String): Suggestions {
         val jsonObject = JsonObject()
         val jsonObjectBoundCity = JsonObject()
         jsonObjectBoundCity.addProperty("value", "city")

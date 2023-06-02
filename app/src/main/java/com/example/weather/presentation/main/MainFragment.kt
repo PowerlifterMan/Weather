@@ -191,8 +191,6 @@ class MainFragment : Fragment() {
                 val searchItem = menu.findItem(R.id.app_bar_search)
                 Log.e("MENU", "ssearchItem    $searchItem")
                 binding.frMainToolbar.title = cityName.value
-                // getting search view of our item.
-                // getting search view of our item.
                 searchView = searchItem.actionView as SearchView
                 Log.e("MENU", "searchView    $searchView")
                 searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -201,12 +199,7 @@ class MainFragment : Fragment() {
                         Log.e("MENU", "setOnQueryTextListener   onQueryTextSubmit $query ")
                         return true
                     }
-
                     override fun onQueryTextChange(newText: String?): Boolean {
-                        Log.e(
-                            "MENU",
-                            newText ?: "setOnQueryTextListener   onQueryTextChange $newText"
-                        )
                         if (newText != null && newText.length > 3) {
                             binding.rvCitySelection.isVisible = true
                             viewModel.onSearchTextChanged(newText)

@@ -29,33 +29,34 @@ class DadataFragmentViewModel @Inject constructor(): ViewModel() {
     private lateinit var inpuEmitter: ObservableEmitter<String>
     private val recyclerViewList = MutableLiveData<List<CurrentCity>>()
     init {
-        val disposable = Observable.create { emitter: ObservableEmitter<String> ->
-        inpuEmitter = emitter
-        }
-            .subscribeOn(Schedulers.io())
-            .filter { it.length > 3 }
-            .debounce(1, TimeUnit.SECONDS)
-            .flatMapSingle { queryString ->
-                Log.e("ERROR2", queryString)
-                getCity(queryString)
-            }
-            .observeOn(Schedulers.io())
-            .subscribe({ currentCityList ->
-                recyclerViewList.postValue(currentCityList)
-            }, {
-                it.printStackTrace()
-                Log.e("ERROR2", it.message.toString())
-            })
-        disposables.add(disposable)
+//        val disposable = Observable.create { emitter: ObservableEmitter<String> ->
+//        inpuEmitter = emitter
+//        }
+//            .subscribeOn(Schedulers.io())
+//            .filter { it.length > 3 }
+//            .debounce(1, TimeUnit.SECONDS)
+//            .flatMapSingle { queryString ->
+//                Log.e("ERROR2", queryString)
+//                getCity(queryString)
+//            }
+//            .observeOn(Schedulers.io())
+//            .subscribe({ currentCityList ->
+//                recyclerViewList.postValue(currentCityList)
+//            }, {
+//                it.printStackTrace()
+//                Log.e("ERROR2", it.message.toString())
+//            })
+//        disposables.add(disposable)
     }
 
     fun getCityList():LiveData<List<CurrentCity>> = recyclerViewList
-    fun getCity(query: String):Single<List<CurrentCity>> {
-        return useCase.getCityDto(query)
-            .map {
-                mapper.mapSuggestionsToCurrentCity(it)
-            }
-
+    fun getCity(query: String):List<CurrentCity> {
+        TODO()
+//        return useCase.getCityDto(query)
+//            .map {
+//                mapper.mapSuggestionsToCurrentCity(it)
+//            }
+//
     }
 
     fun onInputTextChanged(newText: String) {
