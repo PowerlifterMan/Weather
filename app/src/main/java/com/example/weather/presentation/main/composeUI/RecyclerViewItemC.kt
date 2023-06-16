@@ -18,24 +18,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-@Preview
-@Composable
-fun Item() {
-    Card(modifier = Modifier
-        .fillMaxWidth()
-        .padding(8.dp)
-        .background(color = Color.Blue)
-        .height(100.dp),
-        shape = RoundedCornerShape(8.dp),
-    ) {
-        Row(modifier = Modifier
-            .height(18.dp)
-            .padding(18.dp)
-        )
-        {
-            Text(text = "Some Text")
-
-            Text(text = "Some Text")
-        }
-    }
-}
+//@Preview
+//@Composable
+//fun Item() {
+//    Card(modifier = Modifier
+//        .fillMaxWidth()
+//        .padding(8.dp)
+//        .background(color = Color.Blue)
+//        .height(100.dp),
+//        shape = RoundedCornerShape(8.dp),
+//    ) {
+//        Row(modifier = Modifier
+//            .height(18.dp)
+//            .padding(18.dp)
+//        )
+//        {
+//            Text(text = "Some Text")
+//
+//            Text(text = "Some Text")
+//        }
+//    }
+//}

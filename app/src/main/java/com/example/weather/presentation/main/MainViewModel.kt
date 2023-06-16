@@ -59,7 +59,7 @@ class MainViewModel @Inject constructor(
     private val myLatitude = MutableLiveData<Float>()
     private lateinit var inputEmitter: ObservableEmitter<String>
     private val myCityCurrentWeather = MutableLiveData<TempOnTime>()
-    val rvRow = MutableLiveData<List<RecyclerViewRow>>()
+    val rvRow = MutableLiveData<List<RecyclerViewRow>>(listOf())
 
     val mapper = Mappers()
 
