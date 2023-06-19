@@ -11,6 +11,7 @@ class RecyclerViewItemTitle(
 
 class RecyclerViewItem(
     var dayNumber: String = "",
+    val title: String = "",
     val temperature: String = DEFAULT_TEMPERATURE.toString(),
     val temperatureFeelsLike: String = DEFAULT_TEMPERATURE.toString(),
     val description: String = DEFAULT_DESCRIPTION,

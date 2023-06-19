@@ -59,7 +59,7 @@ class MainViewModel @Inject constructor(
     private val myLatitude = MutableLiveData<Float>()
     private lateinit var inputEmitter: ObservableEmitter<String>
     private val myCityCurrentWeather = MutableLiveData<TempOnTime>()
-    val rvRow = MutableLiveData<List<RecyclerViewRow>>(listOf())
+    val rvRow = MutableLiveData<List<RecyclerViewRow>>(listOf<RecyclerViewItem>())
 
     val mapper = Mappers()
 
@@ -150,7 +150,8 @@ class MainViewModel @Inject constructor(
         myCityKladr.value = cityKladr
         currentCityLD.value = CurrentCity(
             name = city,
-            longitude = lon.toString()
+            longitude = lon.toString(),
+            latitude = lat.toString()
         )
         scope.launch {
             getForecastDataCombine()

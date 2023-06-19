@@ -1,18 +1,12 @@
 package com.example.weather.data
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import com.example.weather.OpenMeteo.OpenMeteoCommon
-import com.example.weather.OpenMeteo.OpenMeteoDTO
 import com.example.weather.data.dto.Mappers
 import com.example.weather.data.room.AppDataBase
 import com.example.weather.data.room.ForecastDbModel
 import com.example.weather.domain.WeatherData
 import com.example.weather.presentation.main.SOURCE_OPEN_METEO
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.schedulers.Schedulers
 import java.text.DecimalFormat
 import javax.inject.Inject
 

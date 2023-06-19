@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.compose.ui.platform.ComposeView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
@@ -30,6 +31,7 @@ import com.example.weather.domain.DEFAULT_LOCATION_NAME
 import com.example.weather.presentation.main.Settings2Fragment.Companion.CHECK_BOX_SOURCE_NINJAS
 import com.example.weather.presentation.main.Settings2Fragment.Companion.CHECK_BOX_SOURCE_OPEN_METEO
 import com.example.weather.presentation.main.Settings2Fragment.Companion.CHECK_BOX_SOURCE_OPEN_WEATHER
+import com.example.weather.presentation.main.composeUI.MainScreenCompose
 import com.example.weather.presentation.main.recyclerViews.ForecastAdapter
 import com.example.weather.presentation.main.recyclerViews.ForecastAdapter.Companion.ITEM_VIEW_TYPE_ROW
 import com.example.weather.presentation.main.recyclerViews.ForecastAdapter.Companion.ITEM_VIEW_TYPE_TITLE
@@ -43,18 +45,19 @@ import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineDataSet
 import dagger.android.support.AndroidSupportInjection
+import org.w3c.dom.Text
 import java.util.*
 import javax.inject.Inject
 
 
 class MainFragment : Fragment() {
     private val TAG = this::class.simpleName
-
     private val menuHost: MenuHost
         get() = requireActivity()
     private lateinit var viewModel: MainViewModel
     private val cityName by lazy { viewModel.myCityName }
-//    private val sourceList = mutableListOf<String>()
+
+    //    private val sourceList = mutableListOf<String>()
     private var currentSourceName: String = SOURCE_OPEN_WEATHER
     private var _binding: FragmentMainBinding? = null
     private val binding: FragmentMainBinding
@@ -199,6 +202,7 @@ class MainFragment : Fragment() {
                         Log.e("MENU", "setOnQueryTextListener   onQueryTextSubmit $query ")
                         return true
                     }
+
                     override fun onQueryTextChange(newText: String?): Boolean {
                         if (newText != null && newText.length > 3) {
                             binding.rvCitySelection.isVisible = true
@@ -215,6 +219,7 @@ class MainFragment : Fragment() {
                     R.id.app_bar_search -> {
                         Log.e("MENU", "MENU onMenuItemSelected $menuItem")
                     }
+
                     R.id.menu_settings -> {
                         Log.e("MENU", "MENU onMenuItemSelected  $menuItem")
                         Toast.makeText(requireContext(), "menu_settings", Toast.LENGTH_SHORT).show()
@@ -223,6 +228,7 @@ class MainFragment : Fragment() {
                 }
                 return true
             }
+
             override fun onMenuClosed(menu: Menu) // Меню закрыто
             {
                 Log.e("MENU", "MENU onMenuClosed")
@@ -259,8 +265,16 @@ class MainFragment : Fragment() {
     ): View {
         Log.e(TAG, "$TAG onCreateView ")
         _binding = FragmentMainBinding.inflate(inflater, container, false)
-        return binding.root
+        return 	androidx.compose.ui.platform.ComposeView(requireContext()).apply {
+            setContent {
+                MainScreenCompose(viewModel = viewModel)
+            }
+        }
     }
+
+  /*      return binding.root
+        */
+
 
     private fun setFragmentResultListeners() {
         setFragmentResultListener("requestDataSource") { requestKey, bundle ->

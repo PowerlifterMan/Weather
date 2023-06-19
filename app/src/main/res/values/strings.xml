@@ -13,4 +13,8 @@
     <string name="setting2TitleText">Выберите источники</string>
     <string name="none">_</string>
     <string name="temp1">adasdasd $s sdfsdfgdsfsdf $d $s</string>
+    <string name="navigation_item_main">Главная</string>
+    <string name="navigation_item_favourite">Избранное</string>
+    <string name="navigation_item_profile">Профиль</string>
+
 </resources>
