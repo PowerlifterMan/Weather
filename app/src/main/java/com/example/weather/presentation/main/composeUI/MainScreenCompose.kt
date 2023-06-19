@@ -2,15 +2,17 @@ package com.example.weather.presentation.main.composeUI
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -31,14 +33,16 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bumptech.glide.Glide
+import com.example.weather.R
 import com.example.weather.domain.CurrentCity
-import com.example.weather.domain.CurrentTemp
 import com.example.weather.domain.DEFAULT_KLADR_ID
 import com.example.weather.domain.DEFAULT_LOCATION_NAME
 import com.example.weather.domain.TempOnTime
@@ -77,7 +81,8 @@ fun MainScreenCompose(
         cityKladr = DEFAULT_KLADR_ID
     )
     val scrollState = rememberScrollState()
-    Scaffold(modifier = Modifier,
+    Scaffold(
+        modifier = Modifier,
         topBar = {
             TopAppBar(
                 title = {
@@ -116,7 +121,10 @@ fun MainScreenCompose(
 //            }
 //        }
     ) { paddingValues ->
-        ShowCityCard(cityName = currentCity.value.name ?:" ", temp = cityCurrentWeather.value.temp.toString())
+        ShowCityCard(
+            cityName = currentCity.value.name ?: " ",
+            temp = cityCurrentWeather.value.temp.toString()
+        )
 
         LazyColumn(
             modifier = Modifier.padding(
@@ -156,13 +164,13 @@ fun MainScreenCompose(
 
 @Composable
 fun ShowCityCard(cityName: String, temp: String) {
-/*
-  Spacer(
-        modifier = Modifier
-            .height(8.dp)
-            .background(Color.LightGray)
-    )
- */
+    /*
+      Spacer(
+            modifier = Modifier
+                .height(8.dp)
+                .background(Color.LightGray)
+        )
+     */
     Card(
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(width = 1.dp, color = Color.Gray),
@@ -170,14 +178,40 @@ fun ShowCityCard(cityName: String, temp: String) {
             .padding(start = 8.dp, top = 70.dp, end = 8.dp)
             .fillMaxWidth()
             .height(170.dp)
-
+//            .background()
 
 
     ) {
-        Text(
-            fontSize = 32.sp,
-            text = "$cityName",
-            modifier = Modifier.padding(30.dp))
+        Box() {
+
+            Image(
+                modifier = Modifier.fillMaxSize(),
+                painter = painterResource(id = R.drawable.low_cloud_cover),
+                contentDescription = " CONTENT DESCRIPTION ",
+                contentScale = ContentScale.FillBounds
+            )
+            Text(
+                fontSize = 32.sp,
+                text = "$cityName",
+                modifier = Modifier
+                    .padding(vertical = 30.dp)
+                    .fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                color = Color.Black
+            )
+            Spacer(modifier = Modifier.height(30.dp))
+            Text(
+                fontSize = 32.sp,
+                text = "$temp",
+                modifier = Modifier
+//                .padding(30.dp)
+                    .fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                color = Color.Black
+            )
+
+        }
+
     }
 }
 
@@ -201,13 +235,16 @@ fun ShowCard(item: RecyclerViewItem = RecyclerViewItem()) {
         elevation = CardDefaults.cardElevation(10.dp),
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(1.dp, color = Color.DarkGray),
-        ) {
+    ) {
+        if (item.pictureUrl?.isNotEmpty() == true){
+
+            GlideImage("https://openweathermap.org/img/wn/${item.pictureUrl}@2x.png")
+        }
         Text(
             fontSize = 16.sp,
             text = "${item.dayNumber}  ${item.temperature} ${item.description}",
             textAlign = TextAlign.Center,
-            overflow = TextOverflow.Ellipsis  ,
-
+            overflow = TextOverflow.Ellipsis,
             modifier = Modifier.padding(16.dp)
         )
     }

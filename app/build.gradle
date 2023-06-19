@@ -130,6 +130,7 @@ dependencies {
 
     ////************************GLIDE*****************************///
     implementation 'com.github.bumptech.glide:glide:4.15.1'
+    implementation "com.github.bumptech.glide:compose:1.0.0-alpha.1"
 
 //    dagger = { module = "com.google.dagger:dagger-android-support", version.ref = "dagger" }
 //    dagger_android_processor = {module = "com.google.dagger:dagger-android-processor", version.ref = "dagger" }
