@@ -11,7 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import android.widget.Toast
-import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.input.key.Key.Companion.Notification
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
@@ -45,7 +45,6 @@ import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineDataSet
 import dagger.android.support.AndroidSupportInjection
-import org.w3c.dom.Text
 import java.util.*
 import javax.inject.Inject
 

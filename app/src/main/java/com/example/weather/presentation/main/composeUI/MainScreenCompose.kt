@@ -6,8 +6,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +20,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -40,7 +42,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.bumptech.glide.Glide
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.example.weather.R
 import com.example.weather.domain.CurrentCity
 import com.example.weather.domain.DEFAULT_KLADR_ID
@@ -85,13 +88,29 @@ fun MainScreenCompose(
         modifier = Modifier,
         topBar = {
             TopAppBar(
+//                modifier = Modifier.alignBy(HorizontalAlignment()),
                 title = {
-                    Text(text = "Top App Bar")
+                    Text(text = "")
                 },
                 navigationIcon = {
-                    IconButton(onClick = {}) {
-                        Icon(Icons.Filled.ArrowBack, "backIcon")
+                    Row(horizontalArrangement = Arrangement.End) {
+                        IconButton(onClick = {
+
+                        }) {
+                            Icon(Icons.Filled.ArrowBack, "backIcon")
+                        }
+                        IconButton(onClick = {
+
+                        }) {
+                            Icon(Icons.Filled.Search, "Search city")
+                        }
+                        IconButton(onClick = {
+
+                        }) {
+                            Icon(Icons.Filled.Settings, "Change source")
+                        }
                     }
+
                 },
             )
         },
@@ -216,6 +235,7 @@ fun ShowCityCard(cityName: String, temp: String) {
 }
 
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Preview
 @Composable
 fun ShowCard(item: RecyclerViewItem = RecyclerViewItem()) {
@@ -236,16 +256,23 @@ fun ShowCard(item: RecyclerViewItem = RecyclerViewItem()) {
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(1.dp, color = Color.DarkGray),
     ) {
-        if (item.pictureUrl?.isNotEmpty() == true){
 
-            GlideImage("https://openweathermap.org/img/wn/${item.pictureUrl}@2x.png")
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            GlideImage(
+                "https://openweathermap.org/img/wn/${item.pictureUrl}@2x.png",
+                item.description
+            )
+            Text(
+                fontSize = 16.sp,
+                text = "${item.dayNumber}  ${item.temperature} ${item.description}",
+                textAlign = TextAlign.Center,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(16.dp)
+            )
+
         }
-        Text(
-            fontSize = 16.sp,
-            text = "${item.dayNumber}  ${item.temperature} ${item.description}",
-            textAlign = TextAlign.Center,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.padding(16.dp)
-        )
     }
 }
