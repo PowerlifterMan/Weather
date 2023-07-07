@@ -95,7 +95,7 @@ fun MainScreenCompose(
                 navigationIcon = {
                     Row(horizontalArrangement = Arrangement.End) {
                         IconButton(onClick = {
-
+/*  TODO() */
                         }) {
                             Icon(Icons.Filled.ArrowBack, "backIcon")
                         }
@@ -114,31 +114,32 @@ fun MainScreenCompose(
                 },
             )
         },
-//        bottomBar = {
-//            BottomNavigation() {
-//                val navItems = listOf(
-//                    NavigationItem.Home,
-//                    NavigationItem.Favourite,
-//                    NavigationItem.Profile
-//                )
-//                navItems.forEach { item ->
-//                    BottomNavigationItem(
-//                        selected = false,
-//                        onClick = { },
-//                        icon = {
-//                            Icon(item.icon, contentDescription = null)
-//                        },
-//                        label = {
-//                            androidx.compose.material.Text(text = stringResource(id = item.titleResId))
-//                        },
-//                        selectedContentColor = MaterialTheme.colors.onPrimary,
-//                        unselectedContentColor = MaterialTheme.colors.onSecondary
-//                    )
-//
-//                }
-//
-//            }
-//        }
+      /*  bottomBar = {
+            BottomNavigation() {
+                val navItems = listOf(
+                    NavigationItem.Home,
+                    NavigationItem.Favourite,
+                    NavigationItem.Profile
+                )
+                navItems.forEach { item ->
+                    BottomNavigationItem(
+                        selected = false,
+                        onClick = { },
+                        icon = {
+                            Icon(item.icon, contentDescription = null)
+                        },
+                        label = {
+                            Text("$item.titleResId")
+                        },
+                        selectedContentColor = MaterialTheme.colors.onPrimary,
+                        unselectedContentColor = MaterialTheme.colors.onSecondary
+                    )
+
+                }
+
+            }
+        }
+    */
     ) { paddingValues ->
         ShowCityCard(
             cityName = currentCity.value.name ?: " ",
