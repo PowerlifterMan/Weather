@@ -1,4 +1,4 @@
-package com.example.weather.presentation.main.composeUI
+package com.example.weather.presentation.main.composeUI.navigationCompose
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Favorite
@@ -6,6 +6,7 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.weather.R
+import com.example.weather.presentation.main.composeUI.Screen
 
 sealed class NavigationItem(
     val screen: Screen,
@@ -14,19 +15,19 @@ sealed class NavigationItem(
 ) {
 
     object Home : NavigationItem(
-        screen = Screen.NewsFeed,
+        screen = Screen.Forecast,
         titleResId = R.string.navigation_item_main,
         icon = Icons.Outlined.Home
     )
 
     object Favourite : NavigationItem(
-        screen = Screen.Favourite,
+        screen = Screen.ChangeCity,
         titleResId = R.string.navigation_item_favourite,
         icon = Icons.Outlined.Favorite
     )
 
     object Profile : NavigationItem(
-        screen = Screen.Profile,
+        screen = Screen.ChangeSource,
         titleResId = R.string.navigation_item_profile,
         icon = Icons.Outlined.Person
     )

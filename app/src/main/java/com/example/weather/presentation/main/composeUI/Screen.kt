@@ -4,14 +4,14 @@ sealed class Screen(
     val route: String
 ) {
 
-    object NewsFeed : Screen(ROUTE_NEWS_FEED)
-    object Favourite : Screen(ROUTE_FAVOURITE)
-    object Profile : Screen(ROUTE_PROFILE)
+    object Forecast : Screen(ROUTE_FORECAST)
+    object ChangeCity : Screen(ROUTE_CHANGE_CITY)
+    object ChangeSource : Screen(ROUTE_CHANGE_SOURCE)
 
     private companion object {
 
-        const val ROUTE_NEWS_FEED = "news_feed"
-        const val ROUTE_FAVOURITE = "favourite"
-        const val ROUTE_PROFILE = "profile"
+        const val ROUTE_FORECAST = "forecast"
+        const val ROUTE_CHANGE_CITY = "change_city"
+        const val ROUTE_CHANGE_SOURCE = "change_source"
     }
 }

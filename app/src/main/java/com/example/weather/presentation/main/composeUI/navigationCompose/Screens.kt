@@ -5,7 +5,7 @@ sealed class Screen(
 ) {
     object MainScreen : Screen(ROUTE_MAIN)
     object InputPlaceScreen : Screen(ROUTE_PLACE)
-    object InputSourceScreen : Screen(ROUTE_SOURCE)
+    object ChangeSourceScreen : Screen(ROUTE_SOURCE)
 
     private companion object {
         const val ROUTE_MAIN = "main"

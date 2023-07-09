@@ -8,10 +8,10 @@ import androidx.navigation.compose.composable
 @Composable
 fun AppNavGraph(
     navhostController: NavHostController,
-    mainScreenContent: @Composable() -> Unit,
-    sourceScreenContent: @Composable() -> Unit,
-    inputPlaceScreenContent: @Composable() -> Unit
-) {
+    mainScreenContent: @Composable () -> Unit,
+    sourceScreenContent: @Composable () -> Unit,
+    inputPlaceScreenContent: @Composable () -> Unit,
+    ) {
     NavHost(
         navController = navhostController,
         startDestination = Screen.MainScreen.route
@@ -20,7 +20,7 @@ fun AppNavGraph(
         {
             mainScreenContent()
         }
-        composable(Screen.InputSourceScreen.route)
+        composable(Screen.ChangeSourceScreen.route)
         {
             sourceScreenContent()
         }
