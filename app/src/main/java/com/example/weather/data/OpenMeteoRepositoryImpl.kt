@@ -131,7 +131,7 @@ class OpenMeteoRepositoryImpl @Inject constructor(
     }
 
     private fun needToUpdate(): Boolean {
-        return true
+        return false
     }
 
     override suspend fun getCityByName(cityName: String): List<GeocodingDTO> {
